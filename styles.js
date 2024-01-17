@@ -17,7 +17,6 @@ const colors = {
   modalButtonBackground: '#FE89A9',
   modalButtonTextColor: '#fff',
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -26,14 +25,14 @@ const styles = StyleSheet.create({
   logo: {
     marginTop: 10,
     marginBottom: 10,
-    width: isIpad ? '10%' : '30%',
+    width: isIpad ? '33%' : '33%',
     height: 60,
   },
   profileLogo: {
     marginTop: 10,
     marginBottom: 40,
     width: '100%',
-    height: isIpad ? 200 : 100,
+    height: isIpad ? 100 : 100,
   },
   tilesContainer: {
     flexDirection: 'row',

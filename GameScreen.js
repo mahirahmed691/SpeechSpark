@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   Alert,
   FlatList,
   TouchableOpacity,
@@ -11,10 +10,11 @@ import {
   StyleSheet,
   Animated,
 } from "react-native";
+import { Button } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const GamesScreen = () => {
- const gamesList = [
+  const gamesList = [
     {
       id: "1",
       title: "Guess the Number",
@@ -52,7 +52,7 @@ const GamesScreen = () => {
   const [colorOptions, setColorOptions] = useState([]);
   const [selectedColor, setSelectedColor] = useState(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
-  
+
   const handleGameSelection = (game) => {
     setSelectedGame(game);
     setModalVisible(true);
@@ -92,7 +92,7 @@ const GamesScreen = () => {
   };
 
   const generateRandomNumber = () => {
-    return Math.floor(Math.random() * 100) + 1; // Generates a random number between 1 and 100
+    return Math.floor(Math.random() * 100) + 1;
   };
 
   const generateRandomWord = () => {
@@ -147,6 +147,50 @@ const GamesScreen = () => {
     }
   };
 
+  const handleMathQuizGame = () => {
+    const userAnswer = parseInt(mathAnswer);
+
+    if (isNaN(userAnswer)) {
+      Alert.alert("Invalid Answer", "Please enter a valid number.", [
+        { text: "OK" },
+      ]);
+      return;
+    }
+
+    setAttempts(attempts + 1);
+
+    if (userAnswer === eval(mathProblem)) {
+      Alert.alert(
+        "Congratulations!",
+        `You solved the math problem '${mathProblem}' in ${attempts} attempts.`,
+        [{ text: "OK" }]
+      );
+      setMathProblem(generateRandomMathProblem());
+      setMathAnswer("");
+      setAttempts(0);
+    } else {
+      Alert.alert("Incorrect Answer", "Try again.", [{ text: "OK" }]);
+      setMathAnswer("");
+    }
+  };
+
+  const generateRandomMathProblem = () => {
+    const operators = ["+", "-", "*"];
+    const getRandomOperator = () =>
+      operators[Math.floor(Math.random() * operators.length)];
+
+    const operand1 = Math.floor(Math.random() * 10) + 1;
+    const operand2 = Math.floor(Math.random() * 10) + 1;
+
+    const operator = getRandomOperator();
+
+    const newMathProblem = `${operand1} ${operator} ${operand2}`;
+    setMathProblem(newMathProblem);
+    setMathAnswer(eval(newMathProblem).toString());
+
+    return newMathProblem;
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.title}>Games for Autism</Text>
@@ -164,7 +208,6 @@ const GamesScreen = () => {
         )}
       />
 
-      {/* Modal for displaying the selected game */}
       <Modal
         animationType="slide"
         transparent={true}
@@ -191,10 +234,9 @@ const GamesScreen = () => {
                       keyboardType="numeric"
                       onChangeText={(text) => setWordGuess(text)}
                     />
-                    <Button
-                      title="Make Guess"
-                      onPress={handleGuessNumberGame}
-                    />
+                    <Button mode="contained" onPress={handleGuessNumberGame}>
+                      Make Guess
+                    </Button>
                   </View>
                 )}
                 {selectedGame.navigateTo === "WordGuessGame" && (
@@ -204,10 +246,28 @@ const GamesScreen = () => {
                       placeholder="Enter your guess"
                       onChangeText={(text) => setWordGuess(text)}
                     />
-                    <Button title="Make Guess" onPress={handleWordGuessGame} />
+                    <Button mode="contained" onPress={handleWordGuessGame}>
+                      Make Guess
+                    </Button>
                   </View>
                 )}
-                <Button title="Close" onPress={closeModal} />
+                {selectedGame.navigateTo === "MathQuizGame" && (
+                  <View>
+                    <Text style={styles.mathProblem}>{mathProblem}</Text>
+                    <TextInput
+                      style={styles.input}
+                      placeholder="Enter your answer"
+                      keyboardType="numeric"
+                      onChangeText={(text) => setMathAnswer(text)}
+                    />
+                    <Button mode="outlined" onPress={handleMathQuizGame}>
+                      Submit Answer
+                    </Button>
+                  </View>
+                )}
+                <Button mode="outlined" onPress={closeModal}>
+                  Close
+                </Button>
               </>
             )}
           </View>
@@ -221,25 +281,25 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#FCE4EC", // Light pink background
+    backgroundColor: "#EDE7F6", // Lavender background
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "#4A148C", // Deep purple text color
+    color: "#4527A0", // Dark purple text color
   },
   gameItem: {
     borderBottomWidth: 1,
     padding: 16,
-    backgroundColor: "pink", // Amber background
+    backgroundColor: "#FFCCBC", // Peach background
     borderRadius: 8,
     marginVertical: 8,
   },
   gameTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#4A148C", // Deep purple text color
+    color: "#4527A0", // Dark purple text color
   },
   gameDescription: {
     marginTop: 8,
@@ -249,26 +309,34 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.7)", // Semi-transparent dark background
+    backgroundColor: "rgba(0, 0, 0, 0.7)",
   },
   modalContent: {
-    backgroundColor: "pink", // White background
+    backgroundColor: "#FFF",
     padding: 20,
     borderRadius: 10,
     width: "90%",
-    height:500
+    height: 300,
   },
   modalTitle: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "#4A148C", // Deep purple text color
+    color: "#4527A0", // Dark purple text color
   },
   input: {
-    borderBottomWidth: 1,
+    borderBottomWidth: 2,
     marginBottom: 10,
     padding: 8,
-    borderColor: "#4A148C", // Deep purple border color
+    borderColor: "#4527A0", // Dark purple border color
+  },
+  mathProblem: {
+    fontSize: 40,
+    marginBottom: 16,
+    color: "#FFF",
+    backgroundColor: "#4527A0", // Dark purple background color
+    padding: 10,
+    borderRadius: 8,
   },
 });
 

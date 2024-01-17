@@ -17,15 +17,16 @@ import {
 import { FontAwesome5 } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
 import { ImageBackground } from "react-native";
 import { flashcardsData } from "./flashcardData";
 import LogoPlaceholder from "./assets/Logo.png";
 import ProfileSettingsScreen from "./ProfileSettingsScreen";
+import MentalHealthScreen from "./MentalHealthScreen"; 
 import GamesScreen from "./GameScreen";
 import DiaryScreen from "./DiaryScreen";
 import Constants from "expo-constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import styles from "./styles";
 import ThumbsUpDown from "./ThumbsUpDown";
 
@@ -74,7 +75,7 @@ const FlashcardScreen = ({ route, navigation }) => {
         renderItem={({ item }) => (
           <TouchableWithoutFeedback
             onPress={() => {
-              navigation.navigate("ExpandedFlashcard", { item });
+              navigation.navigate("Flashcard", { item });
             }}
           >
             <View style={styles.visualFlashcard}>
@@ -93,6 +94,7 @@ const FlashcardScreen = ({ route, navigation }) => {
 
 const ExpandedFlashcardScreen = ({ route }) => {
   const { item } = route.params || {};
+
   const isIpad =
     Constants.platform?.ios?.model?.toLowerCase?.().includes?.("ipad") ?? false;
   if (!item) {
@@ -128,7 +130,7 @@ const TimesOfDayTile = ({ time, navigation, selected, style }) => (
   <TouchableOpacity
     onPress={() => {
       if (navigation) {
-        navigation.navigate("Flashcards", { title: time.text });
+        navigation.navigate("Deck", { title: time.text });
       } else {
         console.warn("Navigation prop is not available");
       }
@@ -161,9 +163,12 @@ const Flashcard = ({ text, animatedValue }) => {
         }),
       },
     ],
-    backgroundColor: "#87CEEB",
-    width: 200,
-    alignSelf: "center",
+    backgroundColor: "#9595ff",
+    width: 150,
+    paddingLeft:30,
+    alignItems: "center",
+
+  
   };
 
   return (
@@ -199,8 +204,9 @@ const HomeScreen = ({ navigation, animatedValue }) => {
   };
 
   const handleConfirmCreateTile = () => {
-    // Add logic to create a new tile with newTileText
-    // You can add this logic based on your app's requirements
+    analytics().logEvent("custom_tile_created", {
+      tileName: newTileText,
+    });
     setCreateTileModalVisible(false);
     setNewTileText("");
   };
@@ -268,24 +274,51 @@ const HomeScreen = ({ navigation, animatedValue }) => {
     } else if (currentHour >= 20 || (currentHour >= 0 && currentHour < 6)) {
       return "Bedtime";
     } else {
-      return "Free Time";
+      return "FreeTime";
     }
   };
 
   const currentTimeOfDay = getCurrentTimeOfDay();
   const currentTime = new Date().toLocaleTimeString();
+  const [currentTimes, setCurrentTimes] = useState("");
 
   // Filter times based on search input
   const filteredTimesOfDay = timesOfDay.filter((time) =>
     time.text.toLowerCase().includes(searchText.toLowerCase())
   );
 
+  useEffect(() => {
+    // Function to get the current time
+    const getCurrentTime = () => {
+      const now = new Date();
+      const hours = now.getHours();
+      const minutes = now.getMinutes();
+      const ampm = hours >= 12 ? "PM" : "AM";
+      const formattedHours = hours % 12 === 0 ? 12 : hours % 12;
+
+      return `${formattedHours}:${
+        minutes < 10 ? `0${minutes}` : minutes
+      } ${ampm}`;
+    };
+
+    // Set the initial time
+    setCurrentTimes(getCurrentTime());
+
+    // Update the time every minute
+    const interval = setInterval(() => {
+      setCurrentTimes(getCurrentTime());
+    }, 60000);
+
+    // Clear interval on component unmount
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          backgroundColor: "#F7F4F1",
-          justifyContent: "space-between",
+          backgroundColor: "#F0f0f0",
+          justifyContent: "space-around",
           flexDirection: "row",
         }}
       >
@@ -294,8 +327,20 @@ const HomeScreen = ({ navigation, animatedValue }) => {
           style={styles.logo}
           resizeMode="contain"
         />
+        <View
+          style={{
+            alignSelf: "center",
+            paddingTop: 28,
+            width: "33%",
+            height: 80,
+          }}
+        >
+          <Text style={{ fontSize: 15, textAlign:'center', fontWeight: "bold", color: "#000" }}>
+            {currentTime}
+          </Text>
+        </View>
         <Flashcard
-          text={`Current Activity ${currentTimeOfDay}`}
+          text={currentTimeOfDay}
           animatedValue={animatedValue}
         />
       </View>
@@ -308,7 +353,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
         />
       </View>
       <ScrollView>
-        {isListLayout ? (
+        {!isListLayout ? (
           <FlatList
             data={filteredTimesOfDay}
             keyExtractor={(time) => time.id.toString()}
@@ -317,7 +362,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
                 time={item}
                 navigation={navigation}
                 selected={item.text === currentTimeOfDay}
-                style={{ width: "100%" }} // Set width to 100% for list layout
+                style={{ width: "100%" }}
               />
             )}
           />
@@ -358,7 +403,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
         onPress={() => setListLayout(!isListLayout)}
       >
         <Text style={styles.toggleLayoutButtonText}>
-          {isListLayout ? "Switch to Tile" : "Switch to List"}
+          {isListLayout ? "Switch to List" : "Switch to Tile"}
         </Text>
       </TouchableOpacity>
       <Modal
@@ -390,7 +435,6 @@ const HomeScreen = ({ navigation, animatedValue }) => {
 };
 
 const App = () => {
-  const [currentTime, setCurrentTime] = useState(0);
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   return (
@@ -403,10 +447,10 @@ const App = () => {
 
             if (route.name === "Home") {
               iconName = focused ? "home" : "home-outline";
-            } else if (route.name === "Flashcards") {
+            } else if (route.name === "Deck") {
               iconName = focused ? "cards" : "cards-outline";
-            } else if (route.name === "ExpandedFlashcard") {
-              iconName = focused ? "arrow-expand-all" : "arrow-expand-all";
+            } else if (route.name === "Flashcard") {
+              iconName = focused ? "flash" : "flash-outline";
             } else if (route.name === "Profile") {
               iconName = focused ? "cog" : "cog-outline";
             } else if (route.name === "Diary") {
@@ -435,13 +479,24 @@ const App = () => {
         <Tab.Screen name="Home">
           {(props) => <HomeScreen {...props} animatedValue={animatedValue} />}
         </Tab.Screen>
-        <Tab.Screen name="Flashcards" component={FlashcardScreen} />
-        <Tab.Screen name="Diary" component={DiaryScreen} />
-        <Tab.Screen name="Games" component={GamesScreen} />
+        <Tab.Screen name="Deck" component={FlashcardScreen} />
         <Tab.Screen
-          name="ExpandedFlashcard"
+          name="Flashcard"
           component={ExpandedFlashcardScreen}
           options={{ tabBarVisible: false }}
+        />
+        <Tab.Screen name="Diary" component={DiaryScreen} />
+        <Tab.Screen name="Games" component={GamesScreen} />
+       
+        <Tab.Screen
+          name="MentalHealth"
+          component={MentalHealthScreen} // Make sure to create this component
+          options={{
+            tabBarLabel: "Health",
+            tabBarIcon: ({ color, size }) => (
+              <MaterialCommunityIcons name="brain" size={size} color={color} />
+            ),
+          }}
         />
         <Tab.Screen name="Profile" component={ProfileSettingsScreen} />
       </Tab.Navigator>
