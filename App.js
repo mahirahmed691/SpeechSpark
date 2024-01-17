@@ -1,20 +1,452 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState, useRef, useEffect } from "react";
+import {
+  StatusBar,
+  TouchableOpacity,
+  Modal,
+  Text,
+  View,
+  Image,
+  SafeAreaView,
+  Animated,
+  FlatList,
+  TouchableWithoutFeedback,
+  ScrollView,
+  Dimensions,
+  TextInput,
+} from "react-native";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { NavigationContainer } from "@react-navigation/native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createStackNavigator } from "@react-navigation/stack";
+import { ImageBackground } from "react-native";
+import { flashcardsData } from "./flashcardData";
+import LogoPlaceholder from "./assets/Logo.png";
+import ProfileSettingsScreen from "./ProfileSettingsScreen";
+import GamesScreen from "./GameScreen";
+import DiaryScreen from "./DiaryScreen";
+import Constants from "expo-constants";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import styles from "./styles";
+import ThumbsUpDown from "./ThumbsUpDown";
 
-export default function App() {
+const windowWidth = Dimensions.get("window").width;
+
+const FlashcardScreen = ({ route, navigation }) => {
+  const isIpad =
+    Constants.platform?.ios?.model?.toLowerCase?.().includes?.("ipad") ?? false;
+  const { params } = route;
+
+  if (!params || !params.title || !flashcardsData) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={{ marginTop: isIpad ? 300 : 200 }}>
+          <Image
+            source={{
+              uri: "https://cdn.dribbble.com/userupload/4156800/file/original-4ddbc7d8125bd5b293c122ab1f1ddcbc.png?resize=1504x1272",
+            }}
+            style={styles.image}
+          />
+          <Text style={styles.NoCardText}>No Deck Selected</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const { title, onAddTile } = params;
+  const flashcards = flashcardsData[title] || [];
+
+  if (!flashcards) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.cardText}>
+          No flashcards available for this deck
+        </Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.cardText}>{`Flashcards for ${title}`}</Text>
+      <FlatList
+        data={flashcards}
+        keyExtractor={(item) => item?.id?.toString()}
+        renderItem={({ item }) => (
+          <TouchableWithoutFeedback
+            onPress={() => {
+              navigation.navigate("ExpandedFlashcard", { item });
+            }}
+          >
+            <View style={styles.visualFlashcard}>
+              <Image
+                source={{ uri: item?.image }}
+                style={styles.visualFlashcardImage}
+              />
+              <Text style={styles.visualFlashcardTitle}>{item?.title}</Text>
+            </View>
+          </TouchableWithoutFeedback>
+        )}
+      />
+    </SafeAreaView>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const ExpandedFlashcardScreen = ({ route }) => {
+  const { item } = route.params || {};
+  const isIpad =
+    Constants.platform?.ios?.model?.toLowerCase?.().includes?.("ipad") ?? false;
+  if (!item) {
+    return (
+      <SafeAreaView style={styles.ExpandContainer}>
+        <View style={{ marginTop: isIpad ? 300 : 200 }}>
+          <Image
+            source={{
+              uri: "https://cdn.dribbble.com/users/1040983/screenshots/4870530/media/a6ad9466ae81789d22439d56a31dafd2.png?resize=800x600&vertical=center",
+            }}
+            style={styles.image}
+          />
+          <Text style={styles.NoCardText}>No Flashcard Selected</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={styles.ExpandContainer}>
+      <Text style={styles.expandedFlashcardTitle}>{item.title}</Text>
+      <ImageBackground
+        source={{ uri: item.image }}
+        style={styles.expandedFlashcardImage}
+      ></ImageBackground>
+    </SafeAreaView>
+  );
+};
+
+const Tab = createBottomTabNavigator();
+
+const TimesOfDayTile = ({ time, navigation, selected, style }) => (
+  <TouchableOpacity
+    onPress={() => {
+      if (navigation) {
+        navigation.navigate("Flashcards", { title: time.text });
+      } else {
+        console.warn("Navigation prop is not available");
+      }
+    }}
+  >
+    <View
+      style={[
+        styles.tile,
+        {
+          backgroundColor: selected ? "#FF6347" : time.backgroundColor,
+          width: "100%",
+        },
+      ]}
+    >
+      <FontAwesome5 name={time.icon} size={24} color="#fff" />
+      <Text style={styles.tileText} numberOfLines={2}>
+        {time.text}
+      </Text>
+    </View>
+  </TouchableOpacity>
+);
+
+const Flashcard = ({ text, animatedValue }) => {
+  const animatedStyle = {
+    transform: [
+      {
+        scale: animatedValue.interpolate({
+          inputRange: [0, 3],
+          outputRange: [0.7, 1],
+        }),
+      },
+    ],
+    backgroundColor: "#87CEEB",
+    width: 200,
+    alignSelf: "center",
+  };
+
+  return (
+    <Animated.View style={[styles.card, animatedStyle]}>
+      <Text style={styles.dateText}>{text}</Text>
+    </Animated.View>
+  );
+};
+
+const HomeScreen = ({ navigation, animatedValue }) => {
+  const [isThumbsUpSelected, setThumbsUpSelected] = useState(false);
+  const [isThumbsDownSelected, setThumbsDownSelected] = useState(false);
+  const [createTileModalVisible, setCreateTileModalVisible] = useState(false);
+  const [newTileText, setNewTileText] = useState("");
+  const [isListLayout, setListLayout] = useState(true); // New state for layout type
+
+  const handleThumbsUp = () => {
+    setThumbsUpSelected(!isThumbsUpSelected);
+    if (isThumbsDownSelected) {
+      setThumbsDownSelected(false);
+    }
+  };
+
+  const handleThumbsDown = () => {
+    setThumbsDownSelected(!isThumbsDownSelected);
+    if (isThumbsUpSelected) {
+      setThumbsUpSelected(false);
+    }
+  };
+
+  const handleCreateTile = () => {
+    setCreateTileModalVisible(true);
+  };
+
+  const handleConfirmCreateTile = () => {
+    // Add logic to create a new tile with newTileText
+    // You can add this logic based on your app's requirements
+    setCreateTileModalVisible(false);
+    setNewTileText("");
+  };
+
+  const [timesOfDay, setTimesOfDay] = useState([
+    {
+      id: 1,
+      text: "Morning \n Routine",
+      icon: "sun",
+      backgroundColor: "#FF69B4",
+    },
+    { id: 2, text: "Lunchtime", icon: "utensils", backgroundColor: "#FFD700" },
+    {
+      id: 3,
+      text: "Afternoon \n Nap",
+      icon: "bed",
+      backgroundColor: "#7CFC00",
+    },
+    { id: 4, text: "Playtime", icon: "gamepad", backgroundColor: "#FF4500" },
+    { id: 5, text: "Study Time", icon: "book", backgroundColor: "#8A2BE2" },
+    {
+      id: 6,
+      text: "Dinner",
+      icon: "utensils",
+      backgroundColor: "#00BFFF",
+    },
+    {
+      id: 7,
+      text: "Evening \n Relaxation",
+      icon: "bed",
+      backgroundColor: "#FF6347",
+    },
+    { id: 8, text: "Game Night", icon: "gamepad", backgroundColor: "#00FF7F" },
+    {
+      id: 9,
+      text: "Bedtime \n Stories",
+      icon: "book",
+      backgroundColor: "#4B0082",
+    },
+    { id: 10, text: "Restaurant", icon: "table", backgroundColor: "#FF8C00" },
+    { id: 11, text: "Car Time", icon: "car", backgroundColor: "#00FFFF" },
+    { id: 12, text: "Going out", icon: "tree", backgroundColor: "#FF1493" },
+    { id: 13, text: "Holiday", icon: "plane", backgroundColor: "#FFA07A" },
+    { id: 14, text: "Phrases", icon: "sms", backgroundColor: "#FF00FF" },
+    { id: 15, text: "Bath time", icon: "bath", backgroundColor: "#00FA9A" },
+  ]);
+
+  const [searchText, setSearchText] = useState("");
+
+  const getCurrentTimeOfDay = () => {
+    const currentHour = new Date().getHours();
+
+    if (currentHour >= 7 && currentHour < 9) {
+      return "Morning Routine";
+    } else if (currentHour >= 12 && currentHour < 14) {
+      return "Lunchtime";
+    } else if (currentHour >= 14 && currentHour < 15) {
+      return "Afternoon Nap";
+    } else if (currentHour >= 14 && currentHour < 15) {
+      return "Playtime";
+    } else if (currentHour >= 16 && currentHour < 17) {
+      return "Study Time";
+    } else if (currentHour >= 18 && currentHour < 19) {
+      return "Dinner";
+    } else if (currentHour >= 20 || (currentHour >= 0 && currentHour < 6)) {
+      return "Bedtime";
+    } else {
+      return "Free Time";
+    }
+  };
+
+  const currentTimeOfDay = getCurrentTimeOfDay();
+  const currentTime = new Date().toLocaleTimeString();
+
+  // Filter times based on search input
+  const filteredTimesOfDay = timesOfDay.filter((time) =>
+    time.text.toLowerCase().includes(searchText.toLowerCase())
+  );
+
+  return (
+    <SafeAreaView style={styles.container}>
+      <View
+        style={{
+          backgroundColor: "#F7F4F1",
+          justifyContent: "space-between",
+          flexDirection: "row",
+        }}
+      >
+        <Image
+          source={LogoPlaceholder}
+          style={styles.logo}
+          resizeMode="contain"
+        />
+        <Flashcard
+          text={`Current Activity ${currentTimeOfDay}`}
+          animatedValue={animatedValue}
+        />
+      </View>
+      <View style={styles.searchContainer}>
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search categories..."
+          onChangeText={setSearchText}
+          value={searchText}
+        />
+      </View>
+      <ScrollView>
+        {isListLayout ? (
+          <FlatList
+            data={filteredTimesOfDay}
+            keyExtractor={(time) => time.id.toString()}
+            renderItem={({ item }) => (
+              <TimesOfDayTile
+                time={item}
+                navigation={navigation}
+                selected={item.text === currentTimeOfDay}
+                style={{ width: "100%" }} // Set width to 100% for list layout
+              />
+            )}
+          />
+        ) : (
+          <View style={styles.tilesContainer}>
+            {filteredTimesOfDay.map((time) => (
+              <TimesOfDayTile
+                key={time.id}
+                time={time}
+                navigation={navigation}
+                selected={time.text === currentTimeOfDay}
+                style={{ justifyContent: "flex-start" }} // Keep existing style for tile layout
+              />
+            ))}
+          </View>
+        )}
+      </ScrollView>
+
+      <StatusBar style="auto" />
+      <View style={{ flexDirection: "row" }}>
+        <View style={{ width: "50%", marginBottom: -20, marginTop: 20 }}>
+          <TouchableOpacity
+            style={styles.buttonContainer}
+            onPress={handleCreateTile}
+          >
+            <Text style={styles.buttonText}>Create your own</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={{ width: "50%" }}>
+          <ThumbsUpDown
+            onThumbsUp={handleThumbsUp}
+            onThumbsDown={handleThumbsDown}
+          />
+        </View>
+      </View>
+      <TouchableOpacity
+        style={styles.toggleLayoutButton}
+        onPress={() => setListLayout(!isListLayout)}
+      >
+        <Text style={styles.toggleLayoutButtonText}>
+          {isListLayout ? "Switch to Tile" : "Switch to List"}
+        </Text>
+      </TouchableOpacity>
+      <Modal
+        transparent
+        animationType="slide"
+        visible={createTileModalVisible}
+        onRequestClose={() => setCreateTileModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Create Your Own Tile</Text>
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Enter tile name"
+              onChangeText={(text) => setNewTileText(text)}
+              value={newTileText}
+            />
+            <TouchableOpacity
+              style={styles.modalButton}
+              onPress={handleConfirmCreateTile}
+            >
+              <Text style={styles.modalButtonText}>Create</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </SafeAreaView>
+  );
+};
+
+const App = () => {
+  const [currentTime, setCurrentTime] = useState(0);
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  return (
+    <NavigationContainer>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          headerShown: false,
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+
+            if (route.name === "Home") {
+              iconName = focused ? "home" : "home-outline";
+            } else if (route.name === "Flashcards") {
+              iconName = focused ? "cards" : "cards-outline";
+            } else if (route.name === "ExpandedFlashcard") {
+              iconName = focused ? "arrow-expand-all" : "arrow-expand-all";
+            } else if (route.name === "Profile") {
+              iconName = focused ? "cog" : "cog-outline";
+            } else if (route.name === "Diary") {
+              iconName = focused ? "book" : "book-outline";
+            }
+            if (route.name === "Games") {
+              iconName = focused
+                ? "gamepad-variant"
+                : "gamepad-variant-outline";
+            }
+
+            return (
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={color}
+              />
+            );
+          },
+        })}
+        tabBarOptions={{
+          activeTintColor: "#A6E1E4",
+          inactiveTintColor: "#FE89A9",
+        }}
+      >
+        <Tab.Screen name="Home">
+          {(props) => <HomeScreen {...props} animatedValue={animatedValue} />}
+        </Tab.Screen>
+        <Tab.Screen name="Flashcards" component={FlashcardScreen} />
+        <Tab.Screen name="Diary" component={DiaryScreen} />
+        <Tab.Screen name="Games" component={GamesScreen} />
+        <Tab.Screen
+          name="ExpandedFlashcard"
+          component={ExpandedFlashcardScreen}
+          options={{ tabBarVisible: false }}
+        />
+        <Tab.Screen name="Profile" component={ProfileSettingsScreen} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+};
+
+export default App;
