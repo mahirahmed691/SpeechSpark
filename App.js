@@ -21,7 +21,7 @@ import { ImageBackground } from "react-native";
 import { flashcardsData } from "./flashcardData";
 import LogoPlaceholder from "./assets/Logo.png";
 import ProfileSettingsScreen from "./ProfileSettingsScreen";
-import MentalHealthScreen from "./MentalHealthScreen"; 
+import MentalHealthScreen from "./MentalHealthScreen";
 import GamesScreen from "./GameScreen";
 import DiaryScreen from "./DiaryScreen";
 import Constants from "expo-constants";
@@ -141,7 +141,7 @@ const TimesOfDayTile = ({ time, navigation, selected, style }) => (
         styles.tile,
         {
           backgroundColor: selected ? "#FF6347" : time.backgroundColor,
-          width: "100%",
+          width: 120,
         },
       ]}
     >
@@ -149,6 +149,36 @@ const TimesOfDayTile = ({ time, navigation, selected, style }) => (
       <Text style={styles.tileText} numberOfLines={2}>
         {time.text}
       </Text>
+    </View>
+  </TouchableOpacity>
+);
+
+const TimesOfDayList = ({ time, navigation, selected, style }) => (
+  <TouchableOpacity
+    onPress={() => {
+      if (navigation) {
+        navigation.navigate("Deck", { title: time.text });
+      } else {
+        console.warn("Navigation prop is not available");
+      }
+    }}
+  >
+    <View
+      style={[
+        styles.tile,
+        {
+          backgroundColor: selected ? "#FF6347" : time.backgroundColor,
+          width: "100%",
+          height: 65,
+          flexDirection: "row", justifyContent: "space-around"
+        },
+      ]}
+    >
+
+        <FontAwesome5 name={time.icon} size={20} color="#fff" />
+        <Text style={styles.listText} numberOfLines={2}>
+          {time.text}
+        </Text>
     </View>
   </TouchableOpacity>
 );
@@ -163,12 +193,10 @@ const Flashcard = ({ text, animatedValue }) => {
         }),
       },
     ],
-    backgroundColor: "#9595ff",
+    backgroundColor: "#72B7EE",
     width: 150,
-    paddingLeft:30,
+    paddingLeft: 30,
     alignItems: "center",
-
-  
   };
 
   return (
@@ -214,44 +242,44 @@ const HomeScreen = ({ navigation, animatedValue }) => {
   const [timesOfDay, setTimesOfDay] = useState([
     {
       id: 1,
-      text: "Morning \n Routine",
+      text: "Morning \nRoutine",
       icon: "sun",
-      backgroundColor: "#FF69B4",
+      backgroundColor: "#72B7EE",
     },
-    { id: 2, text: "Lunchtime", icon: "utensils", backgroundColor: "#FFD700" },
+    { id: 2, text: "Lunchtime", icon: "utensils", backgroundColor: "#72B7EE" },
     {
       id: 3,
-      text: "Afternoon \n Nap",
+      text: "Afternoon \nNap",
       icon: "bed",
-      backgroundColor: "#7CFC00",
+      backgroundColor: "#72B7EE",
     },
-    { id: 4, text: "Playtime", icon: "gamepad", backgroundColor: "#FF4500" },
-    { id: 5, text: "Study Time", icon: "book", backgroundColor: "#8A2BE2" },
+    { id: 4, text: "Playtime", icon: "gamepad", backgroundColor: "#FE89A9" },
+    { id: 5, text: "Study Time", icon: "book", backgroundColor: "#FE89A9" },
     {
       id: 6,
       text: "Dinner",
       icon: "utensils",
-      backgroundColor: "#00BFFF",
+      backgroundColor: "#FE89A9",
     },
     {
       id: 7,
-      text: "Evening \n Relaxation",
+      text: "Evening\nRelaxation",
       icon: "bed",
-      backgroundColor: "#FF6347",
+      backgroundColor: "#72B7EE",
     },
-    { id: 8, text: "Game Night", icon: "gamepad", backgroundColor: "#00FF7F" },
+    { id: 8, text: "Game Night", icon: "gamepad", backgroundColor: "#72B7EE" },
     {
       id: 9,
       text: "Bedtime \n Stories",
       icon: "book",
-      backgroundColor: "#4B0082",
+      backgroundColor: "#72B7EE",
     },
-    { id: 10, text: "Restaurant", icon: "table", backgroundColor: "#FF8C00" },
-    { id: 11, text: "Car Time", icon: "car", backgroundColor: "#00FFFF" },
-    { id: 12, text: "Going out", icon: "tree", backgroundColor: "#FF1493" },
-    { id: 13, text: "Holiday", icon: "plane", backgroundColor: "#FFA07A" },
-    { id: 14, text: "Phrases", icon: "sms", backgroundColor: "#FF00FF" },
-    { id: 15, text: "Bath time", icon: "bath", backgroundColor: "#00FA9A" },
+    { id: 10, text: "Restaurant", icon: "table", backgroundColor: "#FE89A9" },
+    { id: 11, text: "Car Time", icon: "car", backgroundColor: "#FE89A9" },
+    { id: 12, text: "Going out", icon: "tree", backgroundColor: "#FE89A9" },
+    { id: 13, text: "Holiday", icon: "plane", backgroundColor: "#72B7EE" },
+    { id: 14, text: "Phrases", icon: "sms", backgroundColor: "#72B7EE" },
+    { id: 15, text: "Bath time", icon: "bath", backgroundColor: "#72B7EE" },
   ]);
 
   const [searchText, setSearchText] = useState("");
@@ -335,14 +363,18 @@ const HomeScreen = ({ navigation, animatedValue }) => {
             height: 80,
           }}
         >
-          <Text style={{ fontSize: 15, textAlign:'center', fontWeight: "bold", color: "#000" }}>
+          <Text
+            style={{
+              fontSize: 15,
+              textAlign: "center",
+              fontWeight: "bold",
+              color: "#000",
+            }}
+          >
             {currentTime}
           </Text>
         </View>
-        <Flashcard
-          text={currentTimeOfDay}
-          animatedValue={animatedValue}
-        />
+        <Flashcard text={currentTimeOfDay} animatedValue={animatedValue} />
       </View>
       <View style={styles.searchContainer}>
         <TextInput
@@ -358,11 +390,10 @@ const HomeScreen = ({ navigation, animatedValue }) => {
             data={filteredTimesOfDay}
             keyExtractor={(time) => time.id.toString()}
             renderItem={({ item }) => (
-              <TimesOfDayTile
+              <TimesOfDayList
                 time={item}
                 navigation={navigation}
                 selected={item.text === currentTimeOfDay}
-                style={{ width: "100%" }}
               />
             )}
           />
@@ -374,7 +405,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
                 time={time}
                 navigation={navigation}
                 selected={time.text === currentTimeOfDay}
-                style={{ justifyContent: "flex-start" }} // Keep existing style for tile layout
+                style={{ justifyContent: "flex-start", width: "33%" }} // Keep existing style for tile layout
               />
             ))}
           </View>
@@ -487,7 +518,7 @@ const App = () => {
         />
         <Tab.Screen name="Diary" component={DiaryScreen} />
         <Tab.Screen name="Games" component={GamesScreen} />
-       
+
         <Tab.Screen
           name="MentalHealth"
           component={MentalHealthScreen} // Make sure to create this component

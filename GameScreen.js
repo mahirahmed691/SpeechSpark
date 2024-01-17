@@ -234,7 +234,7 @@ const GamesScreen = () => {
                       keyboardType="numeric"
                       onChangeText={(text) => setWordGuess(text)}
                     />
-                    <Button mode="contained" onPress={handleGuessNumberGame}>
+                    <Button style={{position:'absolute', bottom:-220, left:0, right:0, backgroundColor:'#72B7EE', color:'white'}} mode="contained" onPress={handleGuessNumberGame}>
                       Make Guess
                     </Button>
                   </View>
@@ -246,7 +246,7 @@ const GamesScreen = () => {
                       placeholder="Enter your guess"
                       onChangeText={(text) => setWordGuess(text)}
                     />
-                    <Button mode="contained" onPress={handleWordGuessGame}>
+                    <Button style={{position:'absolute', bottom:-220, left:0, right:0, backgroundColor:'#72B7EE', color:'white'}} mode="contained" onPress={handleWordGuessGame}>
                       Make Guess
                     </Button>
                   </View>
@@ -260,12 +260,12 @@ const GamesScreen = () => {
                       keyboardType="numeric"
                       onChangeText={(text) => setMathAnswer(text)}
                     />
-                    <Button mode="outlined" onPress={handleMathQuizGame}>
+                    <Button style={{position:'absolute', bottom:-170, left:0, right:0, backgroundColor:'#72B7EE', color:'white'}} mode="outlined" onPress={handleMathQuizGame}>
                       Submit Answer
                     </Button>
                   </View>
                 )}
-                <Button mode="outlined" onPress={closeModal}>
+                <Button style={{marginTop:20, position:'absolute', bottom:20, left:20, right:20,}} mode="outlined" onPress={closeModal}>
                   Close
                 </Button>
               </>
@@ -290,33 +290,32 @@ const styles = StyleSheet.create({
     color: "#4527A0", // Dark purple text color
   },
   gameItem: {
-    borderBottomWidth: 1,
     padding: 16,
-    backgroundColor: "#FFCCBC", // Peach background
+    backgroundColor: "#72B7EE", // Peach background
     borderRadius: 8,
     marginVertical: 8,
   },
   gameTitle: {
     fontSize: 18,
     fontWeight: "bold",
-    color: "#4527A0", // Dark purple text color
+    color: "#FFF", // Dark purple text color
   },
   gameDescription: {
     marginTop: 8,
-    color: "#333", // Dark gray text color
+    color: "#FFF", // Dark gray text color
   },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.7)",
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
   modalContent: {
     backgroundColor: "#FFF",
     padding: 20,
     borderRadius: 10,
-    width: "90%",
-    height: 300,
+    width: "95%",
+    height: 600,
   },
   modalTitle: {
     fontSize: 20,
@@ -328,13 +327,14 @@ const styles = StyleSheet.create({
     borderBottomWidth: 2,
     marginBottom: 10,
     padding: 8,
-    borderColor: "#4527A0", // Dark purple border color
+    borderColor: "#4527A0",
+    marginTop:200 // Dark purple border color
   },
   mathProblem: {
     fontSize: 40,
     marginBottom: 16,
     color: "#FFF",
-    backgroundColor: "#4527A0", // Dark purple background color
+    backgroundColor: "#f0f0f0", 
     padding: 10,
     borderRadius: 8,
   },

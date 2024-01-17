@@ -56,6 +56,13 @@ const styles = StyleSheet.create({
     color: '#fff',
     marginTop: 10,
   },
+  listText: {
+    fontSize: 15,
+    letterSpacing: 1.5,
+    fontWeight: '700',
+    color: '#fff',
+    marginTop: 0,
+  },
   card: {
     paddingTop: 10,
     paddingBottom: 10,
