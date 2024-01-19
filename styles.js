@@ -4,29 +4,29 @@ const windowWidth = Dimensions.get('window').width;
 const isIpad = Platform.OS === 'ios' && windowWidth > 768;
 
 const colors = {
-  primaryBackground: '#F0F0F0',
-  tileBackground: '#333',
-  cardText: '#8673F9',
-  shadowColor: 'rgba(204, 204, 255, 0.8)',
-  visualFlashcardBackground: '#F0F8FF',
+  primaryBackground: '#FFF', // Light Blue
+  tileBackground: '#FFFFFF', // White
+  cardText: '#8666A0', // Muted Purple
+  shadowColor: 'rgba(173, 216, 230, 0.8)', // Light Turquoise
+  visualFlashcardBackground: '#F0F8FF', // Alice Blue
   expandedFlashcardTitleTextShadow: 'rgba(0, 125, 125, 1)',
-  buttonBackground: '#70B7ED',
-  buttonText: '#fff',
-  modalOverlay: 'rgba(0, 0, 0, 0.5)',
-  modalContentBackground: '#fff',
-  modalButtonBackground: '#FE89A9',
-  modalButtonTextColor: '#fff',
+  buttonBackground: '#38B5FD', // Sky Blue
+  buttonText: '#fff', // White
+  modalOverlay: 'rgba(169, 169, 169, 0.5)', // Dark Gray
+  modalContentBackground: '#F0F8FF', // Alice Blue
+  modalButtonBackground: '#FFA07A', // Light Salmon
+  modalButtonTextColor: '#fff', // White
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.primaryBackground,
   },
   logo: {
-    marginTop: 10,
-    marginBottom: 10,
+    marginTop: 22,
     width: isIpad ? '33%' : '33%',
-    height: 60,
+    height: 30,
   },
   profileLogo: {
     marginTop: 10,
@@ -50,8 +50,8 @@ const styles = StyleSheet.create({
     width: isIpad ? windowWidth / 5 - 10 : windowWidth / 3 - 10,
   },
   tileText: {
-    fontSize: 10,
-    letterSpacing: 1.5,
+    fontSize: 12,
+    letterSpacing: 0.5,
     fontWeight: '700',
     color: '#fff',
     marginTop: 10,
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
     color: '#FFF',
     textAlign: 'center',
     letterSpacing: 2,
-    fontSize: 16,
+    fontSize: 40,
     width: '100%',
   },
   visualFlashcard: {
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   toggleLayoutButton: {
-    backgroundColor: "#FE89A9",
+    backgroundColor: "#AACFD0",
     padding: 12,
     alignItems: "center",
     marginTop: 16,
@@ -256,6 +256,168 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
   },
+  scrollContainer: {
+    padding: 20,
+  },
+  title: {
+    fontSize: 32,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "#1E90FF",
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 12,
+    color: "#333",
+  },
+  content: {
+    fontSize: 16,
+    lineHeight: 24,
+    color: "#555",
+  },
+  quoteCard: {
+    backgroundColor: "#D1EAF5",
+    borderRadius: 8,
+    padding: 16,
+    marginRight: 16,
+    width: 250,
+  },
+  quoteText: {
+    fontSize: 14,
+    color: "#1E90FF",
+  },
+  emojiSelector: {
+    flexDirection: "row",
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  emojiButton: {
+    padding: 10,
+    marginRight: 10,
+    borderRadius: 8,
+    backgroundColor: "#E0E0E0",
+  },
+  selectedEmojiButton: {
+    backgroundColor: "#1E90FF",
+  },
+  emojiText: {
+    fontSize: 30,
+  },
+  noteContainer: {
+    marginBottom: 12,
+  },
+  noteLabel: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 6,
+    color: "#333",
+  },
+  noteInput: {
+    height: 80,
+  },
+  input: {
+    height: 40,
+    borderColor: "#1E90FF",
+    borderWidth: 1,
+    marginBottom: 12,
+    paddingHorizontal: 10,
+    color: "#333",
+  },
+  saveButton: {
+    backgroundColor: "#AB93A9",
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  saveButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+  breathingButton: {
+    backgroundColor: "#AACFD0",
+    padding: 12,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  breathingButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+  breathingModalContainer: {
+    backgroundColor: "#FFFFFF",
+    padding: 20,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  breathingModalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 12,
+    color: "#333",
+  },
+  breathingModalInstructions: {
+    fontSize: 16,
+    color: "#555",
+    textAlign: "center",
+  },
+  startBreathingButton: {
+    backgroundColor: "#1E90FF",
+    padding: 14,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 12,
+  },
+  startBreathingButtonText: {
+    color: "#FFFFFF",
+    fontWeight: "bold",
+  },
+  modal: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+
+  breathingModalContainer: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+    alignItems: 'center',
+  },
+
+  breathingModalTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+
+  breathingModalInstructions: {
+    fontSize: 16,
+    marginBottom: 15,
+    textAlign: 'center',
+  },
+
+  breathingModalTimer: {
+    fontSize: 18,
+    color: "#AACFD0",
+    fontWeight: 'bold',
+  },
+  navigatorButtonText:{
+    fontSize:15,
+    fontWeight:"900",
+    marginLeft:10,
+    color:"white",
+  },
+  sectionNavigator:{
+    backgroundColor:"#39B6FF",
+    borderRadius:10,
+    padding:20,
+    marginBottom:20
+  }
 });
 
 export default styles;

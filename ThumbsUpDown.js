@@ -34,12 +34,12 @@ const ThumbsUpDown = ({ onThumbsUp, onThumbsDown }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleThumbsUp} style={styles.button}>
-        <FontAwesome name="thumbs-up" size={20} color="teal" />
+        <FontAwesome name="thumbs-up" size={20} color="#A9CFCF" />
         <Text>Yes</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={handleThumbsDown} style={styles.button}>
-        <FontAwesome name="thumbs-down" size={20} color="crimson" />
+        <FontAwesome name="thumbs-down" size={20} color="#FE89A9" />
         <Text>No</Text>
       </TouchableOpacity>
 

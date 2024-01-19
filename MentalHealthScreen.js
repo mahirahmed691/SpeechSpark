@@ -3,16 +3,18 @@ import {
   SafeAreaView,
   ScrollView,
   Text,
-  StyleSheet,
   View,
   TouchableOpacity,
   TextInput,
   Platform,
+  Vibration,
 } from "react-native";
-import EmojiSelector from "react-native-emoji-selector";
+import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import styles from "./styles";
 import Modal from "react-native-modal";
 
-const commonEmojis = ["😊", "😢", "😡", "😴"];
+const SECTION_HEIGHT = 300;
+const commonEmojis = ["😊", "😢", "😡", "😴",];
 
 const MentalHealthScreen = () => {
   const [quotes, setQuotes] = useState([]);
@@ -24,17 +26,54 @@ const MentalHealthScreen = () => {
   const [breathingTimer, setBreathingTimer] = useState(0);
   const [isBreathingExerciseInProgress, setBreathingExerciseInProgress] =
     useState(false);
+  const [activities, setActivities] = useState([]);
+  const [activityText, setActivityText] = useState("");
+  const [gratitudeEntries, setGratitudeEntries] = useState([]);
+  const [gratitudeText, setGratitudeText] = useState("");
+
+  let vibrationInterval;
 
   const startBreathingExercise = () => {
-    setBreathingModalVisible(true);
-    setBreathingTimer(4); // Initial timer value for the first phase
+    setIsBreathingModalVisible(true);
+    setBreathingTimer(120); 
     setBreathingExerciseInProgress(true);
+
+    vibrationInterval = setInterval(() => {
+      if (breathingTimer % 4 === 0) {
+        Vibration.vibrate(200); 
+      }
+      setBreathingTimer((prevTimer) => prevTimer - 1);
+    }, 1000);
   };
 
   const stopBreathingExercise = () => {
-    setBreathingModalVisible(false);
+    setIsBreathingModalVisible(false);
     setBreathingTimer(0);
     setBreathingExerciseInProgress(false);
+
+    // Stop vibration when the exercise is stopped
+    Vibration.cancel();
+    clearInterval(vibrationInterval);
+  };
+
+  const handleAddActivity = () => {
+    if (activityText.trim() !== "") {
+      setActivities((prevActivities) => [
+        ...prevActivities,
+        { id: Date.now(), text: activityText.trim() },
+      ]);
+      setActivityText("");
+    }
+  };
+
+  const handleAddGratitudeEntry = () => {
+    if (gratitudeText.trim() !== "") {
+      setGratitudeEntries((prevEntries) => [
+        ...prevEntries,
+        { id: Date.now(), text: gratitudeText.trim() },
+      ]);
+      setGratitudeText("");
+    }
   };
 
   useEffect(() => {
@@ -60,11 +99,12 @@ const MentalHealthScreen = () => {
   }, []);
 
   const handleSaveMood = () => {
-    // Implement your logic to save the mood, note, sleep hours, and wake-up time
     console.log("Selected Emoji:", selectedEmoji);
     console.log("Note:", note);
     console.log("Sleep Hours:", sleepHours);
     console.log("Wake-up Time:", wakeUpTime);
+    console.log("Activities:", activities);
+    console.log("Gratitude Entries:", gratitudeEntries);
 
     // You can send this data to your backend or store it locally as needed
   };
@@ -91,10 +131,83 @@ const MentalHealthScreen = () => {
     return () => clearInterval(interval);
   }, [breathingTimer, isBreathingExerciseInProgress]);
 
+  const SectionNavigator = ({ onPress, title, iconName, iconColor }) => (
+    <TouchableOpacity style={styles.navigatorButton} onPress={onPress}>
+      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <Icon name={iconName} size={20} color={iconColor} />
+        <Text style={styles.navigatorButtonText}>{title}</Text>
+      </View>
+    </TouchableOpacity>
+  );
+
+  const scrollViewRef = React.createRef();
+
+  const scrollToSection = (sectionId) => {
+    if (scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({
+        y: sectionId * SECTION_HEIGHT,
+        animated: true,
+      });
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView contentContainerStyle={styles.scrollContainer}>
+      <ScrollView
+        ref={scrollViewRef}
+        contentContainerStyle={styles.scrollContainer}
+      >
         <Text style={styles.title}>Mental Well-Being</Text>
+        <View style={styles.sectionNavigator}>
+          <SectionNavigator
+            onPress={() => scrollToSection(1)}
+            title="Quotes"
+            iconName="comment-quote"
+            iconColor={"#FFF"}
+          />
+          <SectionNavigator
+            onPress={() => scrollToSection(2)}
+            title="Wellness Tips"
+            iconName="brain"
+            iconColor={"#FFF"}
+          />
+          <SectionNavigator
+            onPress={() => scrollToSection(3)}
+            title="Mindfulness Meditation"
+            iconName="meditation"
+            iconColor={"#FFF"}
+          />
+          <SectionNavigator
+            onPress={() => scrollToSection(4)}
+            title="Mood Tracker"
+            iconName="robot-happy"
+            iconColor={"#FFF"}
+          />
+          <SectionNavigator
+            onPress={() => scrollToSection(5)}
+            title="Sleep Tracker"
+            iconName="power-sleep"
+            iconColor={"#FFF"}
+          />
+          <SectionNavigator
+            onPress={() => scrollToSection(6)}
+            title="Breathing Exercise"
+            iconName="air-purifier"
+            iconColor={"#FFF"}
+          />
+          <SectionNavigator
+            onPress={() => scrollToSection(7)}
+            title="Activity Log"
+            iconName="book-open"
+            iconColor={"#FFF"}
+          />
+          <SectionNavigator
+            onPress={() => scrollToSection(8)}
+            title="Gratitude Journal"
+            iconName="cards-heart-outline"
+            iconColor={"#FFF"}
+          />
+        </View>
 
         {quotes.length > 0 && (
           <View style={styles.section}>
@@ -190,7 +303,7 @@ const MentalHealthScreen = () => {
           </Text>
           <TouchableOpacity
             style={styles.breathingButton}
-            onPress={toggleBreathingModal}
+            onPress={startBreathingExercise}
           >
             <Text style={styles.breathingButtonText}>
               Start Breathing Exercise
@@ -200,7 +313,7 @@ const MentalHealthScreen = () => {
 
         <Modal
           isVisible={isBreathingModalVisible}
-          onBackdropPress={toggleBreathingModal}
+          onBackdropPress={stopBreathingExercise}
         >
           <View style={styles.breathingModalContainer}>
             <Text style={styles.breathingModalTitle}>
@@ -210,156 +323,72 @@ const MentalHealthScreen = () => {
               Breathe in deeply for 4 seconds, hold for 4 seconds, and exhale
               for 4 seconds. Repeat.
             </Text>
+            <Text style={styles.breathingModalTimer}>
+              {breathingTimer} seconds remaining
+            </Text>
           </View>
         </Modal>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Activity Log</Text>
+          <Text style={styles.content}>
+            Log your daily activities and categorize them based on their impact
+            on mood.
+          </Text>
+          <TextInput
+            style={[styles.input, styles.activityInput]}
+            placeholder="Add an activity..."
+            value={activityText}
+            onChangeText={(text) => setActivityText(text)}
+          />
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={handleAddActivity}
+          >
+            <Text style={styles.buttonText}>Add Activity</Text>
+          </TouchableOpacity>
+          {activities.length > 0 && (
+            <ScrollView style={styles.logContainer}>
+              {activities.map((activity) => (
+                <View key={activity.id} style={styles.logItem}>
+                  <Text style={styles.logText}>{activity.text}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          )}
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Gratitude Journal</Text>
+          <Text style={styles.content}>
+            Reflect on positive aspects of your day by jotting down moments of
+            gratitude.
+          </Text>
+          <TextInput
+            style={[styles.input, styles.gratitudeInput]}
+            placeholder="What are you grateful for?"
+            value={gratitudeText}
+            onChangeText={(text) => setGratitudeText(text)}
+          />
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={handleAddGratitudeEntry}
+          >
+            <Text style={styles.buttonText}>Add Entry</Text>
+          </TouchableOpacity>
+          {gratitudeEntries.length > 0 && (
+            <ScrollView style={styles.logContainer}>
+              {gratitudeEntries.map((entry) => (
+                <View key={entry.id} style={styles.logItem}>
+                  <Text style={styles.logText}>{entry.text}</Text>
+                </View>
+              ))}
+            </ScrollView>
+          )}
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#F4F4F4",
-  },
-  scrollContainer: {
-    padding: 20,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#1E90FF",
-  },
-  section: {
-    marginBottom: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 12,
-    color: "#333",
-  },
-  content: {
-    fontSize: 16,
-    lineHeight: 24,
-    color: "#555",
-  },
-  quoteCard: {
-    backgroundColor: "#D1EAF5",
-    borderRadius: 8,
-    padding: 16,
-    marginRight: 16,
-    width: 250,
-  },
-  quoteText: {
-    fontSize: 14,
-    color: "#1E90FF",
-  },
-  emojiSelector: {
-    flexDirection: "row",
-    marginTop: 12,
-    marginBottom: 12,
-  },
-  emojiButton: {
-    padding: 10,
-    marginRight: 10,
-    borderRadius: 8,
-    backgroundColor: "#E0E0E0",
-  },
-  selectedEmojiButton: {
-    backgroundColor: "#1E90FF",
-  },
-  emojiText: {
-    fontSize: 30,
-  },
-  noteContainer: {
-    marginBottom: 12,
-  },
-  noteLabel: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 6,
-    color: "#333",
-  },
-  noteInput: {
-    height: 80,
-  },
-  input: {
-    height: 40,
-    borderColor: "#1E90FF",
-    borderWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 10,
-    color: "#333",
-  },
-  saveButton: {
-    backgroundColor: "#1E90FF",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  saveButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-  },
-  breathingButton: {
-    backgroundColor: "#1E90FF",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  breathingButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-  },
-  breathingExerciseText: {
-    fontSize: 14,
-    color: "#555",
-    marginTop: 8,
-  },
-
-  breathingButton: {
-    backgroundColor: "#1E90FF",
-    padding: 12,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  breathingButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-  },
-  breathingModalContainer: {
-    backgroundColor: "#FFFFFF",
-    padding: 20,
-    borderRadius: 8,
-    alignItems: "center",
-  },
-  breathingModalTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 12,
-    color: "#333",
-  },
-  breathingModalInstructions: {
-    fontSize: 16,
-    color: "#555",
-    textAlign: "center",
-  },
-  startBreathingButton: {
-    backgroundColor: "#1E90FF",
-    padding: 14,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 12,
-  },
-  startBreathingButtonText: {
-    color: "#FFFFFF",
-    fontWeight: "bold",
-  },
-});
 
 export default MentalHealthScreen;

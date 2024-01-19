@@ -146,7 +146,7 @@ const DiaryScreen = () => {
       </View>
       <ScrollView>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <IconButton iconName="calendar" iconSize={24} iconColor="orange" />
+          <IconButton iconName="calendar" iconSize={24} iconColor="#FE89A9" />
           {Platform.OS === "ios" && (
             <TouchableOpacity onPress={showDatepicker}>
               <Text style={styles.datePickerText}>
@@ -194,7 +194,7 @@ const styles = StyleSheet.create({
   datePickerText: {
     fontSize: 18,
     marginBottom: 8,
-    color: "#9595ff",
+    color: "#FE89A9",
     fontWeight: "900",
   },
   questionContainer: {
@@ -212,7 +212,7 @@ const styles = StyleSheet.create({
     height: 100,
   },
   imageButton: {
-    backgroundColor: "#70B7ED",
+    backgroundColor: "#AACFD0",
     padding: 12,
     alignItems: "center",
     marginTop: 16,
@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
   saveButton: {
-    backgroundColor: "#FF89A9",
+    backgroundColor: "#38B5FD",
     padding: 12,
     alignItems: "center",
     marginTop: 16,

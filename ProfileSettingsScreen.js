@@ -45,6 +45,8 @@ const ProfileSettingsScreen = () => {
     setDeleteModalVisible(false);
   };
 
+  const iconColor="#38B5FD"
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -60,21 +62,21 @@ const ProfileSettingsScreen = () => {
           style={styles.settingItem}
           onPress={() => navigateToScreen("AccountSettings")}
         >
-          <MaterialCommunityIcons name="account" size={24} color="#FF89A9" />
+          <MaterialCommunityIcons name="account" size={24} color={iconColor} />
           <Text style={styles.settingText}>Account Settings</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.settingItem}
           onPress={() => navigateToScreen("NotificationSettings")}
         >
-          <MaterialCommunityIcons name="bell" size={24} color="#FF89A9" />
+          <MaterialCommunityIcons name="bell" size={24} color={iconColor} />
           <Text style={styles.settingText}>Notification Settings</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.settingItem}
           onPress={() => navigateToScreen("PrivacySettings")}
         >
-          <MaterialCommunityIcons name="lock" size={24} color="#FF89A9" />
+          <MaterialCommunityIcons name="lock" size={24} color={iconColor} />
           <Text style={styles.settingText}>Privacy Settings</Text>
         </TouchableOpacity>
         <TouchableOpacity
@@ -84,7 +86,7 @@ const ProfileSettingsScreen = () => {
           <MaterialCommunityIcons
             name="language-lua"
             size={24}
-            color="#FF89A9"
+            color={iconColor}
           />
           <Text style={styles.settingText}>Language Settings</Text>
         </TouchableOpacity>
@@ -95,7 +97,7 @@ const ProfileSettingsScreen = () => {
           <MaterialCommunityIcons
             name="theme-light-dark"
             size={24}
-            color="#FF89A9"
+            color={iconColor}
           />
           <Text style={styles.settingText}>Theme Settings</Text>
         </TouchableOpacity>
@@ -106,7 +108,7 @@ const ProfileSettingsScreen = () => {
           <MaterialCommunityIcons
             name="shield-account"
             size={24}
-            color="#FF89A9"
+            color={iconColor}
           />
           <Text style={styles.settingText}>Security Settings</Text>
         </TouchableOpacity>

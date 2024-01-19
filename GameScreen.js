@@ -39,6 +39,12 @@ const GamesScreen = () => {
       description: "Match colors in a fun game.",
       navigateTo: "ColorMatchingGame",
     },
+    {
+      id: "5",
+      title: "Memory Card Game",
+      description: "Test your memory with a classic card-matching game.",
+      navigateTo: "MemoryCardGame",
+    },
   ];
 
   const [attempts, setAttempts] = useState(0);
@@ -191,9 +197,16 @@ const GamesScreen = () => {
     return newMathProblem;
   };
 
+  const handleMemoryCardGame = () => {
+    // Customize the Memory Card Game logic here
+    Alert.alert("Memory Card Game", "Implement your Memory Card Game logic here.", [
+      { text: "OK" },
+    ]);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Games for Autism</Text>
+      <Text style={styles.title}>Games</Text>
       <FlatList
         data={gamesList}
         keyExtractor={(item) => item.id}
@@ -234,7 +247,7 @@ const GamesScreen = () => {
                       keyboardType="numeric"
                       onChangeText={(text) => setWordGuess(text)}
                     />
-                    <Button style={{position:'absolute', bottom:-220, left:0, right:0, backgroundColor:'#72B7EE', color:'white'}} mode="contained" onPress={handleGuessNumberGame}>
+                    <Button style={styles.Button} mode="contained" onPress={handleGuessNumberGame}>
                       Make Guess
                     </Button>
                   </View>
@@ -246,7 +259,7 @@ const GamesScreen = () => {
                       placeholder="Enter your guess"
                       onChangeText={(text) => setWordGuess(text)}
                     />
-                    <Button style={{position:'absolute', bottom:-220, left:0, right:0, backgroundColor:'#72B7EE', color:'white'}} mode="contained" onPress={handleWordGuessGame}>
+                    <Button style={styles.Button} onPress={handleWordGuessGame}>
                       Make Guess
                     </Button>
                   </View>
@@ -260,14 +273,28 @@ const GamesScreen = () => {
                       keyboardType="numeric"
                       onChangeText={(text) => setMathAnswer(text)}
                     />
-                    <Button style={{position:'absolute', bottom:-170, left:0, right:0, backgroundColor:'#72B7EE', color:'white'}} mode="outlined" onPress={handleMathQuizGame}>
+                    <Button style={styles.Button} mode="outlined" onPress={handleMathQuizGame}>
                       Submit Answer
                     </Button>
                   </View>
                 )}
-                <Button style={{marginTop:20, position:'absolute', bottom:20, left:20, right:20,}} mode="outlined" onPress={closeModal}>
+                {selectedGame.navigateTo === "MemoryCardGame" && (
+                  <Button
+                    style={styles.gameButton}
+                    mode="contained"
+                    onPress={handleMemoryCardGame}
+                  >
+                    Start Memory Card Game
+                  </Button>
+                )}
+                <Button
+                  style={styles.closeButton}
+                  mode="outlined"
+                  onPress={closeModal}
+                >
                   Close
                 </Button>
+
               </>
             )}
           </View>
@@ -281,17 +308,17 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#EDE7F6", // Lavender background
+    backgroundColor: "#FFF",
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "#4527A0", // Dark purple text color
+    color: "#38B5FD",
   },
   gameItem: {
     padding: 16,
-    backgroundColor: "#72B7EE", // Peach background
+    backgroundColor: "#A9CFCF", // Peach background
     borderRadius: 8,
     marginVertical: 8,
   },
@@ -315,7 +342,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 10,
     width: "95%",
-    height: 600,
+    height: 300,
   },
   modalTitle: {
     fontSize: 20,
@@ -328,7 +355,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     padding: 8,
     borderColor: "#4527A0",
-    marginTop:200 // Dark purple border color
+    marginTop:20 // Dark purple border color
   },
   mathProblem: {
     fontSize: 40,

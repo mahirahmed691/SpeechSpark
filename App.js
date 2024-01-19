@@ -142,10 +142,11 @@ const TimesOfDayTile = ({ time, navigation, selected, style }) => (
         {
           backgroundColor: selected ? "#FF6347" : time.backgroundColor,
           width: 120,
+          height: 80,
         },
       ]}
     >
-      <FontAwesome5 name={time.icon} size={24} color="#fff" />
+      <FontAwesome5 name={time.icon} size={15} color="#fff" />
       <Text style={styles.tileText} numberOfLines={2}>
         {time.text}
       </Text>
@@ -168,17 +169,18 @@ const TimesOfDayList = ({ time, navigation, selected, style }) => (
         styles.tile,
         {
           backgroundColor: selected ? "#FF6347" : time.backgroundColor,
-          width: "100%",
-          height: 65,
-          flexDirection: "row", justifyContent: "space-around"
+          width: "92%",
+          alignSelf: "center",
+          height: 70,
+          flexDirection: "row",
+          justifyContent: "space-around",
         },
       ]}
     >
-
-        <FontAwesome5 name={time.icon} size={20} color="#fff" />
-        <Text style={styles.listText} numberOfLines={2}>
-          {time.text}
-        </Text>
+      <FontAwesome5 name={time.icon} size={22} color="#fff" />
+      <Text style={styles.listText} numberOfLines={2}>
+        {time.text}
+      </Text>
     </View>
   </TouchableOpacity>
 );
@@ -193,9 +195,8 @@ const Flashcard = ({ text, animatedValue }) => {
         }),
       },
     ],
-    backgroundColor: "#72B7EE",
     width: 150,
-    paddingLeft: 30,
+    paddingLeft: 80,
     alignItems: "center",
   };
 
@@ -239,70 +240,140 @@ const HomeScreen = ({ navigation, animatedValue }) => {
     setNewTileText("");
   };
 
-  const [timesOfDay, setTimesOfDay] = useState([
+  const timesOfDayColors = {
+    morningRoutine: "#AACFD0", // Soft Blue-Green
+    lunchtime: "#AACFD0", // Soft Blue-Green
+    afternoonNap: "#AACFD0", // Soft Blue-Green
+    playtime: "#FFB6C1", // Light Pink
+    studyTime: "#FFB6C1", // Light Pink
+    dinner: "#FFB6C1", // Light Pink
+    eveningRelaxation: "#AACFD0", // Soft Blue-Green
+    gameNight: "#AACFD0", // Soft Blue-Green
+    bedtimeStories: "#AACFD0", // Soft Blue-Green
+    restaurant: "#FFB6C1", // Light Pink
+    carTime: "#FFB6C1", // Light Pink
+    goingOut: "#FFB6C1", // Light Pink
+    holiday: "#AACFD0", // Soft Blue-Green
+    phrases: "#AACFD0", // Soft Blue-Green
+    bathTime: "#AACFD0", // Soft Blue-Green
+  };
+
+  const timesOfDay = [
     {
       id: 1,
       text: "Morning \nRoutine",
       icon: "sun",
-      backgroundColor: "#72B7EE",
+      backgroundColor: timesOfDayColors.morningRoutine,
     },
-    { id: 2, text: "Lunchtime", icon: "utensils", backgroundColor: "#72B7EE" },
+    {
+      id: 2,
+      text: "Lunchtime",
+      icon: "utensils",
+      backgroundColor: timesOfDayColors.lunchtime,
+    },
     {
       id: 3,
       text: "Afternoon \nNap",
       icon: "bed",
-      backgroundColor: "#72B7EE",
+      backgroundColor: timesOfDayColors.afternoonNap,
     },
-    { id: 4, text: "Playtime", icon: "gamepad", backgroundColor: "#FE89A9" },
-    { id: 5, text: "Study Time", icon: "book", backgroundColor: "#FE89A9" },
+    {
+      id: 4,
+      text: "Playtime",
+      icon: "gamepad",
+      backgroundColor: timesOfDayColors.playtime,
+    },
+    {
+      id: 5,
+      text: "Study Time",
+      icon: "book",
+      backgroundColor: timesOfDayColors.studyTime,
+    },
     {
       id: 6,
       text: "Dinner",
       icon: "utensils",
-      backgroundColor: "#FE89A9",
+      backgroundColor: timesOfDayColors.dinner,
     },
     {
       id: 7,
-      text: "Evening\nRelaxation",
+      text: "Evening \nRelaxation",
       icon: "bed",
-      backgroundColor: "#72B7EE",
+      backgroundColor: timesOfDayColors.eveningRelaxation,
     },
-    { id: 8, text: "Game Night", icon: "gamepad", backgroundColor: "#72B7EE" },
+    {
+      id: 8,
+      text: "Game Night",
+      icon: "gamepad",
+      backgroundColor: timesOfDayColors.gameNight,
+    },
     {
       id: 9,
       text: "Bedtime \n Stories",
       icon: "book",
-      backgroundColor: "#72B7EE",
+      backgroundColor: timesOfDayColors.bedtimeStories,
     },
-    { id: 10, text: "Restaurant", icon: "table", backgroundColor: "#FE89A9" },
-    { id: 11, text: "Car Time", icon: "car", backgroundColor: "#FE89A9" },
-    { id: 12, text: "Going out", icon: "tree", backgroundColor: "#FE89A9" },
-    { id: 13, text: "Holiday", icon: "plane", backgroundColor: "#72B7EE" },
-    { id: 14, text: "Phrases", icon: "sms", backgroundColor: "#72B7EE" },
-    { id: 15, text: "Bath time", icon: "bath", backgroundColor: "#72B7EE" },
-  ]);
+    {
+      id: 10,
+      text: "Restaurant",
+      icon: "table",
+      backgroundColor: timesOfDayColors.restaurant,
+    },
+    {
+      id: 11,
+      text: "Car Time",
+      icon: "car",
+      backgroundColor: timesOfDayColors.carTime,
+    },
+    {
+      id: 12,
+      text: "Going out",
+      icon: "tree",
+      backgroundColor: timesOfDayColors.goingOut,
+    },
+    {
+      id: 13,
+      text: "Holiday",
+      icon: "plane",
+      backgroundColor: timesOfDayColors.holiday,
+    },
+    {
+      id: 14,
+      text: "Phrases",
+      icon: "sms",
+      backgroundColor: timesOfDayColors.phrases,
+    },
+    {
+      id: 15,
+      text: "Bath time",
+      icon: "bath",
+      backgroundColor: timesOfDayColors.bathTime,
+    },
+  ];
 
   const [searchText, setSearchText] = useState("");
 
   const getCurrentTimeOfDay = () => {
     const currentHour = new Date().getHours();
 
-    if (currentHour >= 7 && currentHour < 9) {
-      return "Morning Routine";
-    } else if (currentHour >= 12 && currentHour < 14) {
-      return "Lunchtime";
+    if (currentHour >= 8 && currentHour < 9) {
+      return "🌅";
+    } else if (currentHour >=9 && currentHour < 12) {
+      return "☀️";
+    } else if (currentHour >= 12 && currentHour < 1) {
+      return "🕛";
+    } else if (currentHour >= 1 && currentHour < 14) {
+      return "🍔";
     } else if (currentHour >= 14 && currentHour < 15) {
-      return "Afternoon Nap";
-    } else if (currentHour >= 14 && currentHour < 15) {
-      return "Playtime";
+      return "🎮";
     } else if (currentHour >= 16 && currentHour < 17) {
-      return "Study Time";
+      return "📚";
     } else if (currentHour >= 18 && currentHour < 19) {
-      return "Dinner";
+      return "🍽️";
     } else if (currentHour >= 20 || (currentHour >= 0 && currentHour < 6)) {
-      return "Bedtime";
+      return "😴";
     } else {
-      return "FreeTime";
+  return "🆓";
     }
   };
 
@@ -345,9 +416,11 @@ const HomeScreen = ({ navigation, animatedValue }) => {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          backgroundColor: "#F0f0f0",
+          backgroundColor: "#FFF",
           justifyContent: "space-around",
+          marginVertical:'middle',
           flexDirection: "row",
+          margin:-10,
         }}
       >
         <Image
@@ -365,10 +438,11 @@ const HomeScreen = ({ navigation, animatedValue }) => {
         >
           <Text
             style={{
-              fontSize: 15,
+              fontSize: 20,
               textAlign: "center",
               fontWeight: "bold",
-              color: "#000",
+              color: "#AACFD0",
+              marginLeft:30
             }}
           >
             {currentTime}
@@ -405,7 +479,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
                 time={time}
                 navigation={navigation}
                 selected={time.text === currentTimeOfDay}
-                style={{ justifyContent: "flex-start", width: "33%" }} // Keep existing style for tile layout
+                style={{ justifyContent: "flex-start", width: "33%" }} 
               />
             ))}
           </View>
@@ -482,29 +556,26 @@ const App = () => {
               iconName = focused ? "cards" : "cards-outline";
             } else if (route.name === "Flashcard") {
               iconName = focused ? "flash" : "flash-outline";
-            } else if (route.name === "Profile") {
+            } else if (route.name === "Settings") {
               iconName = focused ? "cog" : "cog-outline";
             } else if (route.name === "Diary") {
               iconName = focused ? "book" : "book-outline";
-            }
-            if (route.name === "Games") {
+            } else if (route.name === "Games") {
               iconName = focused
                 ? "gamepad-variant"
                 : "gamepad-variant-outline";
+            } else if (route.name === "Health") {
+              iconName = focused ? "brain" : "brain";
             }
 
             return (
-              <MaterialCommunityIcons
-                name={iconName}
-                size={size}
-                color={color}
-              />
+              <MaterialCommunityIcons name={iconName} size={25} color={color} />
             );
           },
         })}
         tabBarOptions={{
           activeTintColor: "#A6E1E4",
-          inactiveTintColor: "#FE89A9",
+          inactiveTintColor: "#38B5FD",
         }}
       >
         <Tab.Screen name="Home">
@@ -518,18 +589,8 @@ const App = () => {
         />
         <Tab.Screen name="Diary" component={DiaryScreen} />
         <Tab.Screen name="Games" component={GamesScreen} />
-
-        <Tab.Screen
-          name="MentalHealth"
-          component={MentalHealthScreen} // Make sure to create this component
-          options={{
-            tabBarLabel: "Health",
-            tabBarIcon: ({ color, size }) => (
-              <MaterialCommunityIcons name="brain" size={size} color={color} />
-            ),
-          }}
-        />
-        <Tab.Screen name="Profile" component={ProfileSettingsScreen} />
+        <Tab.Screen name="Health" component={MentalHealthScreen} />
+        <Tab.Screen name="Settings" component={ProfileSettingsScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );

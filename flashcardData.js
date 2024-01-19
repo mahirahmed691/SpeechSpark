@@ -1,7 +1,5 @@
-// flashcardData.js
-
 export const flashcardsData = {
-  "Morning \n Routine": [
+  "Morning \nRoutine": [
     {
       id: 1,
       image:
@@ -41,7 +39,7 @@ export const flashcardsData = {
       title: "I want Mac & Cheese",
     },
   ],
-  "Afternoon Nap": [
+  "Afternoon \nNap": [
     {
       id: 1,
       image:
@@ -101,7 +99,7 @@ export const flashcardsData = {
       title: "I want to do draw",
     },
   ],
-  Dinner: [
+  "Dinner": [
     {
       id: 1,
       image:
@@ -121,7 +119,7 @@ export const flashcardsData = {
       title: "I want a drink",
     },
   ],
-  "Evening Relaxation": [
+  "Evening \nRelaxation": [
     {
       id: 1,
       image:
