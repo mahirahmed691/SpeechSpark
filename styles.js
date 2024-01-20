@@ -6,7 +6,7 @@ const isIpad = Platform.OS === 'ios' && windowWidth > 768;
 const colors = {
   primaryBackground: '#FFF', // Light Blue
   tileBackground: '#FFFFFF', // White
-  cardText: '#8666A0', // Muted Purple
+  cardText: '#38B5FD', // Muted Purple
   shadowColor: 'rgba(173, 216, 230, 0.8)', // Light Turquoise
   visualFlashcardBackground: '#F0F8FF', // Alice Blue
   expandedFlashcardTitleTextShadow: 'rgba(0, 125, 125, 1)',
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
   visualFlashcardTitle: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#000',
   },
   expandedFlashcardImage: {
     flex: 1,
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     fontSize: isIpad ? 50 : 25,
     top: isIpad ? 180 : 120,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#000',
     textShadowColor: colors.expandedFlashcardTitleTextShadow,
     textShadowOffset: { width: 1, height: 2 },
     textShadowRadius: 5,
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   saveButton: {
-    backgroundColor: "#AB93A9",
+    backgroundColor: "#38B5FD",
     padding: 14,
     borderRadius: 8,
     alignItems: "center",

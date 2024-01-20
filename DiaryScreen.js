@@ -4,69 +4,124 @@ import {
   ScrollView,
   Text,
   SafeAreaView,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
+  TextInput,
   Platform,
+  Image, // Import Image component from react-native
 } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import RadioGroup from "react-native-radio-buttons-group";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
+import * as Location from "expo-location";
+import axios from "axios";
 
 const DiaryScreen = () => {
-  const [questions, setQuestions] = useState([
-    { question: "How was your day?", type: "text" },
-    { question: "What made you happy today?", type: "text" },
-    { question: "Any challenges you faced?", type: "text" },
+  const exampleQuestions = [
     {
-      question: "How do you feel today?",
+      id: 1,
+      text: "How did you feel today?",
+      type: "text",
+    },
+    {
+      id: 2,
+      text: "What was the highlight of your day?",
+      type: "text",
+    },
+    {
+      id: 3,
+      text: "Rate your overall mood on a scale from 1 to 10.",
       type: "radio",
       options: [
-        { label: "😄", value: "Happy" },
-        { label: "😢", value: "Sad" },
-        { label: "😐", value: "Neutral" },
-        { label: "😠", value: "Angry" },
+        { label: "1", value: 1 },
+        { label: "2", value: 2 },
+        { label: "3", value: 3 },
+        { label: "4", value: 4 },
+        { label: "5", value: 5 },
+        { label: "6", value: 6 },
+        { label: "7", value: 7 },
+        { label: "8", value: 8 },
+        { label: "9", value: 9 },
+        { label: "10", value: 10 },
       ],
     },
-  ]);
+    {
+      id: 4,
+      text: "Did you achieve your goals for the day?",
+      type: "radio",
+      options: [
+        { label: "Yes", value: "yes" },
+        { label: "No", value: "no" },
+      ],
+    },
+    {
+      id: 5,
+      text: "What is one thing you learned today?",
+      type: "text",
+    },
+    // Add more questions as needed
+  ];
+  const [diaryData, setDiaryData] = useState({
+    selectedDate: new Date(),
+    isPlaying: false,
+    questions: exampleQuestions,
+    responses: [],
+  });
+  const [recording, setRecording] = useState();
+  const [sound, setSound] = useState();
 
-  const [responses, setResponses] = useState(Array(questions.length).fill(""));
-  const [radioResponses, setRadioResponses] = useState(
-    Array(questions.length).fill(null)
-  );
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(null);
+  useEffect(() => {
+    if (diaryData.location) {
+      convertLocationToCity();
+    }
+  }, [diaryData.location]);
+
+  useEffect(() => {
+    // Assuming you have an API endpoint that provides questions
+    const fetchQuestions = async () => {
+      try {
+        const response = await axios.get("your_questions_api_endpoint");
+        const questions = response.data; // Adjust this based on your API response structure
+        setDiaryData({ ...diaryData, questions });
+      } catch (error) {
+        console.error("Error fetching questions", error);
+      }
+    };
+
+    fetchQuestions();
+  }, []);
 
   const handleResponseChange = (index, response) => {
-    const newResponses = [...responses];
+    const newResponses = [...diaryData.responses];
     newResponses[index] = response;
-    setResponses(newResponses);
+    setDiaryData({ ...diaryData, responses: newResponses });
   };
 
   const handleRadioResponseChange = (index, response) => {
-    const newRadioResponses = [...radioResponses];
+    const newRadioResponses = [...diaryData.responses];
     newRadioResponses[index] = response;
-    setRadioResponses(newRadioResponses);
+    setDiaryData({ ...diaryData, responses: newRadioResponses });
   };
 
   const renderQuestions = () => {
-    return questions.map((question, index) => (
-      <View key={index} style={styles.questionContainer}>
-        <Text style={styles.questionText}>{question.question}</Text>
+    return diaryData.questions.map((question, index) => (
+      <View key={question.id} style={styles.questionContainer}>
+        <Text style={styles.questionText}>{question.text}</Text>
         {question.type === "text" ? (
           <TextInput
-            style={styles.responseInput}
-            value={responses[index]}
-            onChangeText={(text) => handleResponseChange(index, text)}
+            style={styles.textInput}
             placeholder="Type your response here"
-            multiline
+            value={diaryData.responses[index]}
+            onChangeText={(value) => handleResponseChange(index, value)}
           />
         ) : question.type === "radio" ? (
           <RadioGroup
-            radioButtons={question.options}
+            radioButtons={question.options.map((option) => ({
+              ...option,
+              selected: diaryData.responses[index]?.value === option.value,
+            }))}
             onPress={(value) => handleRadioResponseChange(index, value)}
             layout="row"
             containerStyle={{ marginTop: 8 }}
@@ -82,16 +137,20 @@ const DiaryScreen = () => {
     buttonText,
     iconSize,
     iconColor,
+    buttonColor,
   }) => {
     return (
-      <TouchableOpacity onPress={onPress} style={styles.buttonContainer}>
+      <TouchableOpacity
+        onPress={onPress}
+        style={[styles.buttonContainer, { backgroundColor: buttonColor }]}
+      >
         <Icon
           name={iconName}
           size={iconSize}
           color={iconColor}
           style={styles.icon}
         />
-        <Text style={styles.buttonText}>{buttonText}</Text>
+        <Text style={styles.datePickerText}>{buttonText}</Text>
       </TouchableOpacity>
     );
   };
@@ -114,53 +173,192 @@ const DiaryScreen = () => {
     console.log("ImagePicker result:", result);
 
     if (!result.cancelled) {
-      setSelectedImage(result.uri);
+      setDiaryData({ ...diaryData, selectedImage: result.uri });
+    }
+  };
+
+  const startRecording = async () => {
+    try {
+      const { granted } = await Audio.requestPermissionsAsync();
+
+      if (!granted) {
+        alert(
+          "Sorry, we need audio recording permissions to make this work!"
+        );
+        return;
+      }
+
+      // Set audio mode
+      await Audio.setAudioModeAsync({
+        allowsRecordingIOS: true,
+        playsInSilentModeIOS: true,
+      });
+
+      const recording = new Audio.Recording();
+      await recording.prepareToRecordAsync(
+        Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
+      );
+      await recording.startAsync();
+      setRecording(recording);
+    } catch (error) {
+      console.error("Error starting recording", error);
+    }
+  };
+
+  const stopRecording = async () => {
+    try {
+      if (recording) {
+        await recording.stopAndUnloadAsync();
+        const uri = recording.getURI();
+        setDiaryData({ ...diaryData, audioUri: uri });
+        setRecording(null); // Reset the recording state
+      } else {
+        console.warn("No recording in progress to stop.");
+      }
+    } catch (error) {
+      console.error("Error stopping recording", error);
+    }
+  };
+
+  const playRecording = async () => {
+    try {
+      if (sound) {
+        // Use the getProgressAsync function to check the status of the audio
+        const status = await sound.getStatusAsync();
+        if (!status.isLoaded) {
+          console.warn("Sound is not loaded.");
+          return;
+        }
+
+        if (status.isLoaded && !status.isPlaying) {
+          await sound.playAsync();
+          setDiaryData({ ...diaryData, isPlaying: true });
+        } else {
+          console.warn("Audio is already playing.");
+        }
+      }
+    } catch (error) {
+      console.error("Error playing recording", error);
+    }
+  };
+
+  const stopPlayback = async () => {
+    try {
+      if (sound) {
+        await sound.stopAsync();
+        setDiaryData({ ...diaryData, isPlaying: false });
+      }
+    } catch (error) {
+      console.error("Error stopping playback", error);
+    }
+  };
+
+  const renderPlaybackButton = () => {
+    if (diaryData.isPlaying) {
+      return (
+        <TouchableOpacity style={styles.buttonContainer} onPress={stopPlayback}>
+          <Icon name="stop" size={20} color="#FE89A9" style={styles.icon} />
+          <Text style={styles.buttonText}>Stop Playback</Text>
+        </TouchableOpacity>
+      );
+    } else {
+      return (
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={playRecording}
+        >
+          <Icon ame="play" size={20} color="#FE89A9" style={styles.icon} />
+        </TouchableOpacity>
+      );
+    }
+  };
+
+  const convertLocationToCity = async () => {
+    const { coords } = diaryData.location;
+    const apiKey = "e0b0f59d76ea4bdb847dc83c9c1f6d06"; // Replace with your OpenCage API key
+    const apiUrl = `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${coords.latitude}+${coords.longitude}&pretty=1`;
+
+    try {
+      const response = await axios.get(apiUrl);
+      const city = response.data.results[0].components.city;
+      setDiaryData({ ...diaryData, city });
+    } catch (error) {
+      console.error("Error converting location to city", error);
+    }
+  };
+
+  const captureLocation = async () => {
+    try {
+      const { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need location permissions to make this work!");
+        return;
+      }
+
+      const location = await Location.getCurrentPositionAsync({});
+      setDiaryData({ ...diaryData, location });
+    } catch (error) {
+      console.error("Error capturing location", error);
     }
   };
 
   const saveDiaryEntry = () => {
-    console.log("Date:", selectedDate.toISOString());
-    console.log("Text Responses:", responses);
-    console.log("Radio Responses:", radioResponses);
-    console.log("Selected Image:", selectedImage);
-    console.log("Audio URI:", audioUri);
-    console.log("Location:", location);
+    console.log("Date:", diaryData.selectedDate.toISOString());
+    console.log("Text Responses:", diaryData.responses);
+    console.log("Selected Image:", diaryData.selectedImage);
+    console.log("Audio URI:", diaryData.audioUri);
+    console.log("Location:", diaryData.location);
+    console.log("City:", diaryData.city);
   };
 
   const onDateChange = (event, date) => {
-    setShowDatePicker(Platform.OS === "ios");
-    if (date) {
-      setSelectedDate(date);
-    }
+    setDiaryData({
+      ...diaryData,
+      showDatePicker: Platform.OS === "ios",
+      selectedDate: date || diaryData.selectedDate,
+    });
   };
 
   const showDatepicker = () => {
-    setShowDatePicker(true);
+    setDiaryData({ ...diaryData, showDatePicker: true });
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
         <Text style={styles.headerText}>My Digital Diary</Text>
-        <IconButton iconName="microphone" iconColor="orange" iconSize={22} />
+        <View style={{ flexDirection: "row" }}>
+          <IconButton
+            iconName="map-marker"
+            iconSize={20}
+            iconColor="#FF89A9"
+            onPress={captureLocation}
+            buttonText={diaryData.city}
+          />
+            <IconButton
+              iconName={recording ? "stop" : "microphone"}
+              iconColor="#FE89A9"
+              iconSize={20}
+            />
+            {renderPlaybackButton()}
+        </View>
       </View>
+
       <ScrollView>
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <IconButton iconName="calendar" iconSize={24} iconColor="#FE89A9" />
-          {Platform.OS === "ios" && (
-            <TouchableOpacity onPress={showDatepicker}>
-              <Text style={styles.datePickerText}>
-                {selectedDate.toDateString()}
-              </Text>
-            </TouchableOpacity>
-          )}
-
-          {showDatePicker && (
+          <IconButton
+            iconName="calendar"
+            iconSize={20}
+            iconColor="#FE89A9"
+            onPress={showDatepicker}
+            buttonText={diaryData.selectedDate.toDateString()}
+          />
+          {diaryData.showDatePicker && (
             <DateTimePicker
-              value={selectedDate}
+              value={diaryData.selectedDate}
               mode="date"
-              display="default"
               onChange={onDateChange}
+              color={styles.datePickerText}
             />
           )}
         </View>
@@ -168,8 +366,11 @@ const DiaryScreen = () => {
         <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
           <Text style={styles.buttonText}>Pick an Image</Text>
         </TouchableOpacity>
-        {selectedImage && (
-          <Image source={{ uri: selectedImage }} style={styles.selectedImage} />
+        {diaryData.selectedImage && (
+          <Image
+            source={{ uri: diaryData.selectedImage }}
+            style={styles.selectedImage}
+          />
         )}
         <TouchableOpacity style={styles.saveButton} onPress={saveDiaryEntry}>
           <Text style={styles.saveButtonText}>Save Entry</Text>
@@ -186,16 +387,15 @@ const styles = StyleSheet.create({
     margin: 20,
   },
   headerText: {
-    fontSize: 30,
+    fontSize: 15,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "black",
+    color: "#000", // Black text color
   },
   datePickerText: {
     fontSize: 18,
-    marginBottom: 8,
-    color: "#FE89A9",
-    fontWeight: "900",
+    color: "#38B5FD",
+    fontWeight: "800",
   },
   questionContainer: {
     marginBottom: 16,
@@ -203,13 +403,14 @@ const styles = StyleSheet.create({
   questionText: {
     fontSize: 18,
     marginBottom: 8,
+    color: "#000", // Black text color
   },
-  responseInput: {
+  textInput: {
+    height: 40,
+    borderColor: "gray",
     borderWidth: 1,
-    borderColor: "#ccc",
-    borderRadius: 2,
-    padding: 8,
-    height: 100,
+    marginTop: 8,
+    paddingLeft: 8,
   },
   imageButton: {
     backgroundColor: "#AACFD0",
@@ -223,16 +424,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     borderRadius: 4,
   },
-  audioButton: {
-    backgroundColor: "#FF89A9",
-    padding: 12,
-    alignItems: "center",
-    marginTop: 16,
-  },
-  audioUriText: {
-    fontSize: 14,
-    marginTop: 8,
-  },
   saveButton: {
     backgroundColor: "#38B5FD",
     padding: 12,
@@ -240,12 +431,22 @@ const styles = StyleSheet.create({
     marginTop: 16,
   },
   saveButtonText: {
-    color: "#fff",
+    color: "#FFF", // White text color
     fontSize: 16,
   },
   buttonText: {
-    color: "#fff",
+    color: "#FFF", // White text color
     fontSize: 16,
+  },
+  icon: {
+    marginRight: 8,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: 16,
+    borderRadius: 8,
+    paddingVertical: 8,
   },
 });
 

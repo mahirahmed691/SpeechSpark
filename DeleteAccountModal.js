@@ -7,7 +7,7 @@ const DeleteAccountModal = ({ visible, onClose, onDeleteAccount }) => {
     <Modal animationType="slide" transparent={true} visible={visible}>
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
-          <Text style={styles.modalText}>Are you sure you want to delete your account?</Text>
+          <Text style={styles.modalText}>Are you sure you want to delete your account (Data will be lost).</Text>
           <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
             <Text style={styles.buttonText}>Cancel</Text>
           </TouchableOpacity>
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: "#FE89A9",
+    backgroundColor: "#A9CFCF",
     padding: 20,
     borderRadius: 12,
     alignItems: "center",
@@ -38,11 +38,11 @@ const styles = StyleSheet.create({
     fontSize: 18,
     marginBottom: 20,
     textAlign: "center",
-    color: "#fff",
+    color: "#000",
     fontWeight:'600'
   },
   cancelButton: {
-    backgroundColor: "#FFF",
+    backgroundColor: "#38B5FD",
     padding: 15,
     borderRadius: 12,
     alignItems: "center",
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     marginBottom:10
   },
   deleteButton: {
-    backgroundColor: "red",
+    backgroundColor: "#FE89A9",
     padding: 15,
     borderRadius: 12,
     alignItems: "center",
