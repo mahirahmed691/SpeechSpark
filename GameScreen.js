@@ -18,7 +18,8 @@ const GamesScreen = () => {
     {
       id: "1",
       title: "Guess the Number",
-      description: "Try to guess the randomly generated number between 1 and 100.",
+      description:
+        "Try to guess the randomly generated number between 1 and 100.",
       navigateTo: "GuessNumberGame",
     },
     {
@@ -199,14 +200,16 @@ const GamesScreen = () => {
 
   const handleMemoryCardGame = () => {
     // Customize the Memory Card Game logic here
-    Alert.alert("Memory Card Game", "Implement your Memory Card Game logic here.", [
-      { text: "OK" },
-    ]);
+    Alert.alert(
+      "Memory Card Game",
+      "Implement your Memory Card Game logic here.",
+      [{ text: "OK" }]
+    );
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Games</Text>
+      <Text style={styles.title}>Games 🎮</Text>
       <FlatList
         data={gamesList}
         keyExtractor={(item) => item.id}
@@ -247,7 +250,11 @@ const GamesScreen = () => {
                       keyboardType="numeric"
                       onChangeText={(text) => setWordGuess(text)}
                     />
-                    <Button style={styles.Button} mode="contained" onPress={handleGuessNumberGame}>
+                    <Button
+                      style={styles.Button}
+                      mode="contained"
+                      onPress={handleGuessNumberGame}
+                    >
                       Make Guess
                     </Button>
                   </View>
@@ -273,7 +280,11 @@ const GamesScreen = () => {
                       keyboardType="numeric"
                       onChangeText={(text) => setMathAnswer(text)}
                     />
-                    <Button style={styles.Button} mode="outlined" onPress={handleMathQuizGame}>
+                    <Button
+                      style={styles.Button}
+                      mode="outlined"
+                      onPress={handleMathQuizGame}
+                    >
                       Submit Answer
                     </Button>
                   </View>
@@ -294,7 +305,6 @@ const GamesScreen = () => {
                 >
                   Close
                 </Button>
-
               </>
             )}
           </View>
@@ -308,28 +318,28 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#FFF",
+    backgroundColor: "#FFF", // Dark background
   },
   title: {
-    fontSize: 24,
+    fontSize: 30,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "#38B5FD",
+    color: "#38B5FD", // Gold text color
   },
   gameItem: {
     padding: 16,
-    backgroundColor: "#A9CFCF", // Peach background
-    borderRadius: 8,
+    backgroundColor: "#A9CFCF", // Green background
+    borderRadius: 12,
     marginVertical: 8,
   },
   gameTitle: {
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: "bold",
-    color: "#FFF", // Dark purple text color
+    color: "#FFF", // White text color
   },
   gameDescription: {
     marginTop: 8,
-    color: "#FFF", // Dark gray text color
+    color: "#FFF", // Light gray text color
   },
   modalContainer: {
     flex: 1,
@@ -338,32 +348,33 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
   modalContent: {
-    backgroundColor: "#FFF",
+    backgroundColor: "#212121", // Darker background
     padding: 20,
-    borderRadius: 10,
+    borderRadius: 12,
     width: "95%",
     height: 300,
   },
   modalTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     marginBottom: 16,
-    color: "#4527A0", // Dark purple text color
+    color: "#FFD700", // Gold text color
   },
   input: {
     borderBottomWidth: 2,
     marginBottom: 10,
     padding: 8,
-    borderColor: "#4527A0",
-    marginTop:20 // Dark purple border color
+    borderColor: "#FFD700", // Gold border color
+    marginTop: 20,
+    color: "#FFF", // White text color
   },
   mathProblem: {
     fontSize: 40,
     marginBottom: 16,
-    color: "#FFF",
-    backgroundColor: "#f0f0f0", 
+    color: "#212121", // Darker text color
+    backgroundColor: "#FFD700", // Gold background
     padding: 10,
-    borderRadius: 8,
+    borderRadius: 12,
   },
 });
 

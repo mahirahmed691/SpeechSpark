@@ -13,6 +13,7 @@ import {
   ScrollView,
   Dimensions,
   TextInput,
+  Platform,
 } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { NavigationContainer } from "@react-navigation/native";
@@ -24,8 +25,12 @@ import ProfileSettingsScreen from "./ProfileSettingsScreen";
 import MentalHealthScreen from "./MentalHealthScreen";
 import GamesScreen from "./GameScreen";
 import DiaryScreen from "./DiaryScreen";
+import LoginScreen from "./LoginScreen";
+import RegisterScreen from "./RegisterScreen";
+import AuthStack from "./AuthStack";
 import Constants from "expo-constants";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { Device } from "expo-device";
 
 import styles from "./styles";
 import ThumbsUpDown from "./ThumbsUpDown";
@@ -33,9 +38,9 @@ import ThumbsUpDown from "./ThumbsUpDown";
 const windowWidth = Dimensions.get("window").width;
 
 const FlashcardScreen = ({ route, navigation }) => {
-  const isIpad =
-    Constants.platform?.ios?.model?.toLowerCase?.().includes?.("ipad") ?? false;
   const { params } = route;
+
+  const isIpad = Platform.OS === "ios" && Platform.isPad;
 
   if (!params || !params.title || !flashcardsData) {
     return (
@@ -96,7 +101,7 @@ const ExpandedFlashcardScreen = ({ route }) => {
   const { item } = route.params || {};
 
   const isIpad =
-    Constants.platform?.ios?.model?.toLowerCase?.().includes?.("ipad") ?? false;
+    Constants?.platform?.ios?.toLowerCase?.().includes?.("ipad") ?? false;
   if (!item) {
     return (
       <SafeAreaView style={styles.ExpandContainer}>
@@ -196,7 +201,7 @@ const Flashcard = ({ text, animatedValue }) => {
       },
     ],
     width: 150,
-    paddingLeft: 80,
+    paddingLeft: 70,
     alignItems: "center",
   };
 
@@ -358,7 +363,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
 
     if (currentHour >= 8 && currentHour < 9) {
       return "🌅";
-    } else if (currentHour >=9 && currentHour < 12) {
+    } else if (currentHour >= 9 && currentHour < 12) {
       return "☀️";
     } else if (currentHour >= 12 && currentHour < 1) {
       return "🕛";
@@ -373,7 +378,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
     } else if (currentHour >= 20 || (currentHour >= 0 && currentHour < 6)) {
       return "😴";
     } else {
-  return "🆓";
+      return "🆓";
     }
   };
 
@@ -418,9 +423,9 @@ const HomeScreen = ({ navigation, animatedValue }) => {
         style={{
           backgroundColor: "#FFF",
           justifyContent: "space-around",
-          marginVertical:'middle',
+          marginVertical: "middle",
           flexDirection: "row",
-          margin:-10,
+          margin: 0,
         }}
       >
         <Image
@@ -431,7 +436,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
         <View
           style={{
             alignSelf: "center",
-            paddingTop: 28,
+            paddingTop: 8,
             width: "33%",
             height: 80,
           }}
@@ -442,7 +447,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
               textAlign: "center",
               fontWeight: "bold",
               color: "#AACFD0",
-              marginLeft:30
+              marginLeft: 30,
             }}
           >
             {currentTime}
@@ -453,7 +458,9 @@ const HomeScreen = ({ navigation, animatedValue }) => {
       <View style={styles.searchContainer}>
         <TextInput
           style={styles.searchInput}
+          color="#FFF"
           placeholder="Search categories..."
+          placeholderTextColor="white"
           onChangeText={setSearchText}
           value={searchText}
         />
@@ -479,7 +486,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
                 time={time}
                 navigation={navigation}
                 selected={time.text === currentTimeOfDay}
-                style={{ justifyContent: "flex-start", width: "33%" }} 
+                style={{ justifyContent: "flex-start", width: "33%" }}
               />
             ))}
           </View>
@@ -488,7 +495,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
 
       <StatusBar style="auto" />
       <View style={{ flexDirection: "row" }}>
-        <View style={{ width: "50%", marginBottom: -20, marginTop: 20 }}>
+        <View style={{ width: "50%", marginTop: 20 }}>
           <TouchableOpacity
             style={styles.buttonContainer}
             onPress={handleCreateTile}
@@ -539,17 +546,17 @@ const HomeScreen = ({ navigation, animatedValue }) => {
   );
 };
 
-const App = () => {
+const MainStack = () => {
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   return (
-    <NavigationContainer>
+    <>
+      <StatusBar barStyle="dark-content" />
       <Tab.Navigator
         screenOptions={({ route }) => ({
           headerShown: false,
           tabBarIcon: ({ focused, color, size }) => {
             let iconName;
-
             if (route.name === "Home") {
               iconName = focused ? "home" : "home-outline";
             } else if (route.name === "Deck") {
@@ -569,7 +576,11 @@ const App = () => {
             }
 
             return (
-              <MaterialCommunityIcons name={iconName} size={25} color={color} />
+              <MaterialCommunityIcons
+                name={iconName}
+                size={size}
+                color={color}
+              />
             );
           },
         })}
@@ -582,16 +593,25 @@ const App = () => {
           {(props) => <HomeScreen {...props} animatedValue={animatedValue} />}
         </Tab.Screen>
         <Tab.Screen name="Deck" component={FlashcardScreen} />
-        <Tab.Screen
-          name="Flashcard"
-          component={ExpandedFlashcardScreen}
-          options={{ tabBarVisible: false }}
-        />
+        <Tab.Screen name="Flashcard" component={ExpandedFlashcardScreen} />
         <Tab.Screen name="Diary" component={DiaryScreen} />
-        <Tab.Screen name="Games" component={GamesScreen} />
         <Tab.Screen name="Health" component={MentalHealthScreen} />
+        <Tab.Screen name="Games" component={GamesScreen} />
         <Tab.Screen name="Settings" component={ProfileSettingsScreen} />
       </Tab.Navigator>
+    </>
+  );
+};
+
+const App = () => {
+  const animatedValue = useRef(new Animated.Value(0)).current;
+
+  const isAuthenticated = false; // Replace with your authentication logic
+
+  return (
+    <NavigationContainer>
+      {/* {isAuthenticated ? <MainStack /> : <AuthStack />} */}
+      <MainStack />
     </NavigationContainer>
   );
 };

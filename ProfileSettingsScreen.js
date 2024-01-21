@@ -40,7 +40,6 @@ const ProfileSettingsScreen = () => {
   };
 
   const handleDeleteAccount = () => {
-    // Implement the logic to delete the account
     console.log("Account deleted");
     setDeleteModalVisible(false);
   };

@@ -157,7 +157,7 @@ const MentalHealthScreen = () => {
         ref={scrollViewRef}
         contentContainerStyle={styles.scrollContainer}
       >
-        <Text style={styles.title}>Mental Well-Being</Text>
+        <Text style={styles.title}>Mental Wellbeing</Text>
         <View style={styles.sectionNavigator}>
           <SectionNavigator
             onPress={() => scrollToSection(1)}

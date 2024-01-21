@@ -35,9 +35,9 @@ const ThemeSettingsScreen = () => {
       <View style={styles.settingItem}>
         <Text style={styles.settingLabel}>Dark Theme</Text>
         <Switch
-          trackColor={{ false: "#767577", true: "#81b0ff" }}
-          thumbColor={isDarkTheme ? "#f5dd4b" : "#f4f3f4"}
-          ios_backgroundColor="#3e3e3e"
+          trackColor={{ false: "#FFF", true: "#38B5FD" }}
+          thumbColor={isDarkTheme ? "#FFF" : "#38B5FD"}
+          ios_backgroundColor="#000"
           onValueChange={handleThemeChange}
           value={isDarkTheme}
         />
@@ -126,7 +126,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: "80%",
     alignSelf: "center",
-    backgroundColor: "#007BFF",
+    backgroundColor: "#38B5FD",
     padding: 15,
     borderRadius: 8,
     alignItems: "center",

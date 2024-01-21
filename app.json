@@ -5,11 +5,11 @@
     "version": "1.0.2",
     "orientation": "portrait",
     "icon": "./assets/Logo.png",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "dark",
     "splash": {
       "image": "./assets/Logo.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#A9CECF"
     },
     "updates": {
       "fallbackToCacheTimeout": 0,

@@ -1,7 +1,11 @@
-import { initializeApp } from 'firebase/app';
-import 'firebase/firestore';
-import analytics from '@react-native-firebase/analytics';
+// Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
 
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
   apiKey: "AIzaSyAl5fPjhvCJSD4uBWn79K9vIjMnqE9yQkc",
   authDomain: "speechspark-3d6a1.firebaseapp.com",
@@ -12,12 +16,6 @@ const firebaseConfig = {
   measurementId: "G-LGQY17CGD7"
 };
 
-useEffect(() => {
-  // Set analytics screen name on component mount
-  analytics().setCurrentScreen('HomeScreen');
-}, []);
-
+// Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = app.firestore();
-
-export default db;
+const analytics = getAnalytics(app);

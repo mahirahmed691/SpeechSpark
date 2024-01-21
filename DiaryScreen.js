@@ -6,12 +6,12 @@ import {
   SafeAreaView,
   TouchableOpacity,
   StyleSheet,
-  TextInput,
   Platform,
   Image, // Import Image component from react-native
 } from "react-native";
+import { TextInput } from "react-native-paper";
+import Slider from "@react-native-community/slider";
 import Icon from "react-native-vector-icons/FontAwesome";
-import RadioGroup from "react-native-radio-buttons-group";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
 import { Audio } from "expo-av";
@@ -61,7 +61,6 @@ const DiaryScreen = () => {
       text: "What is one thing you learned today?",
       type: "text",
     },
-    // Add more questions as needed
   ];
   const [diaryData, setDiaryData] = useState({
     selectedDate: new Date(),
@@ -78,21 +77,6 @@ const DiaryScreen = () => {
     }
   }, [diaryData.location]);
 
-  useEffect(() => {
-    // Assuming you have an API endpoint that provides questions
-    const fetchQuestions = async () => {
-      try {
-        const response = await axios.get("your_questions_api_endpoint");
-        const questions = response.data; // Adjust this based on your API response structure
-        setDiaryData({ ...diaryData, questions });
-      } catch (error) {
-        console.error("Error fetching questions", error);
-      }
-    };
-
-    fetchQuestions();
-  }, []);
-
   const handleResponseChange = (index, response) => {
     const newResponses = [...diaryData.responses];
     newResponses[index] = response;
@@ -106,29 +90,60 @@ const DiaryScreen = () => {
   };
 
   const renderQuestions = () => {
-    return diaryData.questions.map((question, index) => (
-      <View key={question.id} style={styles.questionContainer}>
-        <Text style={styles.questionText}>{question.text}</Text>
-        {question.type === "text" ? (
-          <TextInput
-            style={styles.textInput}
-            placeholder="Type your response here"
-            value={diaryData.responses[index]}
-            onChangeText={(value) => handleResponseChange(index, value)}
-          />
-        ) : question.type === "radio" ? (
-          <RadioGroup
-            radioButtons={question.options.map((option) => ({
-              ...option,
-              selected: diaryData.responses[index]?.value === option.value,
-            }))}
-            onPress={(value) => handleRadioResponseChange(index, value)}
-            layout="row"
-            containerStyle={{ marginTop: 8 }}
-          />
-        ) : null}
-      </View>
-    ));
+    return diaryData.questions.map((question, index) => {
+      const renderQuestionType = () => {
+        switch (question.type) {
+          case "text":
+            return (
+              <TextInput
+                style={styles.textInput}
+                placeholder="Type your response here"
+                value={diaryData.responses[index]}
+                onChangeText={(value) => handleResponseChange(index, value)}
+              />
+            );
+          case "radio":
+            return (
+              <Slider
+                style={{ margin: 10 }}
+                radioButtons={question.options.map((option) => ({
+                  ...option,
+                  selected: diaryData.responses[index]?.value === option.value,
+                }))}
+                onPress={(value) => handleRadioResponseChange(index, value)}
+                layout="row"
+                containerStyle={{ marginTop: 8 }}
+              />
+            );
+          case "slider":
+            return (
+              <View>
+                <Text style={styles.sliderValue}>
+                  Selected Value: {diaryData.responses[index]?.value || 5}
+                </Text>
+                <Slider
+                  minimumValue={1}
+                  maximumValue={10}
+                  step={1}
+                  value={diaryData.responses[index]?.value || 5}
+                  onValueChange={(value) =>
+                    handleResponseChange(index, { value })
+                  }
+                />
+              </View>
+            );
+          default:
+            return null;
+        }
+      };
+
+      return (
+        <View key={question.id} style={styles.questionContainer}>
+          <Text style={styles.questionText}>{question.text}</Text>
+          {renderQuestionType()}
+        </View>
+      );
+    });
   };
 
   const IconButton = ({
@@ -182,9 +197,7 @@ const DiaryScreen = () => {
       const { granted } = await Audio.requestPermissionsAsync();
 
       if (!granted) {
-        alert(
-          "Sorry, we need audio recording permissions to make this work!"
-        );
+        alert("Sorry, we need audio recording permissions to make this work!");
         return;
       }
 
@@ -211,7 +224,7 @@ const DiaryScreen = () => {
         await recording.stopAndUnloadAsync();
         const uri = recording.getURI();
         setDiaryData({ ...diaryData, audioUri: uri });
-        setRecording(null); // Reset the recording state
+        setRecording(null); 
       } else {
         console.warn("No recording in progress to stop.");
       }
@@ -223,7 +236,7 @@ const DiaryScreen = () => {
   const playRecording = async () => {
     try {
       if (sound) {
-        // Use the getProgressAsync function to check the status of the audio
+
         const status = await sound.getStatusAsync();
         if (!status.isLoaded) {
           console.warn("Sound is not loaded.");
@@ -267,7 +280,7 @@ const DiaryScreen = () => {
           style={styles.buttonContainer}
           onPress={playRecording}
         >
-          <Icon ame="play" size={20} color="#FE89A9" style={styles.icon} />
+          <Icon name="play" size={20} color="#FE89A9" style={styles.icon} />
         </TouchableOpacity>
       );
     }
@@ -296,7 +309,17 @@ const DiaryScreen = () => {
       }
 
       const location = await Location.getCurrentPositionAsync({});
-      setDiaryData({ ...diaryData, location });
+      const apiKey = "e0b0f59d76ea4bdb847dc83c9c1f6d06"; // Replace with your OpenCage API key
+      const apiUrl = `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${location.coords.latitude}+${location.coords.longitude}&pretty=1`;
+
+      try {
+        const response = await axios.get(apiUrl);
+        const city = response.data.results[0].components.city;
+        setDiaryData({ ...diaryData, city });
+      } catch (error) {
+        console.error("Error converting location to city", error);
+      }
+
     } catch (error) {
       console.error("Error capturing location", error);
     }
@@ -325,7 +348,13 @@ const DiaryScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <View
+        style={{
+          flexDirection: "row",
+          justifyContent: "space-between",
+          backgroundColor: "#FFF",
+        }}
+      >
         <Text style={styles.headerText}>My Digital Diary</Text>
         <View style={{ flexDirection: "row" }}>
           <IconButton
@@ -335,17 +364,23 @@ const DiaryScreen = () => {
             onPress={captureLocation}
             buttonText={diaryData.city}
           />
-            <IconButton
-              iconName={recording ? "stop" : "microphone"}
-              iconColor="#FE89A9"
-              iconSize={20}
-            />
-            {renderPlaybackButton()}
+          {diaryData.location && (
+            <Text style={styles.locationText}>
+              Location: {diaryData.location.coords.latitude.toFixed(2)},{" "}
+              {diaryData.location.coords.longitude.toFixed(2)}
+            </Text>
+          )}
+          <IconButton
+            iconName={recording ? "stop" : "microphone"}
+            iconColor="#FE89A9"
+            iconSize={20}
+          />
+          {renderPlaybackButton()}
         </View>
       </View>
 
-      <ScrollView>
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+      <ScrollView style={{ backgroundColor: "#FFF" }}>
+        <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
           <IconButton
             iconName="calendar"
             iconSize={20}
@@ -383,14 +418,13 @@ const DiaryScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
-    margin: 20,
+    backgroundColor: "#FFF",
   },
   headerText: {
-    fontSize: 15,
+    fontSize: 25,
     fontWeight: "bold",
-    marginBottom: 16,
-    color: "#000", // Black text color
+    marginLeft: 10,
+    color: "#A9CFCF",
   },
   datePickerText: {
     fontSize: 18,
@@ -403,20 +437,22 @@ const styles = StyleSheet.create({
   questionText: {
     fontSize: 18,
     marginBottom: 8,
-    color: "#000", // Black text color
+    color: "#000",
+    marginLeft: 10,
   },
   textInput: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
     marginTop: 8,
     paddingLeft: 8,
+    backgroundColor: "#FFF",
+    marginLeft: -10,
   },
   imageButton: {
     backgroundColor: "#AACFD0",
     padding: 12,
     alignItems: "center",
     marginTop: 16,
+    width: "95%",
+    alignSelf: "center",
   },
   selectedImage: {
     width: 200,
@@ -429,6 +465,9 @@ const styles = StyleSheet.create({
     padding: 12,
     alignItems: "center",
     marginTop: 16,
+    width: "95%",
+    alignSelf: "center",
+    marginBottom: 40,
   },
   saveButtonText: {
     color: "#FFF", // White text color
@@ -445,8 +484,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginLeft: 16,
+    padding: 10,
     borderRadius: 8,
     paddingVertical: 8,
+  },
+  slider: {
+    marginLeft: 10,
   },
 });
 

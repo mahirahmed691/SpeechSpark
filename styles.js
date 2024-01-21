@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primaryBackground,
   },
   logo: {
-    marginTop: 22,
+    marginTop: 12,
     width: isIpad ? '33%' : '33%',
     height: 30,
   },
@@ -146,7 +146,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primaryBackground,
   },
   header: {
-    padding: 16,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
   },
@@ -168,15 +167,16 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingTop: -6,
     paddingBottom: 8,
   },
   searchInput: {
-    height: 40,
+    height: 50,
     borderColor: "#ccc",
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 12,
+    backgroundColor:'#A9CFCF'
   },
   selectionContainer: {
     flexDirection: 'row',
