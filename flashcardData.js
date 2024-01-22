@@ -1,10 +1,10 @@
 export const flashcardsData = {
-  "Morning \nRoutine": [
+  Breakfast: [
     {
       id: 1,
       image:
-        "https://cdn.dribbble.com/users/2242977/screenshots/4483135/media/b7527ea79d059f5816a80a35b73d4f72.jpg?resize=800x600&vertical=center",
-      title: "I want to brush my teeth",
+        "https://cdn.dribbble.com/userupload/3937337/file/original-d0a27a9c29309bf9b9af7ee05b7c59f9.png?resize=1504x1128",
+      title: "I want coffee",
     },
     {
       id: 2,
@@ -39,7 +39,7 @@ export const flashcardsData = {
       title: "I want Mac & Cheese",
     },
   ],
-  "Afternoon \nNap": [
+  "Nap time": [
     {
       id: 1,
       image:
@@ -79,7 +79,7 @@ export const flashcardsData = {
       title: "I want to play a board game",
     },
   ],
-  "Study Time": [
+  Study: [
     {
       id: 1,
       image:
@@ -99,7 +99,7 @@ export const flashcardsData = {
       title: "I want to do draw",
     },
   ],
-  "Dinner": [
+  Dinner: [
     {
       id: 1,
       image:
@@ -119,7 +119,7 @@ export const flashcardsData = {
       title: "I want a drink",
     },
   ],
-  "Evening \nRelaxation": [
+  Relax: [
     {
       id: 1,
       image:
@@ -179,7 +179,27 @@ export const flashcardsData = {
       title: "I want a drink",
     },
   ],
-  "Car Time": [
+  "Bath time": [
+    {
+      id: 1,
+      image:
+        "https://cdn.dribbble.com/users/730703/screenshots/4318271/media/a50dc3483fbd88f311a0b4a2daa3622b.jpg?resize=800x600&vertical=center",
+      title: "I want to nap",
+    },
+    {
+      id: 2,
+      image:
+        "https://cdn.dribbble.com/users/401513/screenshots/2533312/media/47983abfbf90b10f7622475a5e29a4d3.png?resize=400x300&vertical=center",
+      title: "I want a story",
+    },
+    {
+      id: 3,
+      image:
+        "https://cdn.dribbble.com/users/761315/screenshots/3334403/media/c8a5297293de9921b517fd47093e8f2b.png?resize=800x600&vertical=center",
+      title: "I want a drink",
+    },
+  ],
+  Journey: [
     {
       id: 1,
       image:
@@ -219,7 +239,7 @@ export const flashcardsData = {
       title: "I want a drink",
     },
   ],
-  Privacy: [
+  Bedtime: [
     {
       id: 1,
       image:

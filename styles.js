@@ -1,21 +1,21 @@
-import { StyleSheet, Dimensions, Platform } from 'react-native';
+import { StyleSheet, Dimensions, Platform } from "react-native";
 
-const windowWidth = Dimensions.get('window').width;
-const isIpad = Platform.OS === 'ios' && windowWidth > 768;
+const windowWidth = Dimensions.get("window").width;
+const isIpad = Platform.OS === "ios" && windowWidth > 768;
 
 const colors = {
-  primaryBackground: '#FFF', // Light Blue
-  tileBackground: '#FFFFFF', // White
-  cardText: '#38B5FD', // Muted Purple
-  shadowColor: 'rgba(173, 216, 230, 0.8)', // Light Turquoise
-  visualFlashcardBackground: '#F0F8FF', // Alice Blue
-  expandedFlashcardTitleTextShadow: 'rgba(0, 125, 125, 1)',
-  buttonBackground: '#38B5FD', // Sky Blue
-  buttonText: '#fff', // White
-  modalOverlay: 'rgba(169, 169, 169, 0.5)', // Dark Gray
-  modalContentBackground: '#F0F8FF', // Alice Blue
-  modalButtonBackground: '#FFA07A', // Light Salmon
-  modalButtonTextColor: '#fff', // White
+  primaryBackground: "#FFF", // Light Blue
+  tileBackground: "#FFFFFF", // White
+  cardText: "#38B5FD", // Muted Purple
+  shadowColor: "rgba(173, 216, 230, 0.8)", // Light Turquoise
+  visualFlashcardBackground: "#F0F8FF", // Alice Blue
+  expandedFlashcardTitleTextShadow: "rgba(0, 125, 125, 1)",
+  buttonBackground: "#38B5FD", // Sky Blue
+  buttonText: "#fff", // White
+  modalOverlay: "rgba(169, 169, 169, 0.5)", // Dark Gray
+  modalContentBackground: "#F0F8FF", // Alice Blue
+  modalButtonBackground: "#FFA07A", // Light Salmon
+  modalButtonTextColor: "#fff", // White
 };
 
 const styles = StyleSheet.create({
@@ -25,43 +25,46 @@ const styles = StyleSheet.create({
   },
   logo: {
     marginTop: 12,
-    width: isIpad ? '33%' : '33%',
-    height: 30,
+    width: isIpad ? "33%" : "33%",
+    height: 50,
+    marginRight:120,
   },
   profileLogo: {
     marginTop: 10,
     marginBottom: 40,
-    width: '100%',
+    width: "100%",
     height: isIpad ? 100 : 100,
   },
   tilesContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
     marginBottom: 20,
   },
   tile: {
-    margin: 5,
-    padding: 20,
-    borderRadius: 20,
+    margin: 2,
+    padding: 0,
     backgroundColor: colors.tileBackground,
     elevation: 5,
-    alignItems: 'center',
+    alignItems: "center",
     width: isIpad ? windowWidth / 5 - 10 : windowWidth / 3 - 10,
   },
   tileText: {
     fontSize: 12,
-    letterSpacing: 0.5,
-    fontWeight: '700',
-    color: '#fff',
-    marginTop: 10,
+    letterSpacing: 2,
+    fontWeight: "700",
+    color: "#000",
+    textAlign: "center",
+    marginBottom:5,
+    marginTop:5
   },
   listText: {
-    fontSize: 15,
+    fontSize: 14,
     letterSpacing: 1.5,
-    fontWeight: '700',
-    color: '#fff',
+    fontWeight: "700",
+    color: "#fff",
     marginTop: 0,
+    marginLeft:10
   },
   card: {
     paddingTop: 10,
@@ -70,79 +73,98 @@ const styles = StyleSheet.create({
     paddingRight: 25,
     borderRadius: 10,
     elevation: 5,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   cardText: {
     fontSize: 15,
-    fontWeight: '900',
+    fontWeight: "900",
     color: colors.cardText,
-    textAlign: 'center',
+    textAlign: "center",
   },
   NoCardText: {
     fontSize: 20,
     letterSpacing: 2,
-    fontWeight: '600',
-    color: '#000',
-    textAlign: 'center',
-    marginTop: '10%',
+    fontWeight: "600",
+    color: "#000",
+    textAlign: "center",
+    marginTop: "10%",
     textShadowColor: colors.shadowColor,
     textShadowOffset: { width: 5, height: 2 },
     textShadowRadius: 5,
   },
   image: {
     width: isIpad ? 400 : 300,
-    height: isIpad ? 300 : 200,
-    alignSelf: 'center',
+    height: isIpad ? 200 : 200,
+    alignSelf: "center",
+    borderRadius: 40,
+  },
+  imageTile: {
+    width: 120,
+    height: 120,
+    resizeMode: "cover",
     borderRadius: 20,
   },
+
   dateText: {
-    fontWeight: '800',
-    color: '#FFF',
-    textAlign: 'center',
+    position: "absolute",
+    top: -5,
+    fontWeight: "800",
+    color: "#FFF",
+    textAlign: "center",
     letterSpacing: 2,
-    fontSize: 40,
-    width: '100%',
+    fontSize: 70,
+    width: "100%",
+    marginBottom: 10,
   },
   visualFlashcard: {
-    width: '100%',
+    width: "100%",
     padding: 10,
     borderRadius: 10,
     backgroundColor: colors.visualFlashcardBackground,
     marginVertical: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   visualFlashcardImage: {
-    width: isIpad ? '95%' : 350,
+    width: isIpad ? "95%" : 350,
     height: isIpad ? 500 : 200,
     borderRadius: 10,
     marginBottom: 10,
   },
   visualFlashcardTitle: {
     fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
+    fontWeight: "bold",
+    color: "#000",
   },
   expandedFlashcardImage: {
     flex: 1,
     margin: isIpad ? 180 : 150,
-    width: isIpad ? '100%' : 350,
-    height: isIpad ? 400 : 400,
-    resizeMode: 'contain',
+    width: isIpad ? "100%" : 350,
+    height: isIpad ? 400 : 420,
+    resizeMode: "cover",
+    borderRadius: 30,
+    overflow: "hidden", // Ensure borderRadius is applied
   },
   expandedFlashcardTitle: {
-    fontSize: isIpad ? 50 : 25,
-    top: isIpad ? 180 : 120,
-    fontWeight: 'bold',
-    color: '#000',
-    textShadowColor: colors.expandedFlashcardTitleTextShadow,
-    textShadowOffset: { width: 1, height: 2 },
-    textShadowRadius: 5,
-    textAlign: 'center',
-    textTransform: 'capitalize',
+    fontSize: isIpad ? 50 : 18,
+    position:'absolute',
+    bottom: isIpad ? 0 : 0,
+    fontWeight: "400",
+    letterSpacing:2,
+    color: "#fff",
+    backgroundColor:'black',
+    width:'100%',
+    textAlign:'center',
+    padding:15
+
+  },
+  imageOverlay: {
+    flex: 1,
+
+    alignItems: "center",
   },
   ExpandContainer: {
     flex: 1,
-    alignItems: 'center',
+    alignItems: "center",
     backgroundColor: colors.primaryBackground,
   },
   header: {
@@ -172,16 +194,16 @@ const styles = StyleSheet.create({
   },
   searchInput: {
     height: 50,
-    borderColor: "#ccc",
-    borderWidth: 1,
+    borderColor: "#A9CFCF",
+    borderWidth: 2,
     borderRadius: 8,
     paddingHorizontal: 12,
-    backgroundColor:'#A9CFCF'
+    color: "#000",
   },
   selectionContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-around',
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
     marginBottom: 20,
   },
   selectionItem: {
@@ -189,23 +211,23 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 20,
     elevation: 5,
-    alignItems: 'center',
+    alignItems: "center",
     width: isIpad ? windowWidth / 8 - 10 : windowWidth / 5 - 10,
   },
   selectionItemText: {
     fontSize: 10,
     letterSpacing: 0.5,
-    fontWeight: '900',
-    color: '#fff',
+    fontWeight: "900",
+    color: "#fff",
     marginTop: 10,
   },
   buttonContainer: {
-    width: '80%',
+    width: "80%",
     height: 50,
     backgroundColor: colors.buttonBackground,
-    justifyContent: 'center',
-    alignItems: 'center',
-    alignSelf: 'center',
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
   },
   buttonText: {
     color: colors.buttonText,
@@ -214,23 +236,23 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: colors.modalOverlay,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   modalContent: {
     backgroundColor: colors.modalContentBackground,
     padding: 20,
     borderRadius: 10,
-    width: '80%',
+    width: "80%",
   },
   modalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
   modalInput: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 15,
     padding: 10,
@@ -239,12 +261,12 @@ const styles = StyleSheet.create({
     backgroundColor: colors.modalButtonBackground,
     padding: 10,
     borderRadius: 5,
-    alignItems: 'center',
+    alignItems: "center",
   },
   modalButtonText: {
     color: colors.modalButtonTextColor,
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   toggleLayoutButton: {
     backgroundColor: "#AACFD0",
@@ -378,46 +400,46 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   modal: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
 
   breathingModalContainer: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
 
   breathingModalTitle: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 10,
   },
 
   breathingModalInstructions: {
     fontSize: 16,
     marginBottom: 15,
-    textAlign: 'center',
+    textAlign: "center",
   },
 
   breathingModalTimer: {
     fontSize: 18,
     color: "#AACFD0",
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
-  navigatorButtonText:{
-    fontSize:15,
-    fontWeight:"900",
-    marginLeft:10,
-    color:"white",
+  navigatorButtonText: {
+    fontSize: 15,
+    fontWeight: "900",
+    marginLeft: 10,
+    color: "white",
   },
-  sectionNavigator:{
-    backgroundColor:"#39B6FF",
-    borderRadius:10,
-    padding:20,
-    marginBottom:20
-  }
+  sectionNavigator: {
+    backgroundColor: "#39B6FF",
+    borderRadius: 10,
+    padding: 20,
+    marginBottom: 20,
+  },
 });
 
 export default styles;

@@ -2,7 +2,7 @@
 import React from "react";
 import { SafeAreaView, View, Text, Image } from "react-native";
 import { Constants } from "expo";
-import { styles } from "./Styles";
+import { styles } from "./styles";
 
 const ExpandedFlashcardScreen = ({ route }) => {
   const { item } = route.params || {};
