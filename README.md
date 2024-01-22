@@ -19,3 +19,9 @@ Follow these steps to set up and run the project on your local machine.
    ```bash
    git clone https://github.com/yourusername/expo-speech-demo.git
    cd expo-speech-demo
+
+npm install
+# or
+yarn install
+
+expo start
