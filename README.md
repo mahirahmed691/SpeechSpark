@@ -1,6 +1,6 @@
-# Expo Speech Demo
+# Speech Spark
 
-A simple React Native app using Expo to demonstrate text-to-speech functionality with Expo Speech.
+Speech Spark is a comprehensive React Native Expo app designed to facilitate non-verbal communication, promote mental health, and provide interactive gaming features. This app incorporates Expo's Speech functionality for text-to-speech capabilities, a diary feature for journaling, and mental health resources. Additionally, it offers engaging games to make the user experience more enjoyable.
 
 ## Getting Started
 
@@ -8,9 +8,20 @@ Follow these steps to set up and run the project on your local machine.
 
 ### Prerequisites
 
-- [Node.js](https://nodejs.org/) (>= 14.x)
+Make sure you have the following installed on your machine:
+
+- [Node.js](https://nodejs.org/) (version 14.x or higher)
 - [npm](https://www.npmjs.com/) or [Yarn](https://yarnpkg.com/) package manager
 - [Expo CLI](https://docs.expo.dev/get-started/installation/) (install globally)
+
+### Installation
+
+1. **Clone the repository:**
+
+   ```bash
+   git clone https://github.com/yourusername/speech-spark.git
+   cd speech-spark
+
 
 ### Installation
 
