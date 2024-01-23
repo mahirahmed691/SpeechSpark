@@ -1,44 +1,38 @@
-import React from "react";
-import { SafeAreaView, View, Text, FlatList, TouchableWithoutFeedback, Image } from "react-native";
-import PropTypes from 'prop-types';
+import { Platform, SafeAreaView, Text, FlatList, TouchableWithoutFeedback, View, Image} from "react-native";
 import { flashcardsData } from "./flashcardData";
-import { styles } from "./Styles";
-
+import styles from "./styles";
 const FlashcardScreen = ({ route, navigation }) => {
-  const isIpad = Constants.platform?.ios?.model?.toLowerCase()?.includes("ipad") ?? false;
   const { params } = route;
 
-  const renderNoDeckSelected = () => (
-    <SafeAreaView style={styles.container}>
-      <View style={{ marginTop: isIpad ? 300 : 200 }}>
-        <Image
-          source={{
-            uri: "https://cdn.dribbble.com/userupload/4156800/file/original-4ddbc7d8125bd5b293c122ab1f1ddcbc.png?resize=1504x1272",
-          }}
-          style={styles.image}
-        />
-        <Text style={styles.NoCardText}>No Deck Selected</Text>
-      </View>
-    </SafeAreaView>
-  );
+  const isIpad = Platform.OS === "ios" && Platform.isPad;
 
-  const renderNoFlashcards = () => (
-    <SafeAreaView style={styles.container}>
-      <Text style={styles.cardText}>
-        No flashcards available for this deck
-      </Text>
-    </SafeAreaView>
-  );
-
-  if (!(params && params.title && flashcardsData)) {
-    return renderNoDeckSelected();
+  if (!params || !params.title || !flashcardsData) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={{ marginTop: isIpad ? 300 : 200 }}>
+          <Image
+            source={{
+              uri: "https://cdn.dribbble.com/userupload/4156800/file/original-4ddbc7d8125bd5b293c122ab1f1ddcbc.png?resize=1504x1272",
+            }}
+            style={styles.image}
+          />
+          <Text style={styles.NoCardText}>No Deck Selected</Text>
+        </View>
+      </SafeAreaView>
+    );
   }
 
   const { title, onAddTile } = params;
   const flashcards = flashcardsData[title] || [];
 
   if (!flashcards) {
-    return renderNoFlashcards();
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.cardText}>
+          No flashcards available for this deck
+        </Text>
+      </SafeAreaView>
+    );
   }
 
   return (
@@ -50,7 +44,7 @@ const FlashcardScreen = ({ route, navigation }) => {
         renderItem={({ item }) => (
           <TouchableWithoutFeedback
             onPress={() => {
-              navigation.navigate("ExpandedFlashcard", { item });
+              navigation.navigate("Flashcard", { item });
             }}
           >
             <View style={styles.visualFlashcard}>
@@ -67,9 +61,4 @@ const FlashcardScreen = ({ route, navigation }) => {
   );
 };
 
-FlashcardScreen.propTypes = {
-  route: PropTypes.object.isRequired,
-  navigation: PropTypes.object.isRequired,
-};
-
-export { FlashcardScreen };
+export default FlashcardScreen;

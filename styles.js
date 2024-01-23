@@ -1,21 +1,20 @@
 import { StyleSheet, Dimensions, Platform } from "react-native";
-
 const windowWidth = Dimensions.get("window").width;
 const isIpad = Platform.OS === "ios" && windowWidth > 768;
 
 const colors = {
-  primaryBackground: "#FFF", // Light Blue
-  tileBackground: "#FFFFFF", // White
-  cardText: "#38B5FD", // Muted Purple
-  shadowColor: "rgba(173, 216, 230, 0.8)", // Light Turquoise
-  visualFlashcardBackground: "#F0F8FF", // Alice Blue
+  primaryBackground: "#F0F0F0",
+  tileBackground: "#FFFFFF", 
+  cardText: "#38B5FD", 
+  shadowColor: "rgba(173, 216, 230, 0.8)", 
+  visualFlashcardBackground: "#F0F8FF", 
   expandedFlashcardTitleTextShadow: "rgba(0, 125, 125, 1)",
-  buttonBackground: "#38B5FD", // Sky Blue
-  buttonText: "#fff", // White
-  modalOverlay: "rgba(169, 169, 169, 0.5)", // Dark Gray
-  modalContentBackground: "#F0F8FF", // Alice Blue
-  modalButtonBackground: "#FFA07A", // Light Salmon
-  modalButtonTextColor: "#fff", // White
+  buttonBackground: "#38B5FD", 
+  buttonText: "#fff", 
+  modalOverlay: "rgba(169, 169, 169, 0.5)",
+  modalContentBackground: "#F0F8FF", 
+  modalButtonBackground: "#FFA07A", 
+  modalButtonTextColor: "#fff", 
 };
 
 const styles = StyleSheet.create({
@@ -27,7 +26,7 @@ const styles = StyleSheet.create({
     marginTop: 12,
     width: isIpad ? "33%" : "33%",
     height: 50,
-    marginRight:120,
+    marginRight: 120,
   },
   profileLogo: {
     marginTop: 10,
@@ -55,8 +54,8 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#000",
     textAlign: "center",
-    marginBottom:5,
-    marginTop:5
+    marginBottom: 5,
+    marginTop: 5,
   },
   listText: {
     fontSize: 14,
@@ -64,7 +63,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#fff",
     marginTop: 0,
-    marginLeft:10
+    marginLeft: 10,
   },
   card: {
     paddingTop: 10,
@@ -136,26 +135,28 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   expandedFlashcardImage: {
-    flex: 1,
+    bottom: 100,
     margin: isIpad ? 180 : 150,
-    width: isIpad ? "100%" : 350,
-    height: isIpad ? 400 : 420,
+    width: isIpad ? "100%" : 380,
+    height: isIpad ? 400 : 350,
     resizeMode: "cover",
-    borderRadius: 30,
+    borderRadius: 20,
     overflow: "hidden", // Ensure borderRadius is applied
+    borderWidth: 5,
+    borderColor: "#f0f0f0",
+    alignSelf:'center'
   },
   expandedFlashcardTitle: {
     fontSize: isIpad ? 50 : 18,
-    position:'absolute',
+    position: "absolute",
     bottom: isIpad ? 0 : 0,
-    fontWeight: "400",
-    letterSpacing:2,
+    fontWeight: "700",
+    letterSpacing: 5,
     color: "#fff",
-    backgroundColor:'black',
-    width:'100%',
-    textAlign:'center',
-    padding:15
-
+    backgroundColor: "black",
+    width: "100%",
+    textAlign: "center",
+    padding: 15,
   },
   imageOverlay: {
     flex: 1,
@@ -163,8 +164,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   ExpandContainer: {
-    flex: 1,
-    alignItems: "center",
     backgroundColor: colors.primaryBackground,
   },
   header: {
@@ -174,6 +173,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     fontWeight: "bold",
+    marginLeft:20
   },
   settingsContainer: {
     padding: 16,
@@ -440,6 +440,52 @@ const styles = StyleSheet.create({
     padding: 20,
     marginBottom: 20,
   },
+  featureContainer: {
+    flexDirection:'row',
+    justifyContent:'space-between',
+    marginHorizontal:20
+  },
+  featureButton: {
+    top: 30,
+    backgroundColor: "#A9CFCF",
+    padding: 10,
+    borderRadius: 8,
+  },
+  featureButtonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
+  speechRateContainer: {
+    backgroundColor: "#f0f0f0",
+    width: "100%",
+    top:640,
+    position: "absolute",
+    left:0,
+    right: 0,
+  },
+  speechRateLabel: {
+    marginLeft:20,
+    fontSize: 16,
+    fontWeight: "900",
+    color: "#000",
+    alignSelf: "flex-start",
+  },
+  speechRateSlider: {
+    width: "90%",
+    alignSelf: "center",
+  },
+  speechRateValue: {
+    fontSize: 16,
+    fontWeight:'900',
+    alignSelf: "flex-end",
+    marginRight:30
+  },
+  favButton:{
+    backgroundColor:'#f0f0f0',
+    top: 30,
+    padding: 10,
+    borderRadius: 8,
+  }
 });
 
 export default styles;
