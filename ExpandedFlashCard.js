@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   SafeAreaView,
@@ -16,7 +16,7 @@ import * as Sharing from "expo-sharing";
 import * as FileSystem from "expo-file-system";
 import Icon from "react-native-vector-icons/FontAwesome";
 
-import ViewShot from "react-native-view-shot"; // Import the library
+import ViewShot from "react-native-view-shot";
 import styles from "./styles";
 import Constants from "expo-constants";
 
@@ -25,30 +25,50 @@ const ExpandedFlashcardScreen = ({ route }) => {
   const isIpad =
     Constants?.platform?.ios?.toLowerCase?.().includes?.("ipad") ?? false;
 
-  const viewShotRef = useRef(null); 
+  const viewShotRef = useRef(null);
 
   const [isMuted, setIsMuted] = useState(false);
   const [speechRate, setSpeechRate] = useState(1.0);
+  const [pitch, setPitch] = useState(1.0);
   const [isFavorite, setIsFavorite] = useState(false);
+  const [availableVoices, setAvailableVoices] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState(
     "com.apple.ttsbundle.Moira-compact"
   );
 
-  const speakText = (text, rate = 1.0) => {
+  useEffect(() => {
+    const fetchVoices = async () => {
+      const voices = await Speech.getAvailableVoicesAsync();
+      setAvailableVoices(voices);
+    };
+
+    fetchVoices();
+  }, []);
+
+  const speakText = (text) => {
     if (!isMuted) {
       Speech.stop();
-      Speech.speak(text, { voiceId: selectedVoice, rate });
+      Speech.speak(text, {
+        voice: selectedVoice,
+        rate: speechRate,
+        pitch: pitch,
+      });
     }
   };
 
   const speakTextWithDelay = () => {
     setTimeout(() => {
-      speakText(item.title, speechRate);
+      speakText(item?.title);
     }, 1000);
   };
 
   const handleShare = async () => {
     try {
+      if (!item?.image) {
+        Alert.alert("Error", "No card selected");
+        return;
+      }
+
       const uri = await viewShotRef.current.captureRef();
       const fileUri = `${FileSystem.cacheDirectory}flashcard_screenshot.jpg`;
       await FileSystem.copyAsync({ from: uri, to: fileUri });
@@ -58,7 +78,6 @@ const ExpandedFlashcardScreen = ({ route }) => {
       Alert.alert("Error", "Failed to share flashcard");
     }
   };
-  
 
   const handleToggleFavorite = () => {
     setIsFavorite(!isFavorite);
@@ -72,8 +91,16 @@ const ExpandedFlashcardScreen = ({ route }) => {
     setSpeechRate(value);
   };
 
+  const handlePitchChange = (value) => {
+    setPitch(value);
+  };
+
   const handleVoiceChange = (value) => {
     setSelectedVoice(value);
+  };
+
+  const handleStopSpeech = () => {
+    Speech.stop();
   };
 
   return (
@@ -100,7 +127,7 @@ const ExpandedFlashcardScreen = ({ route }) => {
           </TouchableOpacity>
           <TouchableOpacity
             onPress={handleToggleMute}
-            style={[styles.featureButton, { width: 40 }]}
+            style={[styles.featureButton, { marginRight: 10, width: 40 }]}
             activeOpacity={0.8}
           >
             <Icon
@@ -109,36 +136,56 @@ const ExpandedFlashcardScreen = ({ route }) => {
               color="white"
             />
           </TouchableOpacity>
+          <TouchableOpacity
+            onPress={handleStopSpeech}
+            style={styles.featureButton}
+            activeOpacity={0.8}
+          >
+            <Icon name="stop" size={20} color="white" />
+          </TouchableOpacity>
         </View>
       </View>
-      <ViewShot
-        ref={viewShotRef}
-        style={{ flex: 1 }}
-        options={{ format: "jpg", quality: 0.9 }}
-      >
-        <TouchableOpacity onPress={speakTextWithDelay}>
-          <ImageBackground
-            source={{ uri: item.image }}
-            style={styles.expandedFlashcardImage}
-          >
-            <View style={styles.imageOverlay}>
-              <Text style={styles.expandedFlashcardTitle}>{item.title}</Text>
-            </View>
-          </ImageBackground>
-        </TouchableOpacity>
-      </ViewShot>
+
+      {item?.image ? (
+        <ViewShot
+          ref={viewShotRef}
+          style={{ flex: 1 }}
+          options={{ format: "jpg", quality: 0.9 }}
+        >
+          <TouchableOpacity onPress={speakTextWithDelay}>
+            <ImageBackground
+              source={{ uri: item.image }}
+              style={styles.expandedFlashcardImage}
+            >
+              <View style={styles.imageOverlay}>
+                <Text style={styles.expandedFlashcardTitle}>{item.title}</Text>
+              </View>
+            </ImageBackground>
+          </TouchableOpacity>
+        </ViewShot>
+      ) : (
+        <View style={styles.noCardSelectedContainer}>
+          <Text style={styles.noCardSelectedText}>No card selected</Text>
+        </View>
+      )}
+
       <View>
         <View style={{ position: "absolute", top: 320, right: 10 }}>
           <Picker
             selectedValue={selectedVoice}
             onValueChange={handleVoiceChange}
-            style={{ height: 50, width: 150, color: "pink" }}
+            style={{ height: 0, width:150, alignSelf:'center' }}
+            itemStyle={{  
+              fontSize: 10, // or any other style properties you want to set
+            }}
           >
-            <Picker.Item
-              label="Voice 1"
-              value="com.apple.ttsbundle.Moira-compact"
-            />
-            <Picker.Item label="Voice 2" value="your_custom_voice_id" />
+            {availableVoices.map((voice) => (
+              <Picker.Item
+                key={voice.identifier}
+                label={voice.name}
+                value={voice.identifier}
+              />
+            ))}
           </Picker>
         </View>
       </View>
@@ -147,7 +194,7 @@ const ExpandedFlashcardScreen = ({ route }) => {
           style={{
             flexDirection: "row",
             justifyContent: "space-between",
-            marginTop: 20,
+            marginTop: 0,
             marginBottom: 20,
           }}
         >
@@ -162,6 +209,31 @@ const ExpandedFlashcardScreen = ({ route }) => {
             step={0.1}
             value={speechRate}
             onValueChange={handleSpeechRateChange}
+            thumbTintColor="#FE89A9"
+            minimumTrackTintColor="#A9CFCF"
+          />
+        </View>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginTop: 0,
+            marginBottom: 20,
+          }}
+        >
+          <Text style={styles.speechRateLabel}>Pitch</Text>
+          <Text style={styles.speechRateValue}>{pitch.toFixed(1)}</Text>
+        </View>
+        <View>
+          <Slider
+            style={styles.speechRateSlider}
+            minimumValue={0.5}
+            maximumValue={2.0}
+            step={0.1}
+            value={pitch}
+            onValueChange={handlePitchChange}
+            thumbTintColor="#FE89A9"
+            minimumTrackTintColor="#A9CFCF"
           />
         </View>
       </View>

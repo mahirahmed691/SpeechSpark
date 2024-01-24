@@ -152,7 +152,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          backgroundColor: "#FFF",
+          backgroundColor: "#F0F0F0",
           justifyContent: "space-around",
           flexDirection: "row",
           paddingVertical: 20,
@@ -177,7 +177,6 @@ const HomeScreen = ({ navigation, animatedValue }) => {
         >
           <Text
             style={{
-              fontSize: 10,
               textAlign: "center",
               color: "#000",
               height: 40,

@@ -5,16 +5,16 @@ import {
   Text,
   View,
   TouchableOpacity,
-  TextInput,
   Platform,
   Vibration,
 } from "react-native";
+import {  TextInput} from "react-native-paper"
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "./styles";
 import Modal from "react-native-modal";
 
 const SECTION_HEIGHT = 300;
-const commonEmojis = ["😊", "😢", "😡", "😴",];
+const commonEmojis = ["😊", "😢", "😡", "😴"];
 
 const MentalHealthScreen = () => {
   const [quotes, setQuotes] = useState([]);
@@ -35,12 +35,12 @@ const MentalHealthScreen = () => {
 
   const startBreathingExercise = () => {
     setIsBreathingModalVisible(true);
-    setBreathingTimer(120); 
+    setBreathingTimer(120);
     setBreathingExerciseInProgress(true);
 
     vibrationInterval = setInterval(() => {
       if (breathingTimer % 4 === 0) {
-        Vibration.vibrate(200); 
+        Vibration.vibrate(200);
       }
       setBreathingTimer((prevTimer) => prevTimer - 1);
     }, 1000);
@@ -263,7 +263,7 @@ const MentalHealthScreen = () => {
           <View style={styles.noteContainer}>
             <Text style={styles.noteLabel}>Add a note (optional)</Text>
             <TextInput
-              style={[styles.input, styles.noteInput]}
+              style={[styles.input, styles.textInput]}
               multiline
               placeholder="Write a note..."
               value={note}
@@ -282,14 +282,14 @@ const MentalHealthScreen = () => {
             patterns.
           </Text>
           <TextInput
-            style={styles.input}
+           style={[styles.input, styles.textInput]}
             placeholder="Sleep Hours (e.g., 7.5)"
             keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
             value={sleepHours}
             onChangeText={(text) => setSleepHours(text)}
           />
           <TextInput
-            style={styles.input}
+            style={[styles.input, styles.textInput]}
             placeholder="Wake-up Time (e.g., 07:30 AM)"
             value={wakeUpTime}
             onChangeText={(text) => setWakeUpTime(text)}
@@ -336,13 +336,13 @@ const MentalHealthScreen = () => {
             on mood.
           </Text>
           <TextInput
-            style={[styles.input, styles.activityInput]}
+            style={[styles.input, styles.textInput]}
             placeholder="Add an activity..."
             value={activityText}
             onChangeText={(text) => setActivityText(text)}
           />
           <TouchableOpacity
-            style={styles.addButton}
+            style={styles.breathingButton}
             onPress={handleAddActivity}
           >
             <Text style={styles.buttonText}>Add Activity</Text>
@@ -365,13 +365,13 @@ const MentalHealthScreen = () => {
             gratitude.
           </Text>
           <TextInput
-            style={[styles.input, styles.gratitudeInput]}
+           style={[styles.input, styles.textInput]}
             placeholder="What are you grateful for?"
             value={gratitudeText}
             onChangeText={(text) => setGratitudeText(text)}
           />
           <TouchableOpacity
-            style={styles.addButton}
+            style={styles.breathingButton}
             onPress={handleAddGratitudeEntry}
           >
             <Text style={styles.buttonText}>Add Entry</Text>

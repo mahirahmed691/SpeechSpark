@@ -106,14 +106,9 @@ const styles = StyleSheet.create({
 
   dateText: {
     position: "absolute",
-    top: -5,
-    fontWeight: "800",
-    color: "#FFF",
     textAlign: "center",
-    letterSpacing: 2,
-    fontSize: 70,
+    fontSize: 50,
     width: "100%",
-    marginBottom: 10,
   },
   visualFlashcard: {
     width: "100%",
@@ -138,7 +133,7 @@ const styles = StyleSheet.create({
     bottom: 100,
     margin: isIpad ? 180 : 150,
     width: isIpad ? "100%" : 380,
-    height: isIpad ? 400 : 350,
+    height: isIpad ? 400 : 320,
     resizeMode: "cover",
     borderRadius: 20,
     overflow: "hidden", // Ensure borderRadius is applied
@@ -147,7 +142,7 @@ const styles = StyleSheet.create({
     alignSelf:'center'
   },
   expandedFlashcardTitle: {
-    fontSize: isIpad ? 50 : 18,
+    fontSize: isIpad ? 50 : 12,
     position: "absolute",
     bottom: isIpad ? 0 : 0,
     fontWeight: "700",
@@ -280,6 +275,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 20,
+    paddingBottom:300
   },
   title: {
     fontSize: 32,
@@ -435,7 +431,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   sectionNavigator: {
-    backgroundColor: "#39B6FF",
+    backgroundColor: "#A9CFCF",
     borderRadius: 10,
     padding: 20,
     marginBottom: 20,
@@ -458,7 +454,7 @@ const styles = StyleSheet.create({
   speechRateContainer: {
     backgroundColor: "#f0f0f0",
     width: "100%",
-    top:640,
+    top:600,
     position: "absolute",
     left:0,
     right: 0,
@@ -471,7 +467,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-start",
   },
   speechRateSlider: {
-    width: "90%",
+    width: "95%",
     alignSelf: "center",
   },
   speechRateValue: {
@@ -485,6 +481,10 @@ const styles = StyleSheet.create({
     top: 30,
     padding: 10,
     borderRadius: 8,
+  },
+  textInput:{
+    backgroundColor:'#f0f0f0',
+    borderWidth:0
   }
 });
 
