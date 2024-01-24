@@ -165,7 +165,20 @@ const ExpandedFlashcardScreen = ({ route }) => {
         </ViewShot>
       ) : (
         <View style={styles.noCardSelectedContainer}>
-          <Text style={styles.noCardSelectedText}>No card selected</Text>
+          <TouchableOpacity>
+            <ImageBackground
+              source={{
+                uri: "https://cdn.dribbble.com/users/730703/screenshots/2232561/media/765b2e3466e8c73dafbc2aaec68bfe19.jpg?resize=400x300&vertical=center",
+              }}
+              style={styles.expandedFlashcardImage}
+            >
+              <View style={styles.imageOverlay}>
+                <Text style={styles.expandedFlashcardTitle}>
+                  No Card Selected
+                </Text>
+              </View>
+            </ImageBackground>
+          </TouchableOpacity>
         </View>
       )}
 
@@ -174,8 +187,8 @@ const ExpandedFlashcardScreen = ({ route }) => {
           <Picker
             selectedValue={selectedVoice}
             onValueChange={handleVoiceChange}
-            style={{ height: 0, width:150, alignSelf:'center' }}
-            itemStyle={{  
+            style={{ height: 0, width: 150, alignSelf: "center" }}
+            itemStyle={{
               fontSize: 10, // or any other style properties you want to set
             }}
           >

@@ -485,6 +485,12 @@ const styles = StyleSheet.create({
   textInput:{
     backgroundColor:'#f0f0f0',
     borderWidth:0
+  },
+  noCardSelectedText:{
+    fontSize:20,
+    position:'absolute',
+    top:220,
+    alignSelf:'center'
   }
 });
 
