@@ -168,7 +168,7 @@ const ExpandedFlashcardScreen = ({ route }) => {
           <TouchableOpacity>
             <ImageBackground
               source={{
-                uri: "https://cdn.dribbble.com/users/730703/screenshots/2232561/media/765b2e3466e8c73dafbc2aaec68bfe19.jpg?resize=400x300&vertical=center",
+                uri: "https://cdn.dribbble.com/users/655640/screenshots/3161638/media/9ddb98563ac7d6357ba1e5c73c682d22.jpg?resize=800x600&vertical=center",
               }}
               style={styles.expandedFlashcardImage}
             >
@@ -189,7 +189,7 @@ const ExpandedFlashcardScreen = ({ route }) => {
             onValueChange={handleVoiceChange}
             style={{ height: 0, width: 150, alignSelf: "center" }}
             itemStyle={{
-              fontSize: 10, // or any other style properties you want to set
+              fontSize: 10, 
             }}
           >
             {availableVoices.map((voice) => (

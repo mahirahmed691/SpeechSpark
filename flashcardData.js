@@ -18,6 +18,24 @@ export const flashcardsData = {
         "https://cdn.dribbble.com/users/185738/screenshots/7576171/media/84c1d471d37341d1d74c8270f917518c.jpg?resize=1600x1200&vertical=center",
       title: "I want cereal",
     },
+    {
+      id: 1,
+      image:
+        "https://cdn.dribbble.com/userupload/3937337/file/original-d0a27a9c29309bf9b9af7ee05b7c59f9.png?resize=1504x1128",
+      title: "I want coffee",
+    },
+    {
+      id: 2,
+      image:
+        "https://cdn.dribbble.com/users/357768/screenshots/6782211/05_fin_4x.png?resize=1600x1200&vertical=center",
+      title: "I want breakfast",
+    },
+    {
+      id: 3,
+      image:
+        "https://cdn.dribbble.com/users/185738/screenshots/7576171/media/84c1d471d37341d1d74c8270f917518c.jpg?resize=1600x1200&vertical=center",
+      title: "I want cereal",
+    },
   ],
   Lunchtime: [
     {

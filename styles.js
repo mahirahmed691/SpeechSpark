@@ -4,17 +4,17 @@ const isIpad = Platform.OS === "ios" && windowWidth > 768;
 
 const colors = {
   primaryBackground: "#F0F0F0",
-  tileBackground: "#FFFFFF", 
-  cardText: "#38B5FD", 
-  shadowColor: "rgba(173, 216, 230, 0.8)", 
-  visualFlashcardBackground: "#F0F8FF", 
+  tileBackground: "#FFFFFF",
+  cardText: "#38B5FD",
+  shadowColor: "rgba(173, 216, 230, 0.8)",
+  visualFlashcardBackground: "#F0F8FF",
   expandedFlashcardTitleTextShadow: "rgba(0, 125, 125, 1)",
-  buttonBackground: "#38B5FD", 
-  buttonText: "#fff", 
+  buttonBackground: "#38B5FD",
+  buttonText: "#fff",
   modalOverlay: "rgba(169, 169, 169, 0.5)",
-  modalContentBackground: "#F0F8FF", 
-  modalButtonBackground: "#FFA07A", 
-  modalButtonTextColor: "#fff", 
+  modalContentBackground: "#F0F8FF",
+  modalButtonBackground: "#FFA07A",
+  modalButtonTextColor: "#fff",
 };
 
 const styles = StyleSheet.create({
@@ -62,8 +62,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1.5,
     fontWeight: "700",
     color: "#fff",
-    marginTop: 0,
-    marginLeft: 10,
   },
   card: {
     paddingTop: 10,
@@ -75,10 +73,11 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   cardText: {
-    fontSize: 15,
+    fontSize: 20,
     fontWeight: "900",
-    color: colors.cardText,
+    color: "black",
     textAlign: "center",
+    letterSpacing: 2,
   },
   NoCardText: {
     fontSize: 20,
@@ -103,12 +102,12 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
     borderRadius: 20,
   },
-
   dateText: {
     position: "absolute",
     textAlign: "center",
-    fontSize: 50,
+    fontSize: 60,
     width: "100%",
+    marginLeft: 25,
   },
   visualFlashcard: {
     width: "100%",
@@ -124,10 +123,37 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     marginBottom: 10,
   },
+  visualFlashcardImageTile: {
+    width: isIpad ? "95%" : "100%",
+    height: isIpad ? 500 : 120,
+    borderRadius: 10,
+    marginBottom: 10,
+    marginLeft: "10%",
+    marginTop: 20,
+  },
+  visualFlashcardTile: {
+    width: isIpad ? "33%" : "30%",
+    marginRight: "1.5%",
+    height: isIpad ? 500 : 200,
+    borderRadius: 10,
+    marginBottom: 10,
+  },
   visualFlashcardTitle: {
     fontSize: 16,
     fontWeight: "bold",
     color: "#000",
+  },
+  visualFlashcardImageTitle: {
+    fontSize: 12,
+    fontWeight: "bold",
+    color: "#000",
+    alignSelf: "center",
+  },
+  toggleViewButton: {
+  },
+  toggleViewButtonText: {
+    fontWeight: "bold",
+    fontSize: 15,
   },
   expandedFlashcardImage: {
     bottom: 100,
@@ -139,7 +165,7 @@ const styles = StyleSheet.create({
     overflow: "hidden", // Ensure borderRadius is applied
     borderWidth: 5,
     borderColor: "#f0f0f0",
-    alignSelf:'center'
+    alignSelf: "center",
   },
   expandedFlashcardTitle: {
     fontSize: isIpad ? 50 : 12,
@@ -168,7 +194,7 @@ const styles = StyleSheet.create({
   headerText: {
     fontSize: 18,
     fontWeight: "bold",
-    marginLeft:20
+    marginLeft: 20,
   },
   settingsContainer: {
     padding: 16,
@@ -183,7 +209,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   searchContainer: {
-    paddingHorizontal: 16,
+    paddingHorizontal: 6,
     paddingTop: -6,
     paddingBottom: 8,
   },
@@ -275,7 +301,7 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 20,
-    paddingBottom:300
+    paddingBottom: 300,
   },
   title: {
     fontSize: 32,
@@ -437,9 +463,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   featureContainer: {
-    flexDirection:'row',
-    justifyContent:'space-between',
-    marginHorizontal:20
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginHorizontal: 20,
   },
   featureButton: {
     top: 30,
@@ -454,13 +480,13 @@ const styles = StyleSheet.create({
   speechRateContainer: {
     backgroundColor: "#f0f0f0",
     width: "100%",
-    top:600,
+    top: 600,
     position: "absolute",
-    left:0,
+    left: 0,
     right: 0,
   },
   speechRateLabel: {
-    marginLeft:20,
+    marginLeft: 20,
     fontSize: 16,
     fontWeight: "900",
     color: "#000",
@@ -472,26 +498,26 @@ const styles = StyleSheet.create({
   },
   speechRateValue: {
     fontSize: 16,
-    fontWeight:'900',
+    fontWeight: "900",
     alignSelf: "flex-end",
-    marginRight:30
+    marginRight: 30,
   },
-  favButton:{
-    backgroundColor:'#f0f0f0',
+  favButton: {
+    backgroundColor: "#f0f0f0",
     top: 30,
     padding: 10,
     borderRadius: 8,
   },
-  textInput:{
-    backgroundColor:'#f0f0f0',
-    borderWidth:0
+  textInput: {
+    backgroundColor: "#f0f0f0",
+    borderWidth: 0,
   },
-  noCardSelectedText:{
-    fontSize:20,
-    position:'absolute',
-    top:220,
-    alignSelf:'center'
-  }
+  noCardSelectedText: {
+    fontSize: 20,
+    position: "absolute",
+    top: 220,
+    alignSelf: "center",
+  },
 });
 
 export default styles;

@@ -1,97 +1,68 @@
-import React, { useState } from "react";
+import * as React from "react";
 import { View, ImageBackground, StyleSheet, Image } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { Ionicons } from "@expo/vector-icons";
+import * as Google from "expo-google-app-auth";
+import * as AppAuth from 'expo-app-auth';
+import firebase from "firebase/app";
+import "firebase/auth";
 
 import YourLogo from "./assets/Logo.png";
 import BackgroundImage from "./assets/BackgroundImage.jpeg";
 
 const LoginScreen = ({ navigation }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const handleGoogleLogin = async () => {
+    try {
+      const { type, accessToken, user } = await Google.logInAsync({
+        androidClientId: "YOUR_ANDROID_CLIENT_ID",
+        iosClientId: "497525111687-4ge8ehbbg5ohrkd0pkd20ta4q0ot69us.apps.googleusercontent.com",
+        scopes: ["profile", "email"],
+      });
 
-  const simulateLogin = async (email, password) => {
-    try {
-      console.log("Simulating login with:", email, password);
-  
-      // Simulate a delay to mimic the asynchronous nature of authentication
-      await new Promise(resolve => setTimeout(resolve, 1000));
-  
-      // Simulate successful login
-      const simulatedUser = {
-        uid: "simulatedUserId", // Replace with a unique identifier
-        email: email,
-      };
-      navigation.navigate("Home");
-  
-      console.log("Simulated user logged in:", simulatedUser.uid);
-  
-      // Simulate returning user data
-      return simulatedUser;
+      if (type === "success") {
+        const credential = firebase.auth.GoogleAuthProvider.credential(null, accessToken);
+        await firebase.auth().signInWithCredential(credential);
+
+        // Now the user is signed in with Firebase
+        // Handle user information or navigate to another screen
+        console.log("Firebase user data:", user);
+        // navigation.navigate('Home');
+      } else {
+        console.log("Google sign-in failed");
+      }
     } catch (error) {
-      // Simulate login error
-      console.error("Simulated Login Error:", error.message);
-      throw error;
+      console.error("Error during Google sign-in:", error);
     }
   };
-  
-  // Example usage
-  const handleLogin = async () => {
-    try {
-      const simulatedUser = await simulateLogin(email, password);
-      // You can use the simulated user data as needed
-      console.log("Simulated user data:", simulatedUser);
-      // Navigate to another screen after successful login
-      // navigation.navigate("Home");
-    } catch (error) {
-      // Handle login error
-      console.error("Simulated Login Error:", error.message);
-    }
-  };
-  
 
   return (
     <ImageBackground source={BackgroundImage} style={styles.backgroundImage}>
       <View style={styles.container}>
         <Image source={YourLogo} style={styles.logo} resizeMode="contain" />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-        />
-        <Button
-          mode="contained"
-          style={styles.loginButton}
-          onPress={handleLogin}
-        >
+        <TextInput style={styles.input} placeholder="Email" />
+        <TextInput style={styles.input} placeholder="Password" secureTextEntry />
+        <Button mode="contained" style={styles.loginButton}>
           <Text style={styles.buttonText}>Login</Text>
         </Button>
         <View style={styles.linksContainer}>
-          <Text
-            style={styles.linkText}
-            onPress={() => navigation.navigate("Register")}
-          >
+          <Text style={styles.linkText} onPress={() => navigation.navigate("Register")}>
             Don't have an account? Register here
           </Text>
-          <Text
-            style={styles.linkText}
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
+          <Text style={styles.linkText} onPress={() => navigation.navigate("ForgotPassword")}>
             Forgot Password?
           </Text>
         </View>
+        <Button mode="contained" style={styles.googleButton} onPress={handleGoogleLogin}>
+          <View style={styles.googleButtonContent}>
+            <Ionicons name="logo-google" size={15} color="#fff" />
+            <Text style={styles.googleText}>Login with Google</Text>
+          </View>
+        </Button>
       </View>
     </ImageBackground>
   );
 };
+
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
@@ -126,6 +97,23 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "#FFF",
     fontWeight: "800",
+  },
+  googleButton: {
+    width: "100%",
+    height: 40,
+    borderRadius: 0,
+    backgroundColor: "crimson",
+    marginTop: 8,
+  },
+  googleButtonContent: {
+    flexDirection: 'row',
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  googleText: {
+    color: "#FFF",
+    fontWeight: "900",
   },
   linksContainer: {
     marginTop: 12,

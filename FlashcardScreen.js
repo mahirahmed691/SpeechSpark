@@ -1,8 +1,31 @@
-import { Platform, SafeAreaView, Text, FlatList, TouchableWithoutFeedback, View, Image} from "react-native";
+// FlashcardScreen.js
+import React, { useState } from "react";
+import {
+  Platform,
+  SafeAreaView,
+  Text,
+  FlatList,
+  TouchableWithoutFeedback,
+  View,
+  Image,
+  TouchableOpacity,
+} from "react-native";
+import { IconButton } from "react-native-paper";
 import { flashcardsData } from "./flashcardData";
+import { Button } from "react-native-paper";
 import styles from "./styles";
+
 const FlashcardScreen = ({ route, navigation }) => {
   const { params } = route;
+  const [isTileView, setIsTileView] = useState(false);
+  const [key, setKey] = useState("tileViewKey");
+
+  const toggleViewMode = () => {
+    setIsTileView(!isTileView);
+    setKey((prevKey) =>
+      prevKey === "tileViewKey" ? "listViewKey" : "tileViewKey"
+    );
+  };
 
   const isIpad = Platform.OS === "ios" && Platform.isPad;
 
@@ -22,7 +45,7 @@ const FlashcardScreen = ({ route, navigation }) => {
     );
   }
 
-  const { title, onAddTile } = params;
+  const { title } = params;
   const flashcards = flashcardsData[title] || [];
 
   if (!flashcards) {
@@ -38,22 +61,44 @@ const FlashcardScreen = ({ route, navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.cardText}>{`Flashcards for ${title}`}</Text>
+      <TouchableOpacity onPress={toggleViewMode} style={styles.toggleButtonContainer}>
+        <IconButton
+          icon={isTileView ? "view-list" : "view-grid"}
+          color="#fff"
+          size={30} 
+          style={styles.toggleViewButton}
+        />
+      </TouchableOpacity>
       <FlatList
+        key={key}
         data={flashcards}
         keyExtractor={(item) => item?.id?.toString()}
+        numColumns={isTileView ? 3 : 1}
         renderItem={({ item }) => (
           <TouchableWithoutFeedback
             onPress={() => {
               navigation.navigate("Flashcard", { item });
             }}
           >
-            <View style={styles.visualFlashcard}>
-              <Image
-                source={{ uri: item?.image }}
-                style={styles.visualFlashcardImage}
-              />
-              <Text style={styles.visualFlashcardTitle}>{item?.title}</Text>
-            </View>
+            {isTileView ? (
+              <View style={styles.visualFlashcardTile}>
+                <Image
+                  source={{ uri: item?.image }}
+                  style={styles.visualFlashcardImageTile}
+                />
+                <Text style={styles.visualFlashcardImageTitle}>
+                  {item?.title}
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.visualFlashcard}>
+                <Image
+                  source={{ uri: item?.image }}
+                  style={styles.visualFlashcardImage}
+                />
+                <Text style={styles.visualFlashcardTitle}>{item?.title}</Text>
+              </View>
+            )}
           </TouchableWithoutFeedback>
         )}
       />

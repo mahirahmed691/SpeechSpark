@@ -65,7 +65,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
   const [isThumbsDownSelected, setThumbsDownSelected] = useState(false);
   const [createTileModalVisible, setCreateTileModalVisible] = useState(false);
   const [newTileText, setNewTileText] = useState("");
-  const [isListLayout, setListLayout] = useState(true); 
+  const [isListLayout, setListLayout] = useState(true);
 
   const handleThumbsUp = () => {
     setThumbsUpSelected(!isThumbsUpSelected);
@@ -112,7 +112,9 @@ const HomeScreen = ({ navigation, animatedValue }) => {
       return "📚";
     } else if (currentHour >= 18 && currentHour < 19) {
       return "🍽️";
-    } else if (currentHour >= 20 || (currentHour >= 0 && currentHour < 6)) {
+    } else if (currentHour >= 20 && currentHour < 21) {
+      return "📺";
+    } else if (currentHour >= 21 || (currentHour >= 0 && currentHour < 7)) {
       return "😴";
     } else {
       return "🆓";
@@ -126,7 +128,6 @@ const HomeScreen = ({ navigation, animatedValue }) => {
   );
 
   useEffect(() => {
-
     const getCurrentTime = () => {
       const now = new Date();
       const hours = now.getHours();
@@ -142,8 +143,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
 
     const interval = setInterval(() => {
       setCurrentTimes(getCurrentTime());
-    }, 60 * 1000); 
-
+    }, 60 * 1000);
 
     return () => clearInterval(interval);
   }, []);
@@ -152,12 +152,12 @@ const HomeScreen = ({ navigation, animatedValue }) => {
     <SafeAreaView style={styles.container}>
       <View
         style={{
-          backgroundColor: "#F0F0F0",
+          // backgroundColor: "#A9CFCF",
           justifyContent: "space-around",
           flexDirection: "row",
-          paddingVertical: 20,
+          paddingVertical: 0,
           marginBottom: 10,
-          padding: 20,
+          padding: 0,
         }}
       >
         <Image
@@ -165,10 +165,10 @@ const HomeScreen = ({ navigation, animatedValue }) => {
           style={styles.logo}
           resizeMode="contain"
         />
-        <View
+        {/* <View
           style={{
             width: "33%",
-            backgroundColor: "#F0f0F0",
+            backgroundColor: "#rgb(55,183,253)",
             height: 70,
             width: 70,
             justifyContent: "center",
@@ -178,19 +178,18 @@ const HomeScreen = ({ navigation, animatedValue }) => {
           <Text
             style={{
               textAlign: "center",
-              color: "#000",
-              height: 40,
+              color: "#fff",
+              height: 50,
               width: 80,
               fontWeight: "900",
               lineHeight: 50,
               alignSelf: "center",
-              fontFamily: "serif",
-              letterSpacing: 2.5,
+              letterSpacing: 1,
             }}
           >
             {currentTimes}
           </Text>
-        </View>
+        </View> */}
         <Flashcard text={currentTimeOfDay} animatedValue={animatedValue} />
       </View>
       <View style={styles.searchContainer}>

@@ -7,8 +7,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Platform,
-  Image, // Import Image component from react-native
+  Image,
 } from "react-native";
+import { CheckBox } from "react-native-elements";
 import { TextInput } from "react-native-paper";
 import Slider from "@react-native-community/slider";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -32,23 +33,6 @@ const DiaryScreen = () => {
     },
     {
       id: 3,
-      text: "Rate your overall mood on a scale from 1 to 10.",
-      type: "radio",
-      options: [
-        { label: "1", value: 1 },
-        { label: "2", value: 2 },
-        { label: "3", value: 3 },
-        { label: "4", value: 4 },
-        { label: "5", value: 5 },
-        { label: "6", value: 6 },
-        { label: "7", value: 7 },
-        { label: "8", value: 8 },
-        { label: "9", value: 9 },
-        { label: "10", value: 10 },
-      ],
-    },
-    {
-      id: 4,
       text: "Did you achieve your goals for the day?",
       type: "radio",
       options: [
@@ -57,17 +41,22 @@ const DiaryScreen = () => {
       ],
     },
     {
-      id: 5,
+      id: 4,
       text: "What is one thing you learned today?",
       type: "text",
     },
   ];
+
   const [diaryData, setDiaryData] = useState({
     selectedDate: new Date(),
     isPlaying: false,
     questions: exampleQuestions,
     responses: [],
+    showDatePicker: false,
+    location: null,
+    city: "",
   });
+
   const [recording, setRecording] = useState();
   const [sound, setSound] = useState();
 
@@ -83,11 +72,32 @@ const DiaryScreen = () => {
     setDiaryData({ ...diaryData, responses: newResponses });
   };
 
-  const handleRadioResponseChange = (index, response) => {
-    const newRadioResponses = [...diaryData.responses];
-    newRadioResponses[index] = response;
-    setDiaryData({ ...diaryData, responses: newRadioResponses });
-  };
+  useEffect(() => {
+    // Function to get location automatically
+    const getLocation = async () => {
+      try {
+        const { status } = await Location.requestForegroundPermissionsAsync();
+        if (status !== "granted") {
+          alert("Sorry, we need location permissions to make this work!");
+          return;
+        }
+
+        const location = await Location.getCurrentPositionAsync({});
+        setDiaryData({ ...diaryData, location });
+
+        // Convert location to city
+        convertLocationToCity(
+          location.coords.latitude,
+          location.coords.longitude
+        );
+      } catch (error) {
+        console.error("Error getting location", error);
+      }
+    };
+
+    // Call the function to get location when the component mounts
+    getLocation();
+  }, []);
 
   const renderQuestions = () => {
     return diaryData.questions.map((question, index) => {
@@ -104,15 +114,16 @@ const DiaryScreen = () => {
             );
           case "radio":
             return (
-              <Slider
-                style={{ margin: 10 }}
-                radioButtons={question.options.map((option) => ({
-                  ...option,
-                  selected: diaryData.responses[index]?.value === option.value,
-                }))}
-                onPress={(value) => handleRadioResponseChange(index, value)}
-                layout="row"
-                containerStyle={{ marginTop: 8 }}
+              <CheckBox
+                title={`Selected Value: ${
+                  diaryData.responses[index]?.value ? "Yes" : "No"
+                }`}
+                checked={diaryData.responses[index]?.value}
+                onPress={() =>
+                  handleResponseChange(index, {
+                    value: !diaryData.responses[index]?.value,
+                  })
+                }
               />
             );
           case "slider":
@@ -224,7 +235,7 @@ const DiaryScreen = () => {
         await recording.stopAndUnloadAsync();
         const uri = recording.getURI();
         setDiaryData({ ...diaryData, audioUri: uri });
-        setRecording(null); 
+        setRecording(null);
       } else {
         console.warn("No recording in progress to stop.");
       }
@@ -236,7 +247,6 @@ const DiaryScreen = () => {
   const playRecording = async () => {
     try {
       if (sound) {
-
         const status = await sound.getStatusAsync();
         if (!status.isLoaded) {
           console.warn("Sound is not loaded.");
@@ -286,20 +296,6 @@ const DiaryScreen = () => {
     }
   };
 
-  const convertLocationToCity = async () => {
-    const { coords } = diaryData.location;
-    const apiKey = "e0b0f59d76ea4bdb847dc83c9c1f6d06"; // Replace with your OpenCage API key
-    const apiUrl = `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${coords.latitude}+${coords.longitude}&pretty=1`;
-
-    try {
-      const response = await axios.get(apiUrl);
-      const city = response.data.results[0].components.city;
-      setDiaryData({ ...diaryData, city });
-    } catch (error) {
-      console.error("Error converting location to city", error);
-    }
-  };
-
   const captureLocation = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -309,19 +305,31 @@ const DiaryScreen = () => {
       }
 
       const location = await Location.getCurrentPositionAsync({});
-      const apiKey = "e0b0f59d76ea4bdb847dc83c9c1f6d06"; // Replace with your OpenCage API key
-      const apiUrl = `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${location.coords.latitude}+${location.coords.longitude}&pretty=1`;
+      setDiaryData({ ...diaryData, location });
 
-      try {
-        const response = await axios.get(apiUrl);
-        const city = response.data.results[0].components.city;
-        setDiaryData({ ...diaryData, city });
-      } catch (error) {
-        console.error("Error converting location to city", error);
-      }
-
+      // Convert location to city
+      convertLocationToCity(
+        location.coords.latitude,
+        location.coords.longitude
+      );
     } catch (error) {
       console.error("Error capturing location", error);
+    }
+  };
+
+  const convertLocationToCity = async (latitude, longitude) => {
+    const apiKey = "e0b0f59d76ea4bdb847dc83c9c1f6d06"; // Replace with your OpenCage API key
+    const apiUrl = `https://api.opencagedata.com/geocode/v1/json?key=${apiKey}&q=${latitude}+${longitude}&pretty=1`;
+
+    try {
+      const response = await axios.get(apiUrl);
+      const city = response.data.results[0].components.city;
+      setDiaryData({ ...diaryData, city });
+    } catch (error) {
+      console.error(
+        "Error converting location to city",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -352,27 +360,63 @@ const DiaryScreen = () => {
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          backgroundColor: "#FFF",
+          backgroundColor: "#F0F0F0",
+          marginBottom: 20,
+          padding: 10,
         }}
       >
-        <Text style={styles.headerText}>My Digital Diary</Text>
-        <View style={{ flexDirection: "row" }}>
-          <IconButton
-            iconName="map-marker"
-            iconSize={20}
-            iconColor="#FF89A9"
-            onPress={captureLocation}
-            buttonText={diaryData.city}
-          />
-          {diaryData.location && (
-            <Text style={styles.locationText}>
-              Location: {diaryData.location.coords.latitude.toFixed(2)},{" "}
-              {diaryData.location.coords.longitude.toFixed(2)}
-            </Text>
-          )}
+        <View style={{ flexDirection: "column", width: "80%" }}>
+          <Text style={styles.headerText}>E-Diary</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              marginLeft: -15,
+              justifyContent: "space-between",
+            }}
+          >
+            <IconButton
+              iconName="calendar"
+              iconSize={20}
+              iconColor="#FE89A9"
+              onPress={showDatepicker}
+              buttonText={diaryData.selectedDate.toDateString()}
+            />
+          </View>
+          <View>
+            {diaryData.showDatePicker && (
+              <DateTimePicker
+                value={diaryData.selectedDate}
+                mode="date"
+                onChange={onDateChange}
+                color={styles.datePickerText}
+                style={{ marginRight: 20, alignSelf: "center" }}
+              />
+            )}
+          </View>
+        </View>
+
+        <View>
+          <View style={{flexDirection:'row', justifyContent:"space-around"}}>
+            {diaryData.location && (
+              <Text style={styles.locationText}>
+                Location
+                {`${diaryData.location.coords.latitude.toFixed(
+                  2
+                )}, ${diaryData.location.coords.longitude.toFixed(2)}`}
+              </Text>
+            )}
+            <IconButton
+              iconName="map-marker"
+              iconSize={20}
+              iconColor="#37B7FD"
+              onPress={captureLocation}
+            />
+            <Text style={{position:'absolute', right:50, top:8, fontWeight:"900", fontSize:15}}>{diaryData.city}</Text>
+          </View>
+        
           <IconButton
             iconName={recording ? "stop" : "microphone"}
-            iconColor="#FE89A9"
+            iconColor="#A9CFCF"
             iconSize={20}
           />
           {renderPlaybackButton()}
@@ -380,23 +424,6 @@ const DiaryScreen = () => {
       </View>
 
       <ScrollView style={{ backgroundColor: "#FFF" }}>
-        <View style={{ flexDirection: "row", justifyContent: "flex-start" }}>
-          <IconButton
-            iconName="calendar"
-            iconSize={20}
-            iconColor="#FE89A9"
-            onPress={showDatepicker}
-            buttonText={diaryData.selectedDate.toDateString()}
-          />
-          {diaryData.showDatePicker && (
-            <DateTimePicker
-              value={diaryData.selectedDate}
-              mode="date"
-              onChange={onDateChange}
-              color={styles.datePickerText}
-            />
-          )}
-        </View>
         {renderQuestions()}
         <TouchableOpacity style={styles.imageButton} onPress={pickImage}>
           <Text style={styles.buttonText}>Pick an Image</Text>
@@ -421,15 +448,22 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFF",
   },
   headerText: {
-    fontSize: 25,
+    fontSize: 30,
     fontWeight: "bold",
     marginLeft: 10,
-    color: "#A9CFCF",
+    color: "#000",
+    marginTop: 10,
+    letterSpacing: 12,
+    textDecorationColor: "pink",
   },
   datePickerText: {
     fontSize: 18,
-    color: "#38B5FD",
+    color: "#000",
     fontWeight: "800",
+  },
+  locationText: {
+    fontSize: 16,
+    color: "#000",
   },
   questionContainer: {
     marginBottom: 16,
@@ -470,11 +504,11 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
   saveButtonText: {
-    color: "#FFF", // White text color
+    color: "#FFF",
     fontSize: 16,
   },
   buttonText: {
-    color: "#FFF", // White text color
+    color: "#FFF",
     fontSize: 16,
   },
   icon: {
