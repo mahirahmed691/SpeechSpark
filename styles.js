@@ -301,7 +301,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     padding: 20,
-    paddingBottom: 300,
   },
   title: {
     fontSize: 32,
@@ -324,15 +323,18 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   quoteCard: {
-    backgroundColor: "#D1EAF5",
-    borderRadius: 8,
-    padding: 16,
-    marginRight: 16,
-    width: 250,
+    backgroundColor: "#FFFF",
+    marginRight: 20,
+    padding:20,
+    width: "98%",
+    borderTopRightRadius:20,
+    borderBottomRightRadius:20,
   },
   quoteText: {
-    fontSize: 14,
-    color: "#1E90FF",
+    fontSize: 18,
+    color: "#000",
+    width:"80%",
+    fontWeight:'800'
   },
   emojiSelector: {
     flexDirection: "row",

@@ -8,12 +8,12 @@ import {
   Platform,
   Vibration,
 } from "react-native";
-import {  TextInput} from "react-native-paper"
+import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import styles from "./styles";
 import Modal from "react-native-modal";
 
-const SECTION_HEIGHT = 300;
+const SECTION_HEIGHT = 320;
 const commonEmojis = ["😊", "😢", "😡", "😴"];
 
 const MentalHealthScreen = () => {
@@ -80,16 +80,14 @@ const MentalHealthScreen = () => {
     // Fetch dynamic quotes about mental health from an API
     const fetchQuotes = async () => {
       try {
-        const response = await fetch(
-          "https://api.example.com/mental-health-quotes"
-        );
+        const response = await fetch("https://api.quotable.io/random");
 
         if (!response.ok) {
           throw new Error("Failed to fetch quotes");
         }
 
         const data = await response.json();
-        setQuotes(data.quotes); // Assuming the API returns an array of quotes
+        setQuotes([data.content]);
       } catch (error) {
         console.error("Error fetching quotes:", error.message);
       }
@@ -153,6 +151,17 @@ const MentalHealthScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      {quotes.length > 0 && (
+        <View style={styles.section}>
+          <View horizontal showsHorizontalScrollIndicator={false}>
+            {quotes.map((quote, index) => (
+              <View key={index} style={styles.quoteCard}>
+                <Text style={styles.quoteText}>{quote}</Text>
+              </View>
+            ))}
+          </View>
+        </View>
+      )}
       <ScrollView
         ref={scrollViewRef}
         contentContainerStyle={styles.scrollContainer}
@@ -208,19 +217,6 @@ const MentalHealthScreen = () => {
             iconColor={"#FFF"}
           />
         </View>
-
-        {quotes.length > 0 && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Quotes About Mental Health</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {quotes.map((quote, index) => (
-                <View key={index} style={styles.quoteCard}>
-                  <Text style={styles.quoteText}>{quote}</Text>
-                </View>
-              ))}
-            </ScrollView>
-          </View>
-        )}
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Wellness Tips</Text>
@@ -282,7 +278,7 @@ const MentalHealthScreen = () => {
             patterns.
           </Text>
           <TextInput
-           style={[styles.input, styles.textInput]}
+            style={[styles.input, styles.textInput]}
             placeholder="Sleep Hours (e.g., 7.5)"
             keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
             value={sleepHours}
@@ -365,7 +361,7 @@ const MentalHealthScreen = () => {
             gratitude.
           </Text>
           <TextInput
-           style={[styles.input, styles.textInput]}
+            style={[styles.input, styles.textInput]}
             placeholder="What are you grateful for?"
             value={gratitudeText}
             onChangeText={(text) => setGratitudeText(text)}

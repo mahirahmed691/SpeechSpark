@@ -20,6 +20,10 @@ import * as Location from "expo-location";
 import axios from "axios";
 
 const DiaryScreen = () => {
+  const [recording, setRecording] = useState();
+  const [sound, setSound] = useState();
+  const [isRecording, setIsRecording] = useState(false);
+  
   const exampleQuestions = [
     {
       id: 1,
@@ -57,8 +61,6 @@ const DiaryScreen = () => {
     city: "",
   });
 
-  const [recording, setRecording] = useState();
-  const [sound, setSound] = useState();
 
   useEffect(() => {
     if (diaryData.location) {
@@ -206,29 +208,30 @@ const DiaryScreen = () => {
   const startRecording = async () => {
     try {
       const { granted } = await Audio.requestPermissionsAsync();
-
+  
       if (!granted) {
         alert("Sorry, we need audio recording permissions to make this work!");
         return;
       }
-
+  
       // Set audio mode
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       });
-
-      const recording = new Audio.Recording();
-      await recording.prepareToRecordAsync(
+  
+      const newRecording = new Audio.Recording();
+      await newRecording.prepareToRecordAsync(
         Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
       );
-      await recording.startAsync();
-      setRecording(recording);
+      await newRecording.startAsync();
+      setRecording(newRecording);
+      setIsRecording(true);
     } catch (error) {
       console.error("Error starting recording", error);
     }
   };
-
+  
   const stopRecording = async () => {
     try {
       if (recording) {
@@ -236,6 +239,7 @@ const DiaryScreen = () => {
         const uri = recording.getURI();
         setDiaryData({ ...diaryData, audioUri: uri });
         setRecording(null);
+        setIsRecording(false);
       } else {
         console.warn("No recording in progress to stop.");
       }
@@ -243,7 +247,7 @@ const DiaryScreen = () => {
       console.error("Error stopping recording", error);
     }
   };
-
+  
   const playRecording = async () => {
     try {
       if (sound) {
@@ -252,7 +256,7 @@ const DiaryScreen = () => {
           console.warn("Sound is not loaded.");
           return;
         }
-
+  
         if (status.isLoaded && !status.isPlaying) {
           await sound.playAsync();
           setDiaryData({ ...diaryData, isPlaying: true });
@@ -264,7 +268,7 @@ const DiaryScreen = () => {
       console.error("Error playing recording", error);
     }
   };
-
+  
   const stopPlayback = async () => {
     try {
       if (sound) {
@@ -275,9 +279,17 @@ const DiaryScreen = () => {
       console.error("Error stopping playback", error);
     }
   };
+  
 
   const renderPlaybackButton = () => {
-    if (diaryData.isPlaying) {
+    if (isRecording) {
+      return (
+        <TouchableOpacity style={styles.buttonContainer} onPress={stopRecording}>
+          <Icon name="stop" size={20} color="#FE89A9" style={styles.icon} />
+          <Text style={styles.buttonText}>Stop Recording</Text>
+        </TouchableOpacity>
+      );
+    } else if (diaryData.isPlaying) {
       return (
         <TouchableOpacity style={styles.buttonContainer} onPress={stopPlayback}>
           <Icon name="stop" size={20} color="#FE89A9" style={styles.icon} />
@@ -288,13 +300,18 @@ const DiaryScreen = () => {
       return (
         <TouchableOpacity
           style={styles.buttonContainer}
-          onPress={playRecording}
+          onPress={isRecording ? stopRecording : startRecording}
         >
-          <Icon name="play" size={20} color="#FE89A9" style={styles.icon} />
+          <Icon
+            name={isRecording ? "stop" : "microphone"}
+            iconColor="#fff"
+            iconSize={20}
+          />
         </TouchableOpacity>
       );
     }
   };
+  
 
   const captureLocation = async () => {
     try {
@@ -396,7 +413,7 @@ const DiaryScreen = () => {
         </View>
 
         <View>
-          <View style={{flexDirection:'row', justifyContent:"space-around"}}>
+          <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
             {diaryData.location && (
               <Text style={styles.locationText}>
                 Location
@@ -411,14 +428,19 @@ const DiaryScreen = () => {
               iconColor="#37B7FD"
               onPress={captureLocation}
             />
-            <Text style={{position:'absolute', right:50, top:8, fontWeight:"900", fontSize:15}}>{diaryData.city}</Text>
+            <Text
+              style={{
+                position: "absolute",
+                right: 50,
+                top: 8,
+                fontWeight: "900",
+                fontSize: 15,
+              }}
+            >
+              {diaryData.city}
+            </Text>
           </View>
-        
-          <IconButton
-            iconName={recording ? "stop" : "microphone"}
-            iconColor="#A9CFCF"
-            iconSize={20}
-          />
+
           {renderPlaybackButton()}
         </View>
       </View>
