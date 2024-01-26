@@ -323,18 +323,19 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   quoteCard: {
-    backgroundColor: "#FFFF",
+    backgroundColor: "#37B7FD",
     marginRight: 20,
     padding:20,
-    width: "98%",
+    width: "95%",
     borderTopRightRadius:20,
     borderBottomRightRadius:20,
   },
   quoteText: {
-    fontSize: 18,
-    color: "#000",
-    width:"80%",
-    fontWeight:'800'
+    fontSize: 15,
+    color: "#FFF",
+    width:"98%",
+    fontWeight:'500',
+    textAlign:'justify'
   },
   emojiSelector: {
     flexDirection: "row",
