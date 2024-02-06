@@ -334,7 +334,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     color: "#FFF",
     width:"98%",
-    fontWeight:'500',
+    fontWeight:'00',
     textAlign:'justify'
   },
   emojiSelector: {
@@ -521,6 +521,82 @@ const styles = StyleSheet.create({
     top: 220,
     alignSelf: "center",
   },
+  sleepQualityContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+  },
+  sleepQualityLabel: {
+    fontSize: 16,
+    marginRight: 10,
+    fontWeight:'700',
+    color: "#000", // Adjust color as needed
+  },
+  sleepQualityButton: {
+    width: 35,
+    height: 35,
+    borderRadius: 20,
+    backgroundColor: "#A9CFCF", // Adjust background color as needed
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 5,
+  },
+  selectedSleepQualityButton: {
+    backgroundColor: "#37B7FD", // Adjust background color for selected state
+  },
+  sleepQualityButtonText: {
+    fontSize: 18,
+    color: "#FFF", // Adjust text color as needed
+  },
+  sleepTrackerInput:{
+    backgroundColor:'#fff'
+  },
+  showTipsButtonText:{
+    marginTop:20,
+    fontWeight:'900'
+  },
+  fullScreenModal: {
+    margin: 0,
+    width:"100%",
+    alignSelf: 'center',
+  },
+  wellnessTipContent:{
+    height:"100%",
+    backgroundColor:'#fff'
+  },
+  wellnessModalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+    marginLeft:20
+  },
+  modalTipText:{
+    marginLeft:20,
+    width:'90%',
+    marginTop:0,
+    marginBottom:10,
+    fontWeight:'900'
+  },
+  closeModalButton:{
+    width:'90%',
+    backgroundColor:'#rgb(169,207,207)',
+    alignSelf:'center',
+    padding:15,
+    borderRadius:20
+  },
+  closeModalButtonText:{
+    textAlign:'center',
+    color:'white',
+    fontWeight:'900'
+  },
+  tipImage: {
+    width: '95%',
+    height: 250, // Set the height as needed
+    borderRadius: 8,
+    alignSelf:'center',
+    marginBottom:20
+  },
+
 });
 
 export default styles;

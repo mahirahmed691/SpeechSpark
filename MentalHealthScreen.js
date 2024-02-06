@@ -5,7 +5,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  Platform,
+  Image,
   Vibration,
 } from "react-native";
 import { TextInput } from "react-native-paper";
@@ -15,6 +15,49 @@ import Modal from "react-native-modal";
 
 const SECTION_HEIGHT = 320;
 const commonEmojis = ["😊", "😢", "😡", "😴"];
+
+const WellnessTipsModal = ({ isVisible, onClose }) => {
+  const wellnessTips = [
+    {
+      text: "Tip 1: Take breaks and stretch regularly.",
+      image:
+        "https://cdn.dribbble.com/users/1138814/screenshots/16521383/media/331e7b8717ac697f7f9a4865462be078.jpeg?resize=1600x1200&vertical=center", // Replace with actual image URL
+    },
+    {
+      text: "Tip 2: Practice mindfulness meditation for 5 minutes each day.",
+      image:
+        "https://cdn.dribbble.com/users/101577/screenshots/3144269/media/9a0edd9209d2430f4118d607f18e1ce7.gif", // Replace with actual image URL
+    },
+    {
+      text: "Tip 3: Engage in activities that bring joy and relaxation.",
+      image:
+        "https://cdn.dribbble.com/users/1147613/screenshots/14992197/media/533b657f9bf9cb764b7934e1be1aee05.png?resize=1600x1200&vertical=center", // Replace with actual image URL
+    },
+  ];
+
+  return (
+    <Modal
+      isVisible={isVisible}
+      onBackdropPress={onClose}
+      style={styles.fullScreenModal}
+    >
+      <SafeAreaView style={styles.wellnessTipContent}>
+        <Text style={styles.wellnessModalTitle}>Wellness Tips</Text>
+        <ScrollView>
+          {wellnessTips.map((tip, index) => (
+            <View key={index} style={styles.tipContainer}>
+              <Text style={styles.modalTipText}>{tip.text}</Text>
+              <Image source={{ uri: tip.image }} style={styles.tipImage} />
+            </View>
+          ))}
+        </ScrollView>
+        <TouchableOpacity style={styles.closeModalButton} onPress={onClose}>
+          <Text style={styles.closeModalButtonText}>Close</Text>
+        </TouchableOpacity>
+      </SafeAreaView>
+    </Modal>
+  );
+};
 
 const MentalHealthScreen = () => {
   const [quotes, setQuotes] = useState([]);
@@ -30,8 +73,19 @@ const MentalHealthScreen = () => {
   const [activityText, setActivityText] = useState("");
   const [gratitudeEntries, setGratitudeEntries] = useState([]);
   const [gratitudeText, setGratitudeText] = useState("");
+  const [sleepQuality, setSleepQuality] = useState(0);
+  const [isWellnessTipsModalVisible, setIsWellnessTipsModalVisible] =
+    useState(false);
 
   let vibrationInterval;
+
+  const handleShowWellnessTips = () => {
+    setIsWellnessTipsModalVisible(true);
+  };
+
+  const handleCloseWellnessTips = () => {
+    setIsWellnessTipsModalVisible(false);
+  };
 
   const startBreathingExercise = () => {
     setIsBreathingModalVisible(true);
@@ -74,6 +128,12 @@ const MentalHealthScreen = () => {
       ]);
       setGratitudeText("");
     }
+  };
+
+  const handleSaveSleepTracking = () => {
+    console.log("Sleep Hours:", sleepHours);
+    console.log("Wake-up Time:", wakeUpTime);
+    // You can add logic here to save sleep tracking data to your backend or store it locally
   };
 
   useEffect(() => {
@@ -225,7 +285,18 @@ const MentalHealthScreen = () => {
             practice mindfulness, and engage in activities that bring joy and
             relaxation.
           </Text>
+          <TouchableOpacity
+            style={styles.showTipsButton}
+            onPress={handleShowWellnessTips}
+          >
+            <Text style={styles.showTipsButtonText}>Show More Details</Text>
+          </TouchableOpacity>
         </View>
+
+        <WellnessTipsModal
+          isVisible={isWellnessTipsModalVisible}
+          onClose={handleCloseWellnessTips}
+        />
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Mindfulness Meditation</Text>
@@ -274,22 +345,52 @@ const MentalHealthScreen = () => {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Sleep Tracker</Text>
           <Text style={styles.content}>
-            Track your sleep hours and wake-up time to monitor your sleep
-            patterns.
+            Track your sleep hours, wake-up time, and sleep quality to monitor
+            your sleep patterns.
           </Text>
-          <TextInput
-            style={[styles.input, styles.textInput]}
-            placeholder="Sleep Hours (e.g., 7.5)"
-            keyboardType={Platform.OS === "ios" ? "decimal-pad" : "numeric"}
-            value={sleepHours}
-            onChangeText={(text) => setSleepHours(text)}
-          />
-          <TextInput
-            style={[styles.input, styles.textInput]}
-            placeholder="Wake-up Time (e.g., 07:30 AM)"
-            value={wakeUpTime}
-            onChangeText={(text) => setWakeUpTime(text)}
-          />
+          <View style={styles.sleepTrackerInputContainer}>
+            <TextInput
+              style={[styles.input, styles.sleepTrackerInput]}
+              placeholder="Sleep Hours (e.g., 7.5)"
+              keyboardType="numeric" // Use numeric keyboard for sleep hours
+              value={sleepHours}
+              onChangeText={(text) => {
+                // Allow only numbers and a single dot for decimal
+                setSleepHours(text.replace(/[^0-9.]/g, ""));
+              }}
+            />
+            <TextInput
+              style={[styles.input, styles.sleepTrackerInput]}
+              placeholder="Wake-up Time (e.g., 07:30 AM)"
+              keyboardType="numeric" // Use numeric keyboard for wake-up time
+              value={wakeUpTime}
+              onChangeText={(text) => {
+                // Allow only numbers and colon for time format
+                setWakeUpTime(text.replace(/[^0-9:]/g, ""));
+              }}
+            />
+          </View>
+          <View style={styles.sleepQualityContainer}>
+            <Text style={styles.sleepQualityLabel}>Sleep Quality:</Text>
+            {[1, 2, 3, 4, 5].map((rating) => (
+              <TouchableOpacity
+                key={rating}
+                style={[
+                  styles.sleepQualityButton,
+                  sleepQuality === rating && styles.selectedSleepQualityButton,
+                ]}
+                onPress={() => setSleepQuality(rating)}
+              >
+                <Text style={styles.sleepQualityButtonText}>{rating}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity
+            style={styles.saveButton}
+            onPress={handleSaveSleepTracking}
+          >
+            <Text style={styles.saveButtonText}>Save Sleep Data</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.section}>
