@@ -12,8 +12,7 @@
       "backgroundColor": "#A9CECF"
     },
     "updates": {
-      "fallbackToCacheTimeout": 0,
-      "useClassicUpdates": true
+      "fallbackToCacheTimeout": 0
     },
     "assetBundlePatterns": [
       "**/*"
@@ -24,14 +23,14 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff",
-        "permissions": ["READ_EXTERNAL_STORAGE", "WRITE_EXTERNAL_STORAGE"]
+        "foregroundImage": "./assets/Logo.png",
+        "backgroundColor": "#ffffff"
+
       },
       "package": "com.mahir93.SpeechSparkApp"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "favicon": "./assets/Logo.png"
     },
     "extra": {
       "eas": {
