@@ -3,38 +3,58 @@ export const flashcardsData = {
     {
       id: 1,
       image:
-        "https://cdn.dribbble.com/userupload/3937337/file/original-d0a27a9c29309bf9b9af7ee05b7c59f9.png?resize=1504x1128",
-      title: "I want coffee",
-    },
-    {
-      id: 2,
-      image:
         "https://cdn.dribbble.com/users/357768/screenshots/6782211/05_fin_4x.png?resize=1600x1200&vertical=center",
       title: "I want breakfast",
     },
     {
-      id: 3,
-      image:
-        "https://cdn.dribbble.com/users/185738/screenshots/7576171/media/84c1d471d37341d1d74c8270f917518c.jpg?resize=1600x1200&vertical=center",
-      title: "I want cereal",
-    },
-    {
-      id: 1,
-      image:
-        "https://cdn.dribbble.com/userupload/3937337/file/original-d0a27a9c29309bf9b9af7ee05b7c59f9.png?resize=1504x1128",
-      title: "I want coffee",
-    },
-    {
       id: 2,
       image:
-        "https://cdn.dribbble.com/users/357768/screenshots/6782211/05_fin_4x.png?resize=1600x1200&vertical=center",
-      title: "I want breakfast",
+        "https://cdn.dribbble.com/users/125948/screenshots/4705312/media/2aea41cd2980cc74bd94e3ed31bda7ba.jpg?resize=800x600&vertical=center",
+      title: "I want coffee",
     },
+
     {
       id: 3,
       image:
-        "https://cdn.dribbble.com/users/185738/screenshots/7576171/media/84c1d471d37341d1d74c8270f917518c.jpg?resize=1600x1200&vertical=center",
+        "https://cdn.dribbble.com/users/421571/screenshots/16684596/media/26999fbd01bc351f64bbefe1159e35fb.jpg?resize=1600x1200&vertical=center",
       title: "I want cereal",
+    },
+    {
+      id: 4,
+      image:
+        "https://cdn.dribbble.com/userupload/2418216/file/original-febfdc4ec61132cd8024b023b3eb4f2f.jpg?resize=1504x1128",
+      title: "I want pancake",
+    },
+    {
+      id: 5,
+      image:
+        "https://cdn.dribbble.com/userupload/5201813/file/original-2b5fc7ad16fdd8b59783e8c1e5870e27.jpeg?resize=1504x1050",
+      title: "I want oats",
+    },
+    {
+      id: 6,
+      image:
+        "https://cdn.dribbble.com/users/48734/screenshots/2853992/media/2b7c2b95ff5522bd2fce147b3eb2be37.png?resize=800x600&vertical=center",
+      title: "I want avacados",
+    },
+    {
+      id: 7,
+      image:
+        "https://cdn.dribbble.com/userupload/3256962/file/original-5db52963baaf0ead8b20c6e4ba006006.jpg?resize=2048x1280",
+      title: "I want eggs",
+    },
+    {
+      id: 8,
+      image:
+        "https://cdn.dribbble.com/users/6108606/screenshots/14403310/media/2cb8e656046ad910c76d0ec22d93fa9b.png?resize=800x600&vertical=center",
+      title: "I want a sandwich",
+    },
+
+    {
+      id: 9,
+      image:
+        "https://cdn.dribbble.com/userupload/10561232/file/original-41d3a4e93e5f210ab5f2f53856abdaa4.png?resize=1200x1200",
+      title: "I want beans",
     },
   ],
   Lunchtime: [

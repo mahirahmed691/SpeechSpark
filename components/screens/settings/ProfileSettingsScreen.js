@@ -18,8 +18,8 @@ import LanguageSettingsScreen from "./LanguageSettingsScreen";
 import ThemeSettingsScreen from "./ThemeSettingsScreen";
 import SecuritySettingsScreen from "./SecuritySettingsScreen";
 import DeleteAccountModal from "./DeleteAccountModal"; // Import the new component
-import styles from "./styles";
-import LogoPlaceholder from "./assets/Logo.png";
+import styles from "../styles";
+import LogoPlaceholder from "../../../assets/Logo.png";
 
 const Stack = createStackNavigator();
 
@@ -44,7 +44,12 @@ const ProfileSettingsScreen = () => {
     setDeleteModalVisible(false);
   };
 
-  const iconColor="#38B5FD"
+  const handleLogout = () => {
+    // Perform logout actions here, such as clearing user data or navigating to the login screen
+    console.log("Logged out");
+  };
+
+  const iconColor = "#38B5FD";
 
   return (
     <SafeAreaView style={styles.container}>
@@ -116,6 +121,11 @@ const ProfileSettingsScreen = () => {
           <Text style={[styles.settingText, { color: "#FF6347" }]}>
             Delete Account
           </Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
+          <MaterialCommunityIcons name="logout" size={24} color="#FF6347" />
+          <Text style={[styles.settingText, { color: "#FF6347" }]}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
 

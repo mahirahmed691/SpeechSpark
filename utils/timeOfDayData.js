@@ -1,6 +1,6 @@
 import { TouchableOpacity, View, Image, Text } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
-import styles from "../styles";
+import styles from "../components/screens/styles";
 export const timesOfDayColors = {
   morningRoutine: "#AACFD0",
   lunchtime: "#AACFD0",

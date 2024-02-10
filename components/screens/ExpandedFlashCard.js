@@ -2,11 +2,9 @@ import React, { useState, useRef, useEffect } from "react";
 import {
   View,
   SafeAreaView,
-  Image,
   Text,
   TouchableOpacity,
   ImageBackground,
-  Share,
   Alert,
 } from "react-native";
 import * as Speech from "expo-speech";

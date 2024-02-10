@@ -1,12 +1,12 @@
-// ForgotPasswordScreen.js
 import React, { useState } from "react";
-import { View, ImageBackground, StyleSheet, Image } from "react-native";
+import { View, ImageBackground, StyleSheet, Image, TouchableOpacity } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
 
-import YourLogo from "./assets/Logo.png"; // Replace with the actual path to your logo
-import BackgroundImage from "./assets/BackgroundImage.jpeg";
-const ForgotPasswordScreen = () => {
+import YourLogo from "../../assets/Logo.png"; // Replace with the actual path to your logo
+import BackgroundImage from "../../assets/BackgroundImage.png";
+
+const ForgotPasswordScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [isResetSent, setIsResetSent] = useState(false);
 
@@ -18,6 +18,10 @@ const ForgotPasswordScreen = () => {
     } catch (error) {
       console.error("Password Reset Error:", error.message);
     }
+  };
+
+  const handleBackToLogin = () => {
+    navigation.navigate('Login'); // Navigate back to the Login screen
   };
 
   return (
@@ -41,10 +45,14 @@ const ForgotPasswordScreen = () => {
             </Button>
           </>
         ) : (
-          <Text style={styles.resetText}>
-            Password reset instructions sent to your email. Please check your
-            inbox.
-          </Text>
+          <>
+            <Text style={styles.resetText}>
+               Password reset instructions sent to your email. Please check your inbox.
+            </Text>
+            <TouchableOpacity onPress={handleBackToLogin}>
+              <Text style={styles.backToLogin}>Back to Login</Text>
+            </TouchableOpacity>
+          </>
         )}
       </View>
     </ImageBackground>
@@ -54,7 +62,7 @@ const ForgotPasswordScreen = () => {
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    resizeMode:"stretch",
+    resizeMode: "stretch",
     justifyContent: "center",
   },
   container: {
@@ -76,10 +84,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    backgroundColor: "#fff",
-    borderWidth: 1,
     marginBottom: 16,
-    paddingHorizontal: 10,
   },
   resetButton: {
     width: "100%",
@@ -95,6 +100,12 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginTop: 16,
     color: "#FFF",
+  },
+  backToLogin: {
+    textAlign: "center",
+    marginTop: 16,
+    color: "#FFF",
+    textDecorationLine: "underline",
   },
 });
 

@@ -9,13 +9,12 @@ import {
   TouchableWithoutFeedback,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
-import Video from "react-native-video";
 
 const ThumbsUpDown = ({ onThumbsUp, onThumbsDown }) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalText, setModalText] = useState("");
-  const thumbsUpImage = require('./assets/Yes.gif');
-  const thumbsDownImage = require('./assets/No.gif');
+  const thumbsUpImage = require('../assets/Yes.gif');
+  const thumbsDownImage = require('../assets/No.gif');
 
   const handleThumbsUp = () => {
     setModalText("Yes");    setModalVisible(true);    onThumbsUp();

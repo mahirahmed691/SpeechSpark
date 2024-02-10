@@ -155,6 +155,7 @@ const MentalHealthScreen = () => {
 
     fetchQuotes();
   }, []);
+  
 
   const handleSaveMood = () => {
     console.log("Selected Emoji:", selectedEmoji);
@@ -163,8 +164,6 @@ const MentalHealthScreen = () => {
     console.log("Wake-up Time:", wakeUpTime);
     console.log("Activities:", activities);
     console.log("Gratitude Entries:", gratitudeEntries);
-
-    // You can send this data to your backend or store it locally as needed
   };
 
   const toggleBreathingModal = () => {
@@ -181,11 +180,9 @@ const MentalHealthScreen = () => {
 
     if (breathingTimer === 0) {
       clearInterval(interval);
-      // Handle transition to the next phase or end of the exercise
-      // You can add logic for transitioning between inhale, hold, exhale phases
+
     }
 
-    // Cleanup the interval on component unmount or when not in progress
     return () => clearInterval(interval);
   }, [breathingTimer, isBreathingExerciseInProgress]);
 

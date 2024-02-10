@@ -11,8 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { IconButton } from "react-native-paper";
-import { flashcardsData } from "./flashcardData";
-import { Button } from "react-native-paper";
+import { flashcardsData } from "../screens/flashcardData";
 import styles from "./styles";
 
 const FlashcardScreen = ({ route, navigation }) => {

@@ -1,32 +1,27 @@
-// LoginScreen.js
 import React, { useState } from "react";
-import { View, ImageBackground, StyleSheet, Image } from "react-native";
+import { View, ImageBackground, StyleSheet, Image, Alert } from "react-native";
 import { TextInput, Button, Text } from "react-native-paper";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import { getAuth, signInWithEmailAndPassword } from "firebase/auth"; 
 
-import YourLogo from "./assets/Logo.png";
-import BackgroundImage from "./assets/BackgroundImage.jpeg";
+import YourLogo from "../../assets/Logo-No-BG.png";
+import BackgroundImage from "../../assets/BackgroundImage.png";
+import firebase from "../../utils/firebaseConfig"; // Import the firebase module
 
-const LoginScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation, onLogin }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleLogin = async () => {
+  const handleLoginWithEmail = async () => {
     try {
-      // Replace the following line with your actual authentication mechanism
-      // In this example, we assume any email and password are valid
-      const auth = getAuth();
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-  
-      console.log("User logged in successfully");
-      // Optionally, navigate to another screen after successful login
-       navigation.navigate("Home");
+      const auth = getAuth(); 
+      const userCredential = await signInWithEmailAndPassword(auth, email, password); 
+      // Signed in
+      const user = userCredential.user;
+      console.log("Firebase authentication successful. User:", user);
+      onLogin(); 
     } catch (error) {
-      console.error("Login Error:", error.message);
+      console.log("Firebase authentication error:", error.message);
+      Alert.alert("Error", error.message); 
     }
   };
 
@@ -36,35 +31,25 @@ const LoginScreen = ({ navigation }) => {
         <Image source={YourLogo} style={styles.logo} resizeMode="contain" />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+          label="Email"
           value={email}
           onChangeText={(text) => setEmail(text)}
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          label="Password"
           secureTextEntry
           value={password}
           onChangeText={(text) => setPassword(text)}
         />
-        <Button
-          mode="contained"
-          style={styles.loginButton}
-          onPress={handleLogin}
-        >
-          <Text style={styles.buttonText}>Register</Text>
+        <Button mode="contained" style={styles.loginButton} onPress={handleLoginWithEmail}>
+          Login with Email
         </Button>
         <View style={styles.linksContainer}>
-          <Text
-            style={styles.linkText}
-            onPress={() => navigation.navigate("Login")}
-          >
-            Already have an account? Login.
+          <Text style={styles.linkText} onPress={() => navigation.navigate("Register")}>
+            Don't have an account? Register here
           </Text>
-          <Text
-            style={styles.linkText}
-            onPress={() => navigation.navigate("ForgotPassword")}
-          >
+          <Text style={styles.linkText} onPress={() => navigation.navigate("ForgotPassword")}>
             Forgot Password?
           </Text>
         </View>
@@ -87,26 +72,20 @@ const styles = StyleSheet.create({
     paddingBottom: 150,
   },
   logo: {
-    width: 200,
-    height: 200,
+    width: 180,
+    height: 180,
     marginBottom: 16,
+    backgroundColor:'#A9CFCF'
   },
   input: {
     width: "100%",
-    backgroundColor: "rgba(255, 255, 255, 0.7)",
-    borderWidth: 1,
     marginBottom: 16,
-    paddingHorizontal: 10,
   },
   loginButton: {
     width: "100%",
     borderRadius: 0,
     backgroundColor: "#38B5FD",
     marginTop: 8,
-  },
-  buttonText: {
-    color: "#FFF",
-    fontWeight: "800",
   },
   linksContainer: {
     marginTop: 12,
@@ -117,7 +96,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     fontSize: 13,
     fontWeight: "bold",
-    alignSelf: "center",
+    textAlign:'center'
   },
 });
 

@@ -149,8 +149,7 @@ const styles = StyleSheet.create({
     color: "#000",
     alignSelf: "center",
   },
-  toggleViewButton: {
-  },
+  toggleViewButton: {},
   toggleViewButtonText: {
     fontWeight: "bold",
     fontSize: 15,
@@ -279,12 +278,24 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   modalButton: {
-    backgroundColor: colors.modalButtonBackground,
+  backgroundColor: "#rgb(169,207,207)",
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
   },
   modalButtonText: {
+    color: colors.modalButtonTextColor,
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  modalCloseButton: {
+    backgroundColor: "#FE89A9",
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginTop:10,
+  },
+  modalCloseButtonText: {
     color: colors.modalButtonTextColor,
     fontSize: 16,
     fontWeight: "bold",
@@ -323,19 +334,19 @@ const styles = StyleSheet.create({
     color: "#555",
   },
   quoteCard: {
-    backgroundColor: "#37B7FD",
+    backgroundColor: "#FFF",
     marginRight: 20,
-    padding:20,
+    padding: 20,
     width: "95%",
-    borderTopRightRadius:20,
-    borderBottomRightRadius:20,
+    borderTopRightRadius: 20,
+    borderBottomRightRadius: 20,
   },
   quoteText: {
     fontSize: 15,
-    color: "#FFF",
-    width:"98%",
-    fontWeight:'00',
-    textAlign:'justify'
+    color: "#000",
+    width: "98%",
+    fontWeight: "900",
+    textAlign: "justify",
   },
   emojiSelector: {
     flexDirection: "row",
@@ -529,7 +540,7 @@ const styles = StyleSheet.create({
   sleepQualityLabel: {
     fontSize: 16,
     marginRight: 10,
-    fontWeight:'700',
+    fontWeight: "700",
     color: "#000", // Adjust color as needed
   },
   sleepQualityButton: {
@@ -548,55 +559,54 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: "#FFF", // Adjust text color as needed
   },
-  sleepTrackerInput:{
-    backgroundColor:'#fff'
+  sleepTrackerInput: {
+    backgroundColor: "#fff",
   },
-  showTipsButtonText:{
-    marginTop:20,
-    fontWeight:'900'
+  showTipsButtonText: {
+    marginTop: 20,
+    fontWeight: "900",
   },
   fullScreenModal: {
     margin: 0,
-    width:"100%",
-    alignSelf: 'center',
+    width: "100%",
+    alignSelf: "center",
   },
-  wellnessTipContent:{
-    height:"100%",
-    backgroundColor:'#fff'
+  wellnessTipContent: {
+    height: "100%",
+    backgroundColor: "#fff",
   },
   wellnessModalTitle: {
     fontSize: 20,
     fontWeight: "bold",
     marginBottom: 10,
-    marginLeft:20
+    marginLeft: 20,
   },
-  modalTipText:{
-    marginLeft:20,
-    width:'90%',
-    marginTop:0,
-    marginBottom:10,
-    fontWeight:'900'
+  modalTipText: {
+    marginLeft: 20,
+    width: "90%",
+    marginTop: 0,
+    marginBottom: 10,
+    fontWeight: "900",
   },
-  closeModalButton:{
-    width:'90%',
-    backgroundColor:'#rgb(169,207,207)',
-    alignSelf:'center',
-    padding:15,
-    borderRadius:20
+  closeModalButton: {
+    width: "90%",
+    backgroundColor: "#rgb(169,207,207)",
+    alignSelf: "center",
+    padding: 15,
+    borderRadius: 20,
   },
-  closeModalButtonText:{
-    textAlign:'center',
-    color:'white',
-    fontWeight:'900'
+  closeModalButtonText: {
+    textAlign: "center",
+    color: "white",
+    fontWeight: "900",
   },
   tipImage: {
-    width: '95%',
+    width: "95%",
     height: 250, // Set the height as needed
     borderRadius: 8,
-    alignSelf:'center',
-    marginBottom:20
+    alignSelf: "center",
+    marginBottom: 20,
   },
-
 });
 
 export default styles;

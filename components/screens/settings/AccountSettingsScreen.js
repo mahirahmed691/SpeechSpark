@@ -7,7 +7,7 @@ const AccountSettingsScreen = () => {
   const [username, setUsername] = useState("JohnDoe");
   const [email, setEmail] = useState("johndoe@example.com");
   const [password, setPassword] = useState("");
-  const [profilePic, setProfilePic] = useState(require('./assets/Logo.png'));
+nst [profilePic, setProfilePic] = useState(require('../../../assets/Logo.png'));
 
   const handleChooseProfilePic = async () => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();

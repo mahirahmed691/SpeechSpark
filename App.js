@@ -13,26 +13,28 @@ import {
   Dimensions,
   TextInput,
 } from "react-native";
+import * as ImagePicker from "expo-image-picker";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import LogoPlaceholder from "./assets/Logo.png";
-import ProfileSettingsScreen from "./ProfileSettingsScreen";
-import MentalHealthScreen from "./MentalHealthScreen";
-import GamesScreen from "./GameScreen";
-import DiaryScreen from "./DiaryScreen";
-import AuthStack from "./AuthStack";
+import ProfileSettingsScreen from "./components/screens/settings/ProfileSettingsScreen";
+import MentalHealthScreen from "./components/screens/MentalHealthScreen";
+import GamesScreen from "./components/screens/GameScreen";
+import DiaryScreen from "./components/screens/DiaryScreen";
+import AuthStack from "./components/Auth/AuthStack";
+import LoginScreen from "./components/screens/LoginScreen";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import ExpandedFlashcardScreen from "./ExpandedFlashCard";
-import FlashcardScreen from "./FlashcardScreen";
+import ExpandedFlashcardScreen from "./components/screens/ExpandedFlashCard";
+import FlashcardScreen from "./components/screens/FlashcardScreen";
 import {
-  timesOfDayColors,
   timesOfDay,
   TimesOfDayList,
   TimesOfDayTile,
 } from "./utils/timeOfDayData";
 
-import styles from "./styles";
-import ThumbsUpDown from "./ThumbsUpDown";
+
+import styles from "./components/screens/styles";
+import ThumbsUpDown from "./utils/ThumbsUpDown";
 
 const windowWidth = Dimensions.get("window").width;
 const Tab = createBottomTabNavigator();
@@ -66,6 +68,7 @@ const HomeScreen = ({ navigation, animatedValue }) => {
   const [createTileModalVisible, setCreateTileModalVisible] = useState(false);
   const [newTileText, setNewTileText] = useState("");
   const [isListLayout, setListLayout] = useState(true);
+  const [selectedImage, setSelectedImage] = useState(null);
 
   const handleThumbsUp = () => {
     setThumbsUpSelected(!isThumbsUpSelected);
@@ -85,41 +88,61 @@ const HomeScreen = ({ navigation, animatedValue }) => {
     setCreateTileModalVisible(true);
   };
 
+  const handlePickImage = async () => {
+    try {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+      console.log("Image picker result:", result);
+      if (!result.cancelled) {
+        setSelectedImage(result.uri);
+        console.log("Selected image URI:", result.uri);
+      }
+    } catch (error) {
+      console.error("Error picking image:", error);
+    }
+  };
+
   const handleConfirmCreateTile = () => {
-    analytics().logEvent("custom_tile_created", {
-      tileName: newTileText,
-    });
+    // Handle logic for creating a new tile with the provided text and image
     setCreateTileModalVisible(false);
     setNewTileText("");
+    setSelectedImage(null);
   };
 
   const [searchText, setSearchText] = useState("");
 
   const getCurrentTimeOfDay = () => {
     const currentHour = new Date().getHours();
-
-    if (currentHour >= 8 && currentHour < 9) {
-      return "🌅";
-    } else if (currentHour >= 9 && currentHour < 12) {
-      return "☀️";
-    } else if (currentHour >= 12 && currentHour < 1) {
-      return "🕛";
-    } else if (currentHour >= 1 && currentHour < 14) {
-      return "🍔";
-    } else if (currentHour >= 14 && currentHour < 15) {
-      return "🎮";
-    } else if (currentHour >= 16 && currentHour < 17) {
-      return "📚";
+  
+    if (currentHour >= 6 && currentHour < 8) {
+      return "😴"; // Early morning, still sleeping
+    } else if (currentHour >= 8 && currentHour < 12) {
+      return "🌅"; // Morning, wake-up time
+    } else if (currentHour >= 12 && currentHour < 14) {
+      return "🍔"; // Midday, lunchtime
+    } else if (currentHour >= 14 && currentHour < 17) {
+      return "📚"; // Afternoon, study or work time
+    } else if (currentHour >= 17 && currentHour < 18) {
+      return "🎮"; // Late afternoon, leisure time
     } else if (currentHour >= 18 && currentHour < 19) {
-      return "🍽️";
-    } else if (currentHour >= 20 && currentHour < 21) {
-      return "📺";
-    } else if (currentHour >= 21 || (currentHour >= 0 && currentHour < 7)) {
-      return "😴";
+      return "🍽️"; // Evening, dinner time
+    } else if (currentHour >= 19 && currentHour < 22) {
+      return "📺"; // Evening, relaxation and entertainment
     } else {
-      return "🆓";
+      return "😴"; // Late night, bedtime
     }
   };
+  
 
   const currentTimeOfDay = getCurrentTimeOfDay();
   const [currentTimes, setCurrentTimes] = useState("");
@@ -165,31 +188,6 @@ const HomeScreen = ({ navigation, animatedValue }) => {
           style={styles.logo}
           resizeMode="contain"
         />
-        {/* <View
-          style={{
-            width: "33%",
-            backgroundColor: "#rgb(55,183,253)",
-            height: 70,
-            width: 70,
-            justifyContent: "center",
-            borderRadius: 100,
-          }}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              color: "#fff",
-              height: 50,
-              width: 80,
-              fontWeight: "900",
-              lineHeight: 50,
-              alignSelf: "center",
-              letterSpacing: 1,
-            }}
-          >
-            {currentTimes}
-          </Text>
-        </View> */}
         <Flashcard text={currentTimeOfDay} animatedValue={animatedValue} />
       </View>
       <View style={styles.searchContainer}>
@@ -264,17 +262,39 @@ const HomeScreen = ({ navigation, animatedValue }) => {
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Create Your Own Tile</Text>
-            <TextInput
-              style={styles.modalInput}
-              placeholder="Enter tile name"
-              onChangeText={(text) => setNewTileText(text)}
-              value={newTileText}
-            />
+            <View style={styles.modalInputContainer}>
+              <TextInput
+                style={styles.modalInput}
+                placeholder="Enter tile name"
+                onChangeText={(text) => setNewTileText(text)}
+                value={newTileText}
+                autoFocus // Automatically focus on the input field
+              />
+              <TouchableOpacity
+                style={styles.uploadImageButton}
+                onPress={handlePickImage}
+              >
+                <Text style={styles.uploadImageButtonText}>Upload Picture +</Text>
+              </TouchableOpacity>
+              {selectedImage && (
+                <Image
+                  source={{ uri: selectedImage }}
+                  style={styles.selectedImage}
+                />
+              )}
+            </View>
             <TouchableOpacity
               style={styles.modalButton}
               onPress={handleConfirmCreateTile}
+              disabled={!newTileText.trim() || !selectedImage}
             >
               <Text style={styles.modalButtonText}>Create</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.modalCloseButton}
+              onPress={() => setCreateTileModalVisible(false)}
+            >
+              <Text style={styles.modalCloseButtonText}>Cancel</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -341,14 +361,21 @@ const MainStack = () => {
 };
 
 const App = () => {
-  const animatedValue = useRef(new Animated.Value(0)).current;
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  const isAuthenticated = false; // Replace with your authentication logic
+  const handleLogin = () => {
+    setIsAuthenticated(true);
+  };
 
   return (
     <NavigationContainer>
-      {/* {isAuthenticated ? <MainStack /> : <AuthStack />} */}
-      <MainStack />
+      {isAuthenticated ? (
+        <MainStack />
+      ) : (
+        <AuthStack>
+          <LoginScreen onLogin={handleLogin} /> {/* Pass onLogin function as a prop */}
+        </AuthStack>
+      )}
     </NavigationContainer>
   );
 };

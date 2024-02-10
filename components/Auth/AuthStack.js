@@ -1,18 +1,19 @@
 // AuthStack.js
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import LoginScreen from './LoginScreen';
-import RegisterScreen from './RegisterScreen';
-import ForgotPasswordScreen from './ForgotPasswordScreen';
+import LoginScreen from '../screens/LoginScreen';
+import RegisterScreen from '../screens/RegisterScreen';
+import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
+import HomeScreen from '../../App';
 
 const Stack = createStackNavigator();
 
-const AuthStack = () => {
+const AuthStack = ({ handleLogin }) => {
   return (
-    <Stack.Navigator screenOptions={{
-        headerShown: false,
-    }} initialRouteName="Login">
-      <Stack.Screen  name="Login" component={LoginScreen} />
+    <Stack.Navigator screenOptions={{ headerShown: false }} initialRouteName="Login">
+        <Stack.Screen name="Login">
+        {(props) => <LoginScreen {...props} handleLogin={handleLogin} />}
+      </Stack.Screen>
       <Stack.Screen name="Register" component={RegisterScreen} />
       <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
     </Stack.Navigator>
