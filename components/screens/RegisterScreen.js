@@ -42,13 +42,14 @@ const LoginScreen = ({ navigation }) => {
         <Image source={YourLogo} style={styles.logo} resizeMode="contain" />
         <TextInput
           style={styles.input}
-          placeholder="Email"
+  label="Email"
+  
           value={email}
           onChangeText={(text) => setEmail(text)}
         />
         <TextInput
           style={styles.input}
-          placeholder="Password"
+          label="Password"
           secureTextEntry
           value={password}
           onChangeText={(text) => setPassword(text)}
@@ -100,6 +101,7 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     marginBottom: 16,
+    backgroundColor:'#FFF'
   },
   loginButton: {
     width: "100%",

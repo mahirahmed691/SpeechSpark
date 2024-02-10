@@ -80,6 +80,7 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     marginBottom: 16,
+    backgroundColor:'#FFF'
   },
   loginButton: {
     width: "100%",

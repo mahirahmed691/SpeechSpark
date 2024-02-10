@@ -32,7 +32,7 @@ const ForgotPasswordScreen = ({ navigation }) => {
           <>
             <TextInput
               style={styles.input}
-              placeholder="Email"
+              label="Email"
               value={email}
               onChangeText={(text) => setEmail(text)}
             />
@@ -85,6 +85,7 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     marginBottom: 16,
+    backgroundColor:'#FFF'
   },
   resetButton: {
     width: "100%",
