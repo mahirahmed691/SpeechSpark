@@ -155,7 +155,6 @@ const MentalHealthScreen = () => {
 
     fetchQuotes();
   }, []);
-  
 
   const handleSaveMood = () => {
     console.log("Selected Emoji:", selectedEmoji);
@@ -180,7 +179,6 @@ const MentalHealthScreen = () => {
 
     if (breathingTimer === 0) {
       clearInterval(interval);
-
     }
 
     return () => clearInterval(interval);

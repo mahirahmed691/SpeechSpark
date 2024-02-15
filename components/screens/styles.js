@@ -20,13 +20,12 @@ const colors = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.primaryBackground,
   },
   logo: {
-    marginTop: 12,
     width: isIpad ? "33%" : "33%",
-    height: 50,
-    marginRight: 120,
+    height: 40,
+    left: -30,
+    top: 6,
   },
   profileLogo: {
     marginTop: 10,
@@ -50,17 +49,17 @@ const styles = StyleSheet.create({
   },
   tileText: {
     fontSize: 12,
-    letterSpacing: 2,
-    fontWeight: "700",
+    fontWeight: "900",
     color: "#000",
     textAlign: "center",
+    fontFamily: "Futura",
     marginBottom: 5,
     marginTop: 5,
   },
   listText: {
     fontSize: 14,
-    letterSpacing: 1.5,
-    fontWeight: "700",
+    fontWeight: "100",
+    fontFamily: "Futura",
     color: "#fff",
   },
   card: {
@@ -89,6 +88,7 @@ const styles = StyleSheet.create({
     textShadowColor: colors.shadowColor,
     textShadowOffset: { width: 5, height: 2 },
     textShadowRadius: 5,
+    fontFamily: "Futura",
   },
   image: {
     width: isIpad ? 400 : 300,
@@ -105,9 +105,9 @@ const styles = StyleSheet.create({
   dateText: {
     position: "absolute",
     textAlign: "center",
-    fontSize: 60,
+    fontSize: 40,
     width: "100%",
-    marginLeft: 25,
+    marginLeft: 50,
   },
   visualFlashcard: {
     width: "100%",
@@ -133,10 +133,9 @@ const styles = StyleSheet.create({
   },
   visualFlashcardTile: {
     width: isIpad ? "33%" : "30%",
-    marginRight: "1.5%",
+    marginRight: "2%",
     height: isIpad ? 500 : 200,
     borderRadius: 10,
-    marginBottom: 10,
   },
   visualFlashcardTitle: {
     fontSize: 16,
@@ -144,8 +143,8 @@ const styles = StyleSheet.create({
     color: "#000",
   },
   visualFlashcardImageTitle: {
-    fontSize: 12,
-    fontWeight: "bold",
+    fontSize: 11,
+    fontWeight: "600",
     color: "#000",
     alignSelf: "center",
   },
@@ -161,10 +160,11 @@ const styles = StyleSheet.create({
     height: isIpad ? 400 : 320,
     resizeMode: "cover",
     borderRadius: 20,
-    overflow: "hidden", // Ensure borderRadius is applied
+    overflow: "hidden", 
     borderWidth: 5,
     borderColor: "#f0f0f0",
     alignSelf: "center",
+    fontFamily: "Futura",
   },
   expandedFlashcardTitle: {
     fontSize: isIpad ? 50 : 12,
@@ -177,10 +177,10 @@ const styles = StyleSheet.create({
     width: "100%",
     textAlign: "center",
     padding: 15,
+    fontFamily: "Futura",
   },
   imageOverlay: {
     flex: 1,
-
     alignItems: "center",
   },
   ExpandContainer: {
@@ -278,7 +278,7 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   modalButton: {
-  backgroundColor: "#rgb(169,207,207)",
+    backgroundColor: "#rgb(169,207,207)",
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
@@ -293,7 +293,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: "center",
-    marginTop:10,
+    marginTop: 10,
   },
   modalCloseButtonText: {
     color: colors.modalButtonTextColor,
@@ -344,8 +344,8 @@ const styles = StyleSheet.create({
   quoteText: {
     fontSize: 15,
     color: "#000",
-    width: "98%",
-    fontWeight: "900",
+    width: "99%",
+    fontWeight: "500",
     textAlign: "justify",
   },
   emojiSelector: {
@@ -541,23 +541,23 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginRight: 10,
     fontWeight: "700",
-    color: "#000", // Adjust color as needed
+    color: "#000",
   },
   sleepQualityButton: {
     width: 35,
     height: 35,
     borderRadius: 20,
-    backgroundColor: "#A9CFCF", // Adjust background color as needed
+    backgroundColor: "#A9CFCF",
     justifyContent: "center",
     alignItems: "center",
     marginHorizontal: 5,
   },
   selectedSleepQualityButton: {
-    backgroundColor: "#37B7FD", // Adjust background color for selected state
+    backgroundColor: "#37B7FD",
   },
   sleepQualityButtonText: {
     fontSize: 18,
-    color: "#FFF", // Adjust text color as needed
+    color: "#FFF",
   },
   sleepTrackerInput: {
     backgroundColor: "#fff",
@@ -602,10 +602,29 @@ const styles = StyleSheet.create({
   },
   tipImage: {
     width: "95%",
-    height: 250, // Set the height as needed
+    height: 250,
     borderRadius: 8,
     alignSelf: "center",
     marginBottom: 20,
+  },
+  searchBarContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#000",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 8,
+    marginHorizontal: 12,
+    marginBottom: 12,
+  },
+  searchBar: {
+    flex: 1,
+    fontSize: 16,
+    paddingHorizontal: 8,
+    marginBottom:50,
+  },
+  searchIcon: {
+    marginLeft: 8,
   },
 });
 

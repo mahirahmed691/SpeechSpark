@@ -1,7 +1,6 @@
 {
   "expo": {
     "name": "SpeechSparkApp",
-    "logUrl": "https://exp.host/--/api/v2/logs",
     "slug": "SpeechSparkApp",
     "version": "1.0.2",
     "orientation": "portrait",

@@ -3,11 +3,11 @@ import {
   View,
   ScrollView,
   Text,
-  SafeAreaView,
   TouchableOpacity,
   StyleSheet,
   Platform,
   Image,
+  Modal,
 } from "react-native";
 import { CheckBox } from "react-native-elements";
 import { TextInput } from "react-native-paper";
@@ -23,7 +23,9 @@ const DiaryScreen = () => {
   const [recording, setRecording] = useState();
   const [sound, setSound] = useState();
   const [isRecording, setIsRecording] = useState(false);
-  
+  const [showModal, setShowModal] = useState(false);
+  const [modalRecording, setModalRecording] = useState(null);
+
   const exampleQuestions = [
     {
       id: 1,
@@ -61,7 +63,6 @@ const DiaryScreen = () => {
     city: "",
   });
 
-
   useEffect(() => {
     if (diaryData.location) {
       convertLocationToCity();
@@ -75,7 +76,6 @@ const DiaryScreen = () => {
   };
 
   useEffect(() => {
-    // Function to get location automatically
     const getLocation = async () => {
       try {
         const { status } = await Location.requestForegroundPermissionsAsync();
@@ -83,11 +83,8 @@ const DiaryScreen = () => {
           alert("Sorry, we need location permissions to make this work!");
           return;
         }
-
         const location = await Location.getCurrentPositionAsync({});
         setDiaryData({ ...diaryData, location });
-
-        // Convert location to city
         convertLocationToCity(
           location.coords.latitude,
           location.coords.longitude
@@ -97,9 +94,71 @@ const DiaryScreen = () => {
       }
     };
 
-    // Call the function to get location when the component mounts
     getLocation();
   }, []);
+
+  const pauseRecording = async () => {
+    try {
+      if (sound) {
+        await sound.pauseAsync();
+        setDiaryData({ ...diaryData, isPlaying: false });
+      }
+    } catch (error) {
+      console.error("Error pausing playback", error);
+    }
+  };
+
+  const renderPlaybackModal = () => {
+    const [playbackProgress, setPlaybackProgress] = useState(0);
+    const handleScrubbing = (value) => {
+      setPlaybackProgress(value);
+    };
+
+    return (
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={showModal}
+        onRequestClose={() => setShowModal(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Recording Playback</Text>
+            <Slider
+              style={styles.slider}
+              minimumValue={0}
+              maximumValue={1}
+              value={playbackProgress}
+              onValueChange={handleScrubbing}
+            />
+            <View style={styles.controlsContainer}>
+              <TouchableOpacity
+                onPress={playRecording}
+                style={styles.controlButton}
+              >
+                <Icon name="play" size={20} color="#FE89A9" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={pauseRecording}
+                style={styles.controlButton}
+              >
+                <Icon name="pause" size={20} color="#FE89A9" />
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={stopPlayback}
+                style={styles.controlButton}
+              >
+                <Icon name="stop" size={20} color="#FE89A9" />
+              </TouchableOpacity>
+            </View>
+            <TouchableOpacity onPress={() => setShowModal(false)}>
+              <Text style={styles.modalClose}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    );
+  };
 
   const renderQuestions = () => {
     return diaryData.questions.map((question, index) => {
@@ -207,19 +266,21 @@ const DiaryScreen = () => {
 
   const startRecording = async () => {
     try {
+      // Request audio recording permissions
       const { granted } = await Audio.requestPermissionsAsync();
-  
+
       if (!granted) {
         alert("Sorry, we need audio recording permissions to make this work!");
         return;
       }
-  
+
       // Set audio mode
       await Audio.setAudioModeAsync({
         allowsRecordingIOS: true,
         playsInSilentModeIOS: true,
       });
-  
+
+      // Prepare a new recording
       const newRecording = new Audio.Recording();
       await newRecording.prepareToRecordAsync(
         Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
@@ -231,7 +292,7 @@ const DiaryScreen = () => {
       console.error("Error starting recording", error);
     }
   };
-  
+
   const stopRecording = async () => {
     try {
       if (recording) {
@@ -240,6 +301,7 @@ const DiaryScreen = () => {
         setDiaryData({ ...diaryData, audioUri: uri });
         setRecording(null);
         setIsRecording(false);
+        setShowModal(true);
       } else {
         console.warn("No recording in progress to stop.");
       }
@@ -247,7 +309,7 @@ const DiaryScreen = () => {
       console.error("Error stopping recording", error);
     }
   };
-  
+
   const playRecording = async () => {
     try {
       if (sound) {
@@ -256,7 +318,7 @@ const DiaryScreen = () => {
           console.warn("Sound is not loaded.");
           return;
         }
-  
+
         if (status.isLoaded && !status.isPlaying) {
           await sound.playAsync();
           setDiaryData({ ...diaryData, isPlaying: true });
@@ -268,7 +330,7 @@ const DiaryScreen = () => {
       console.error("Error playing recording", error);
     }
   };
-  
+
   const stopPlayback = async () => {
     try {
       if (sound) {
@@ -279,14 +341,15 @@ const DiaryScreen = () => {
       console.error("Error stopping playback", error);
     }
   };
-  
 
   const renderPlaybackButton = () => {
     if (isRecording) {
       return (
-        <TouchableOpacity style={styles.buttonContainer} onPress={stopRecording}>
-          <Icon name="stop" size={20} color="#FE89A9" style={styles.icon} />
-          <Text style={styles.buttonText}>Stop Recording</Text>
+        <TouchableOpacity
+          style={styles.buttonContainer}
+          onPress={stopRecording}
+        >
+          <Icon name="stop" size={20} color="#FFF" style={styles.icon} />
         </TouchableOpacity>
       );
     } else if (diaryData.isPlaying) {
@@ -304,14 +367,13 @@ const DiaryScreen = () => {
         >
           <Icon
             name={isRecording ? "stop" : "microphone"}
-            iconColor="#fff"
-            iconSize={20}
+            color="#FFF"
+            size={20}
           />
         </TouchableOpacity>
       );
     }
   };
-  
 
   const captureLocation = async () => {
     try {
@@ -324,7 +386,6 @@ const DiaryScreen = () => {
       const location = await Location.getCurrentPositionAsync({});
       setDiaryData({ ...diaryData, location });
 
-      // Convert location to city
       convertLocationToCity(
         location.coords.latitude,
         location.coords.longitude
@@ -340,8 +401,13 @@ const DiaryScreen = () => {
 
     try {
       const response = await axios.get(apiUrl);
-      const city = response.data.results[0].components.city;
-      setDiaryData({ ...diaryData, city });
+
+      if (response.data.results.length > 0) {
+        const city = response.data.results[0].components.city;
+        setDiaryData({ ...diaryData, city });
+      } else {
+        console.error("No city found in the response");
+      }
     } catch (error) {
       console.error(
         "Error converting location to city",
@@ -372,18 +438,23 @@ const DiaryScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <View style={styles.container}>
       <View
         style={{
           flexDirection: "row",
           justifyContent: "space-between",
-          backgroundColor: "#F0F0F0",
+          backgroundColor: "#37B7FD",
           marginBottom: 20,
           padding: 10,
+          paddingTop: 50,
         }}
       >
         <View style={{ flexDirection: "column", width: "80%" }}>
-          <Text style={styles.headerText}>E-Diary</Text>
+          <Image
+            source={require("../../assets/e-diary.png")}
+            style={styles.selectedImage}
+          />
+
           <View
             style={{
               flexDirection: "row",
@@ -393,8 +464,8 @@ const DiaryScreen = () => {
           >
             <IconButton
               iconName="calendar"
-              iconSize={20}
-              iconColor="#FE89A9"
+              iconSize={10}
+              iconColor="#FFF"
               onPress={showDatepicker}
               buttonText={diaryData.selectedDate.toDateString()}
             />
@@ -413,7 +484,9 @@ const DiaryScreen = () => {
         </View>
 
         <View>
-          <View style={{ flexDirection: "row", justifyContent: "space-around" }}>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-around" }}
+          >
             {diaryData.location && (
               <Text style={styles.locationText}>
                 Location
@@ -431,8 +504,9 @@ const DiaryScreen = () => {
             <Text
               style={{
                 position: "absolute",
-                right: 50,
+                right: 20,
                 top: 8,
+                color: "#fff",
                 fontWeight: "900",
                 fontSize: 15,
               }}
@@ -442,6 +516,7 @@ const DiaryScreen = () => {
           </View>
 
           {renderPlaybackButton()}
+          {renderPlaybackModal()}
         </View>
       </View>
 
@@ -460,32 +535,28 @@ const DiaryScreen = () => {
           <Text style={styles.saveButtonText}>Save Entry</Text>
         </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFF",
-  },
   headerText: {
     fontSize: 30,
     fontWeight: "bold",
     marginLeft: 10,
-    color: "#000",
-    marginTop: 10,
+    color: "#FFF",
+    fontFamily: "Futura",
     letterSpacing: 12,
-    textDecorationColor: "pink",
   },
   datePickerText: {
     fontSize: 18,
-    color: "#000",
+    color: "#FFF",
     fontWeight: "800",
   },
   locationText: {
     fontSize: 16,
-    color: "#000",
+    color: "#FFF",
+    fontFamily: "Futura",
   },
   questionContainer: {
     marginBottom: 16,
@@ -511,8 +582,8 @@ const styles = StyleSheet.create({
     alignSelf: "center",
   },
   selectedImage: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 35,
     marginTop: 8,
     borderRadius: 4,
   },
@@ -546,6 +617,37 @@ const styles = StyleSheet.create({
   },
   slider: {
     marginLeft: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
+  },
+  modalContent: {
+    backgroundColor: "#FFF",
+    padding: 20,
+    borderRadius: 10,
+    alignSelf: "center",
+    width: "90%",
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  modalClose: {
+    color: "#FE89A9",
+    marginTop: 20,
+    fontSize: 16,
+  },
+  controlsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  controlButton: {
+    padding: 10,
+    borderRadius: 50,
+    backgroundColor: "#FFF",
   },
 });
 

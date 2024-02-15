@@ -166,7 +166,7 @@ const ExpandedFlashcardScreen = ({ route }) => {
           <TouchableOpacity>
             <ImageBackground
               source={{
-                uri: "https://cdn.dribbble.com/users/655640/screenshots/3161638/media/9ddb98563ac7d6357ba1e5c73c682d22.jpg?resize=800x600&vertical=center",
+                uri: "https://cdn.dribbble.com/users/740188/screenshots/2846696/media/aa3bfd057053ef2852ac18d49052bac3.jpg?resize=800x600&vertical=center",
               }}
               style={styles.expandedFlashcardImage}
             >

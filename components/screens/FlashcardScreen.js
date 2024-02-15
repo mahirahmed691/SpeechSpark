@@ -10,7 +10,7 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { IconButton } from "react-native-paper";
+import { IconButton, TextInput, } from "react-native-paper";
 import { flashcardsData } from "../screens/flashcardData";
 import styles from "./styles";
 
@@ -18,6 +18,7 @@ const FlashcardScreen = ({ route, navigation }) => {
   const { params } = route;
   const [isTileView, setIsTileView] = useState(false);
   const [key, setKey] = useState("tileViewKey");
+  const [searchQuery, setSearchQuery] = useState(""); 
 
   const toggleViewMode = () => {
     setIsTileView(!isTileView);
@@ -57,9 +58,14 @@ const FlashcardScreen = ({ route, navigation }) => {
     );
   }
 
+  const filteredFlashcards = flashcards.filter((flashcard) =>
+  flashcard.title.toLowerCase().includes(searchQuery.toLowerCase())
+);
+
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.cardText}>{`Flashcards for ${title}`}</Text>
+
       <TouchableOpacity onPress={toggleViewMode} style={styles.toggleButtonContainer}>
         <IconButton
           icon={isTileView ? "view-list" : "view-grid"}
@@ -68,6 +74,12 @@ const FlashcardScreen = ({ route, navigation }) => {
           style={styles.toggleViewButton}
         />
       </TouchableOpacity>
+      <TextInput
+        style={styles.searchBar}
+        placeholder="Search flashcards"
+        onChangeText={setSearchQuery}
+        value={searchQuery}
+      />
       <FlatList
         key={key}
         data={flashcards}

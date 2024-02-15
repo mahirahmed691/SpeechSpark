@@ -49,7 +49,6 @@ export const flashcardsData = {
         "https://cdn.dribbble.com/users/6108606/screenshots/14403310/media/2cb8e656046ad910c76d0ec22d93fa9b.png?resize=800x600&vertical=center",
       title: "I want a sandwich",
     },
-
     {
       id: 9,
       image:
@@ -72,6 +71,42 @@ export const flashcardsData = {
     },
     {
       id: 3,
+      image:
+        "https://cdn.dribbble.com/users/5019523/screenshots/12233976/media/a57287875b92fc449f24ce761d0f69f7.png?resize=1600x1200&vertical=center",
+      title: "I want Mac & Cheese",
+    },
+    {
+      id: 4,
+      image:
+        "https://cdn.dribbble.com/users/129807/screenshots/10685654/media/ebeb3997e280ead73c8683b26f0c6a8c.jpg?resize=1600x1200&vertical=center",
+      title: "I want lunch",
+    },
+    {
+      id: 5,
+      image:
+        "https://cdn.dribbble.com/users/1188871/screenshots/17668234/media/38c5794ddec8a9640a15a765f9df1a39.jpg?resize=1600x1200&vertical=center",
+      title: "I want pasta",
+    },
+    {
+      id: 6,
+      image:
+        "https://cdn.dribbble.com/users/5019523/screenshots/12233976/media/a57287875b92fc449f24ce761d0f69f7.png?resize=1600x1200&vertical=center",
+      title: "I want Mac & Cheese",
+    },
+    {
+      id: 7,
+      image:
+        "https://cdn.dribbble.com/users/129807/screenshots/10685654/media/ebeb3997e280ead73c8683b26f0c6a8c.jpg?resize=1600x1200&vertical=center",
+      title: "I want lunch",
+    },
+    {
+      id: 8,
+      image:
+        "https://cdn.dribbble.com/users/1188871/screenshots/17668234/media/38c5794ddec8a9640a15a765f9df1a39.jpg?resize=1600x1200&vertical=center",
+      title: "I want pasta",
+    },
+    {
+      id: 9,
       image:
         "https://cdn.dribbble.com/users/5019523/screenshots/12233976/media/a57287875b92fc449f24ce761d0f69f7.png?resize=1600x1200&vertical=center",
       title: "I want Mac & Cheese",

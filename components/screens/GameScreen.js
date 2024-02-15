@@ -1,69 +1,90 @@
 import React, { useState, useRef } from "react";
 import {
-  View,
   Text,
-  TextInput,
-  Alert,
-  FlatList,
   TouchableOpacity,
   Modal,
   StyleSheet,
   Animated,
+  FlatList,
+  Image,
+  View,
 } from "react-native";
-import { Button } from "react-native-paper";
+import { TextInput } from "react-native-paper";
+import Icon from "react-native-vector-icons/FontAwesome"; // Import FontAwesome icon
 import { SafeAreaView } from "react-native-safe-area-context";
+import GuessNumberGame from "../games/GuessNumberGame"; // Import the GuessNumberGame component
+import WordGuessGame from "../games/WordGuessGame"; // Import the WordGuessGame component
+import ColorMatchingGame from "../games/ColorMatchGame"; // Import the ColorMatchingGame component
+import MathQuizGame from "../games/MathQuiz"; // Import the MathQuizGame component
+import DrawingGame from "../games/DrawingGame";
+import TicTacToe from "../games/TicTacToe";
 
 const GamesScreen = () => {
   const gamesList = [
     {
       id: "1",
-      title: "Guess the Number",
-      description:
-        "Try to guess the randomly generated number between 1 and 100.",
+      image: require("../../assets/guesswhatnumber.jpeg"),
+      title: "Guess 0 Mania",
+      genre: "Strategy",
+      instructions:
+        "Try to guess the hidden number between 1 and 100 within the fewest attempts possible!",
       navigateTo: "GuessNumberGame",
+      bgColor: "#f0f0f0",
     },
     {
       id: "2",
-      title: "Word Guessing Game",
-      description: "Try to guess the randomly generated word.",
+      image: require("../../assets/whatword.jpeg"),
+      title: "Words?",
+      genre: "English",
+      instructions: "Try to guess the hidden word from the given options!",
       navigateTo: "WordGuessGame",
+      bgColor: "#f0f0f0",
     },
     {
       id: "3",
-      title: "Math Quiz",
-      description: "Solve simple math problems.",
-      navigateTo: "MathQuizGame",
+      image: require("../../assets/colormatch.png"),
+      title: "Match",
+      genre: "Memory",
+      instructions: "Match the color combination as quickly as possible!",
+      navigateTo: "ColorMatchingGame",
+      bgColor: "#rgb(255,87,87)",
     },
     {
       id: "4",
-      title: "Color Matching",
-      description: "Match colors in a fun game.",
-      navigateTo: "ColorMatchingGame",
+      image: require("../../assets/mathquiz.png"),
+      title: "Math Camp",
+      genre: "Maths",
+      instructions: "Solve the math problems within the time limit!",
+      navigateTo: "MathQuizGame",
+      bgColor:'#f0f0f0'
     },
     {
       id: "5",
-      title: "Memory Card Game",
-      description: "Test your memory with a classic card-matching game.",
-      navigateTo: "MemoryCardGame",
+      image: require("../../assets/drawthis.jpeg"),
+      title: "Draw",
+      genre: "Art",
+      instructions: "Draw something amazing!",
+      navigateTo: "DrawingGame",
+      bgColor: "#FFF",
+    },
+    {
+      id: "6",
+      image: require("../../assets/tictactoe.jpeg"),
+      title: "Tic Tac Toe",
+      genre: "Puzzle",
+      navigateTo: "TicTacToe",
+      bgColor: "#FFF",
     },
   ];
 
-  const [attempts, setAttempts] = useState(0);
   const [selectedGame, setSelectedGame] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [guessNumber, setGuessNumber] = useState(null);
-  const [wordToGuess, setWordToGuess] = useState(null);
-  const [wordGuess, setWordGuess] = useState("");
-  const [mathProblem, setMathProblem] = useState("");
-  const [mathAnswer, setMathAnswer] = useState("");
-  const [colorOptions, setColorOptions] = useState([]);
-  const [selectedColor, setSelectedColor] = useState(null);
+  const [searchQuery, setSearchQuery] = useState(""); // State for search query
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
   const handleGameSelection = (game) => {
     setSelectedGame(game);
     setModalVisible(true);
-    initializeGame(game);
     fadeIn();
   };
 
@@ -90,140 +111,40 @@ const GamesScreen = () => {
     }).start(() => onComplete && onComplete());
   };
 
-  const initializeGame = (game) => {
-    if (game.navigateTo === "GuessNumberGame") {
-      setGuessNumber(generateRandomNumber());
-    } else if (game.navigateTo === "WordGuessGame") {
-      setWordToGuess(generateRandomWord());
-    }
-  };
-
-  const generateRandomNumber = () => {
-    return Math.floor(Math.random() * 100) + 1;
-  };
-
-  const generateRandomWord = () => {
-    const words = ["apple", "banana", "orange", "grape", "kiwi"];
-    const randomIndex = Math.floor(Math.random() * words.length);
-    return words[randomIndex];
-  };
-
-  const handleGuessNumberGame = () => {
-    const userGuess = parseInt(wordGuess);
-
-    if (isNaN(userGuess) || userGuess < 1 || userGuess > 100) {
-      Alert.alert("Invalid Guess", "Please enter a number between 1 and 100.", [
-        { text: "OK" },
-      ]);
-      return;
-    }
-
-    setAttempts(attempts + 1);
-
-    if (userGuess === guessNumber) {
-      Alert.alert(
-        "Congratulations!",
-        `You guessed the number ${guessNumber} in ${attempts} attempts.`,
-        [{ text: "OK" }]
-      );
-      setGuessNumber(generateRandomNumber());
-      setAttempts(0);
-      setWordGuess("");
-    } else {
-      const message =
-        userGuess < guessNumber
-          ? "Too low! Try again."
-          : "Too high! Try again.";
-      Alert.alert("Incorrect Guess", message, [{ text: "OK" }]);
-      setWordGuess("");
-    }
-  };
-
-  const handleWordGuessGame = () => {
-    if (wordGuess.toLowerCase() === wordToGuess) {
-      Alert.alert(
-        "Congratulations!",
-        `You guessed the word '${wordToGuess}' correctly.`,
-        [{ text: "OK" }]
-      );
-      setWordToGuess(generateRandomWord());
-      setWordGuess("");
-    } else {
-      Alert.alert("Incorrect Guess", "Try again.", [{ text: "OK" }]);
-      setWordGuess("");
-    }
-  };
-
-  const handleMathQuizGame = () => {
-    const userAnswer = parseInt(mathAnswer);
-
-    if (isNaN(userAnswer)) {
-      Alert.alert("Invalid Answer", "Please enter a valid number.", [
-        { text: "OK" },
-      ]);
-      return;
-    }
-
-    setAttempts(attempts + 1);
-
-    if (userAnswer === eval(mathProblem)) {
-      Alert.alert(
-        "Congratulations!",
-        `You solved the math problem '${mathProblem}' in ${attempts} attempts.`,
-        [{ text: "OK" }]
-      );
-      setMathProblem(generateRandomMathProblem());
-      setMathAnswer("");
-      setAttempts(0);
-    } else {
-      Alert.alert("Incorrect Answer", "Try again.", [{ text: "OK" }]);
-      setMathAnswer("");
-    }
-  };
-
-  const generateRandomMathProblem = () => {
-    const operators = ["+", "-", "*"];
-    const getRandomOperator = () =>
-      operators[Math.floor(Math.random() * operators.length)];
-
-    const operand1 = Math.floor(Math.random() * 10) + 1;
-    const operand2 = Math.floor(Math.random() * 10) + 1;
-
-    const operator = getRandomOperator();
-
-    const newMathProblem = `${operand1} ${operator} ${operand2}`;
-    setMathProblem(newMathProblem);
-    setMathAnswer(eval(newMathProblem).toString());
-
-    return newMathProblem;
-  };
-
-  const handleMemoryCardGame = () => {
-    // Customize the Memory Card Game logic here
-    Alert.alert(
-      "Memory Card Game",
-      "Implement your Memory Card Game logic here.",
-      [{ text: "OK" }]
-    );
-  };
+  // Function to filter games based on search query
+  const filteredGames = gamesList.filter((game) =>
+    game.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>Games 🎮</Text>
+      {/* Search input */}
+      <View style={styles.searchContainer}>
+        <Icon name="search" size={20} color="#888" style={styles.searchIcon} />
+        <TextInput
+          style={styles.searchInput}
+          placeholder="Search games..."
+          onChangeText={setSearchQuery}
+          value={searchQuery}
+          placeholderTextColor="#000"
+        />
+      </View>
+
       <FlatList
-        data={gamesList}
+        data={filteredGames}
         keyExtractor={(item) => item.id}
+        numColumns={2}
         renderItem={({ item }) => (
           <TouchableOpacity
             onPress={() => handleGameSelection(item)}
             style={styles.gameItem}
           >
             <Text style={styles.gameTitle}>{item.title}</Text>
-            <Text style={styles.gameDescription}>{item.description}</Text>
+            <Image source={item.image} style={styles.gameImage} />
+            <Text style={styles.gameTitle}>{item.genre}</Text>
           </TouchableOpacity>
         )}
       />
-
       <Modal
         animationType="slide"
         transparent={true}
@@ -238,76 +159,49 @@ const GamesScreen = () => {
             },
           ]}
         >
-          <View style={styles.modalContent}>
-            {selectedGame && (
-              <>
-                <Text style={styles.modalTitle}>{selectedGame.title}</Text>
-                {selectedGame.navigateTo === "GuessNumberGame" && (
-                  <View>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your guess"
-                      keyboardType="numeric"
-                      onChangeText={(text) => setWordGuess(text)}
-                    />
-                    <Button
-                      style={styles.Button}
-                      mode="contained"
-                      onPress={handleGuessNumberGame}
-                    >
-                      Make Guess
-                    </Button>
-                  </View>
-                )}
-                {selectedGame.navigateTo === "WordGuessGame" && (
-                  <View>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your guess"
-                      onChangeText={(text) => setWordGuess(text)}
-                    />
-                    <Button style={styles.Button} onPress={handleWordGuessGame}>
-                      Make Guess
-                    </Button>
-                  </View>
-                )}
-                {selectedGame.navigateTo === "MathQuizGame" && (
-                  <View>
-                    <Text style={styles.mathProblem}>{mathProblem}</Text>
-                    <TextInput
-                      style={styles.input}
-                      placeholder="Enter your answer"
-                      keyboardType="numeric"
-                      onChangeText={(text) => setMathAnswer(text)}
-                    />
-                    <Button
-                      style={styles.Button}
-                      mode="outlined"
-                      onPress={handleMathQuizGame}
-                    >
-                      Submit Answer
-                    </Button>
-                  </View>
-                )}
-                {selectedGame.navigateTo === "MemoryCardGame" && (
-                  <Button
-                    style={styles.gameButton}
-                    mode="contained"
-                    onPress={handleMemoryCardGame}
-                  >
-                    Start Memory Card Game
-                  </Button>
-                )}
-                <Button
-                  style={styles.closeButton}
-                  mode="outlined"
-                  onPress={closeModal}
-                >
-                  Close
-                </Button>
-              </>
+          <SafeAreaView
+            style={[
+              styles.modalContent,
+              { backgroundColor: selectedGame?.bgColor || "#FF904D" },
+            ]}
+          >
+            {/* Render selected game */}
+            {selectedGame && selectedGame.navigateTo === "GuessNumberGame" && (
+              <GuessNumberGame
+                closeModal={closeModal}
+                logo={require("../../assets/guesswhatnumber.png")}
+                instructions={selectedGame.instructions}
+                bgColor={selectedGame.bgColor}
+              />
             )}
-          </View>
+            {selectedGame && selectedGame.navigateTo === "WordGuessGame" && (
+              <WordGuessGame
+                closeModal={closeModal}
+                logo={require("../../assets/whatword.png")}
+              />
+            )}
+            {selectedGame &&
+              selectedGame.navigateTo === "ColorMatchingGame" && (
+                <ColorMatchingGame
+                  closeModal={closeModal}
+                  logo={require("../../assets/colormatch.png")}
+                />
+              )}
+            {selectedGame && selectedGame.navigateTo === "MathQuizGame" && (
+              <MathQuizGame
+                closeModal={closeModal}
+                logo={require("../../assets/mathquiz.png")}
+              />
+            )}
+             {selectedGame && selectedGame.navigateTo === "TicTacToe" && (
+              <TicTacToe
+              closeModal={closeModal}
+              />
+            )}
+            {selectedGame && selectedGame.navigateTo === "DrawingGame" && (
+              <DrawingGame closeModal={closeModal} />
+            )}
+          </SafeAreaView>
         </Animated.View>
       </Modal>
     </SafeAreaView>
@@ -318,28 +212,43 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: "#FFF", // Dark background
+    backgroundColor: "#f0f0f0",
   },
-  title: {
-    fontSize: 30,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "#38B5FD", // Gold text color
+  searchContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    paddingHorizontal: 10,
+  },
+  searchIcon: {
+    marginRight: 10,
+  },
+  searchInput: {
+    flex: 1,
+    height: 40,
+    color: "#333",
+    backgroundColor: "#fff",
   },
   gameItem: {
-    padding: 16,
-    backgroundColor: "#A9CFCF", // Green background
-    borderRadius: 12,
-    marginVertical: 8,
+    flex: 1,
+    margin: 5,
+    borderRadius: 10,
+    backgroundColor: "#FFF",
+    elevation: 3,
+  },
+  gameImage: {
+    width: "100%",
+    height: 150,
   },
   gameTitle: {
-    fontSize: 22,
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    fontSize: 12,
     fontWeight: "bold",
-    color: "#FFF", // White text color
-  },
-  gameDescription: {
-    marginTop: 8,
-    color: "#FFF", // Light gray text color
+    color: "#000",
+    textAlign: "center",
   },
   modalContainer: {
     flex: 1,
@@ -348,33 +257,12 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0, 0, 0, 0.8)",
   },
   modalContent: {
-    backgroundColor: "#212121", // Darker background
+    paddingTop: 80,
+    backgroundColor: "#FF904D",
     padding: 20,
     borderRadius: 12,
-    width: "95%",
-    height: 300,
-  },
-  modalTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 16,
-    color: "#FFD700", // Gold text color
-  },
-  input: {
-    borderBottomWidth: 2,
-    marginBottom: 10,
-    padding: 8,
-    borderColor: "#FFD700", // Gold border color
-    marginTop: 20,
-    color: "#FFF", // White text color
-  },
-  mathProblem: {
-    fontSize: 40,
-    marginBottom: 16,
-    color: "#212121", // Darker text color
-    backgroundColor: "#FFD700", // Gold background
-    padding: 10,
-    borderRadius: 12,
+    width: "100%",
+    height: "100%",
   },
 });
 

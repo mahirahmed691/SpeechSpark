@@ -191,7 +191,7 @@ export const TimesOfDayList = ({ time, navigation, selected, style }) => {
           styles.tile,
           {
             backgroundColor: selected ? "#FF6347" : time.backgroundColor,
-            width: "90%",
+            width: "98%",
             alignSelf: "center",
             height: 30,
             flexDirection: "row",
