@@ -1,29 +1,18 @@
-// AuthStack.js
-import React from "react";
-import { createStackNavigator } from "@react-navigation/stack";
-import LoginScreen from "../screens/LoginScreen";
-import RegisterScreen from "../screens/RegisterScreen";
-import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
+import React, { useRef } from "react";
+import { StatusBar, Animated } from "react-native";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import HomeScreen from "../screens/HomeScreen";
+import FlashcardScreen from "../screens/FlashcardScreen";
+import ExpandedFlashcardScreen from "../screens/ExpandedFlashCard";
+import DiaryScreen from "../screens/DiaryScreen";
+import MentalHealthScreen from "../screens/MentalHealthScreen";
+import GamesScreen from "../screens/GameScreen";
+import ProfileSettingsScreen from "../screens/settings/ProfileSettingsScreen";
 
-const Stack = createStackNavigator();
+const Tab = createBottomTabNavigator();
 
-const AuthStack = ({ handleLogin }) => {
-  return (
-    <Stack.Navigator
-      screenOptions={{ headerShown: false }}
-      initialRouteName="Login"
-    >
-      <Stack.Screen name="Login">
-        {(props) => <LoginScreen {...props} handleLogin={handleLogin} />}
-      </Stack.Screen>
-      <Stack.Screen name="Register" component={RegisterScreen} />
-      <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
-    </Stack.Navigator>
-  );
-};
-
-const MainStack = () => {
+const MainStack = ({ handleLogout }) => {
   const animatedValue = useRef(new Animated.Value(0)).current;
 
   return (
@@ -71,10 +60,14 @@ const MainStack = () => {
         <Tab.Screen name="Diary" component={DiaryScreen} />
         <Tab.Screen name="Health" component={MentalHealthScreen} />
         <Tab.Screen name="Games" component={GamesScreen} />
-        <Tab.Screen name="Settings" component={ProfileSettingsScreen} />
+        <Tab.Screen
+          name="Settings"
+          component={ProfileSettingsScreen}
+          initialParams={{ handleLogout: handleLogout }} // Pass handleLogout as a parameter
+        />
       </Tab.Navigator>
     </>
   );
 };
 
-export default AuthStack;
+export default MainStack;

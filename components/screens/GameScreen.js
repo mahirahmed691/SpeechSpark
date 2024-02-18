@@ -9,6 +9,7 @@ import {
   Image,
   View,
 } from "react-native";
+import LottieView from "lottie-react-native"; // Import LottieView
 import { TextInput } from "react-native-paper";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import FontAwesome icon
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -18,6 +19,7 @@ import ColorMatchingGame from "../games/ColorMatchGame"; // Import the ColorMatc
 import MathQuizGame from "../games/MathQuiz"; // Import the MathQuizGame component
 import DrawingGame from "../games/DrawingGame";
 import TicTacToe from "../games/TicTacToe";
+import ChessGame from "../games/ChessGame";
 
 const GamesScreen = () => {
   const gamesList = [
@@ -53,15 +55,15 @@ const GamesScreen = () => {
       id: "4",
       image: require("../../assets/mathquiz.png"),
       title: "Math Camp",
-      genre: "Maths",
+      genre: "Quiz",
       instructions: "Solve the math problems within the time limit!",
       navigateTo: "MathQuizGame",
-      bgColor:'#f0f0f0'
+      bgColor: "#f0f0f0",
     },
     {
       id: "5",
-      image: require("../../assets/drawthis.jpeg"),
-      title: "Draw",
+      image: require("../../assets/drawthis.png"),
+      title: "The Colouring Book",
       genre: "Art",
       instructions: "Draw something amazing!",
       navigateTo: "DrawingGame",
@@ -73,6 +75,14 @@ const GamesScreen = () => {
       title: "Tic Tac Toe",
       genre: "Puzzle",
       navigateTo: "TicTacToe",
+      bgColor: "#FFF",
+    },
+    {
+      id: "7",
+      image: require("../../assets/chess.png"),
+      title: "Check Mate",
+      genre: "Strategy",
+      navigateTo: "ChessGame",
       bgColor: "#FFF",
     },
   ];
@@ -111,14 +121,19 @@ const GamesScreen = () => {
     }).start(() => onComplete && onComplete());
   };
 
-  // Function to filter games based on search query
   const filteredGames = gamesList.filter((game) =>
     game.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Search input */}
+      <LottieView
+        source={require("../../assets/animation.json")}
+        autoPlay
+        loop
+        style={styles.lottieAnimation}
+      />
+
       <View style={styles.searchContainer}>
         <Icon name="search" size={20} color="#888" style={styles.searchIcon} />
         <TextInput
@@ -141,7 +156,7 @@ const GamesScreen = () => {
           >
             <Text style={styles.gameTitle}>{item.title}</Text>
             <Image source={item.image} style={styles.gameImage} />
-            <Text style={styles.gameTitle}>{item.genre}</Text>
+            <Text style={styles.gameGenre}>{item.genre}</Text>
           </TouchableOpacity>
         )}
       />
@@ -165,7 +180,6 @@ const GamesScreen = () => {
               { backgroundColor: selectedGame?.bgColor || "#FF904D" },
             ]}
           >
-            {/* Render selected game */}
             {selectedGame && selectedGame.navigateTo === "GuessNumberGame" && (
               <GuessNumberGame
                 closeModal={closeModal}
@@ -182,9 +196,10 @@ const GamesScreen = () => {
             )}
             {selectedGame &&
               selectedGame.navigateTo === "ColorMatchingGame" && (
-                <ColorMatchingGame
+                <ColorMatchGame
                   closeModal={closeModal}
-                  logo={require("../../assets/colormatch.png")}
+                  logo={logo}
+                  instructions={instructions}
                 />
               )}
             {selectedGame && selectedGame.navigateTo === "MathQuizGame" && (
@@ -193,13 +208,14 @@ const GamesScreen = () => {
                 logo={require("../../assets/mathquiz.png")}
               />
             )}
-             {selectedGame && selectedGame.navigateTo === "TicTacToe" && (
-              <TicTacToe
-              closeModal={closeModal}
-              />
+            {selectedGame && selectedGame.navigateTo === "TicTacToe" && (
+              <TicTacToe closeModal={closeModal} />
             )}
             {selectedGame && selectedGame.navigateTo === "DrawingGame" && (
               <DrawingGame closeModal={closeModal} />
+            )}
+            {selectedGame && selectedGame.navigateTo === "ChessGame" && (
+              <ChessGame closeModal={closeModal} />
             )}
           </SafeAreaView>
         </Animated.View>
@@ -211,7 +227,6 @@ const GamesScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 16,
     backgroundColor: "#f0f0f0",
   },
   searchContainer: {
@@ -226,7 +241,6 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   searchInput: {
-    flex: 1,
     height: 40,
     color: "#333",
     backgroundColor: "#fff",
@@ -248,6 +262,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "bold",
     color: "#000",
+    textAlign: "center",
+  },
+  gameGenre: {
+    paddingVertical: 10,
+    paddingHorizontal: 10,
+    fontSize: 12,
+    fontWeight: "bold",
+    backgroundColor: "crimson",
+    color: "white",
     textAlign: "center",
   },
   modalContainer: {

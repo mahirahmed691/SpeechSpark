@@ -11,13 +11,12 @@ import {
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 
-const DrawingGame = ({ closeModal }) => {
+const ColorBookGame = ({ closeModal }) => {
   const [path, setPath] = useState([]);
-  const [gameOver, setGameOver] = useState(false);
-  const [currentColor, setCurrentColor] = useState("pink");
+  const [currentColor, setCurrentColor] = useState("blue");
   const [showColorPicker, setShowColorPicker] = useState(false);
-  const [brushSize, setBrushSize] = useState(5); // default brush size
-  const [backgroundImage, setBackgroundImage] = useState(null); // state for background image
+  const [showImagePicker, setShowImagePicker] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(null);
   const prevTouchRef = useRef({ x: 0, y: 0 });
 
   const handleClear = () => {
@@ -31,13 +30,12 @@ const DrawingGame = ({ closeModal }) => {
       Alert.alert("Nothing to undo!");
     }
   };
-  
 
   const handleTouchMove = (event, gestureState) => {
     const { locationX, locationY } = event.nativeEvent;
     setPath((prevPath) => [
       ...prevPath,
-      { x: locationX, y: locationY, color: currentColor, size: brushSize },
+      { x: locationX, y: locationY, color: currentColor },
     ]);
   };
 
@@ -50,20 +48,13 @@ const DrawingGame = ({ closeModal }) => {
     setShowColorPicker((prev) => !prev);
   };
 
-  const handleBrushSizeChange = (size) => {
-    setBrushSize(size);
+  const toggleImagePicker = () => {
+    setShowImagePicker((prev) => !prev);
   };
 
-  const handleSaveDrawing = () => {
-    // Implement logic to save drawing
-  };
-
-  const handleShareDrawing = () => {
-    // Implement logic to share drawing
-  };
-
-  const handleBackgroundImageChange = (image) => {
-    setBackgroundImage(image);
+  const handleImageSelect = (image) => {
+    setSelectedImage(image);
+    setShowImagePicker(false);
   };
 
   const panResponder = useRef(
@@ -86,21 +77,24 @@ const DrawingGame = ({ closeModal }) => {
     "orange",
   ];
 
+  // Pre-built images to color in
+  const images = [
+    require("../../assets/snowman.jpeg"),
+    require("../../assets/unicorn.jpeg"),
+    require("../../assets/horse.jpeg"),
+    require("../../assets/lion.png"),
+    require("../../assets/bird.jpeg"),
+    require("../../assets/chick.jpeg"),
+    // Add more images as needed
+  ];
+
   return (
     <View style={styles.container}>
       <View style={styles.canvasContainer} {...panResponder.panHandlers}>
-        <View
-          style={[
-            styles.canvas,
-            { backgroundColor: gameOver ? "#ECECEC" : "#FFFFFF" },
-          ]}
-        >
-          {/* Render background image if set */}
-          {backgroundImage && (
-            <Image
-              source={{ uri: backgroundImage }}
-              style={styles.backgroundImage}
-            />
+        <View style={styles.canvas}>
+          {/* Render selected image as background */}
+          {selectedImage && (
+            <Image source={selectedImage} style={styles.backgroundImage} />
           )}
 
           <View style={styles.pathContainer}>
@@ -113,8 +107,6 @@ const DrawingGame = ({ closeModal }) => {
                     left: point.x,
                     top: point.y,
                     backgroundColor: point.color,
-                    width: point.size,
-                    height: point.size,
                   },
                 ]}
               />
@@ -136,16 +128,10 @@ const DrawingGame = ({ closeModal }) => {
           <MaterialIcons name="palette" size={24} color="orange" />
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={handleSaveDrawing}
+          onPress={toggleImagePicker}
           style={styles.controlButton}
         >
-          <MaterialIcons name="save" size={24} color="blue" />
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={handleShareDrawing}
-          style={styles.controlButton}
-        >
-          <MaterialIcons name="share" size={24} color="green" />
+          <MaterialIcons name="photo" size={24} color="blue" />
         </TouchableOpacity>
       </View>
       <Modal visible={showColorPicker} transparent animationType="fade">
@@ -165,6 +151,28 @@ const DrawingGame = ({ closeModal }) => {
             onPress={toggleColorPicker}
           >
             <Text style={styles.closeColorPickerText}>Close</Text>
+          </TouchableOpacity>
+        </View>
+      </Modal>
+      <Modal visible={showImagePicker} transparent animationType="fade">
+        <View style={styles.modalContainer}>
+          <View style={styles.imagePickerContainer}>
+            {/* Render pre-built images */}
+            {images.map((image, index) => (
+              <TouchableOpacity
+                key={index}
+                onPress={() => handleImageSelect(image)}
+                style={styles.imageButton}
+              >
+                <Image source={image} style={styles.image} />
+              </TouchableOpacity>
+            ))}
+          </View>
+          <TouchableOpacity
+            style={styles.closeImagePickerButton}
+            onPress={toggleImagePicker}
+          >
+            <Text style={styles.closeImagePickerText}>Close</Text>
           </TouchableOpacity>
         </View>
       </Modal>
@@ -236,16 +244,41 @@ const styles = StyleSheet.create({
     width: "80%",
     height: "60%",
   },
+  imagePickerContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    marginTop: 200,
+    width: "100%",
+    height: "100%",
+    backgroundColor: "rgba(255, 255, 255, 0.1)",
+  },
   colorButton: {
     width: 50,
     height: 50,
     margin: 5,
     borderRadius: 25,
   },
+  imageButton: {
+    borderRadius: 10,
+    overflow: "hidden",
+    margin: 5,
+  },
+  image: {
+    width: 100,
+    height: 100,
+  },
   closeColorPickerButton: {
     marginTop: 20,
   },
+  closeImagePickerButton: {
+    marginTop: 20,
+  },
   closeColorPickerText: {
+    color: "#000",
+    fontSize: 16,
+  },
+  closeImagePickerText: {
     color: "#000",
     fontSize: 16,
   },
@@ -254,6 +287,11 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 10,
   },
+  backgroundImage: {
+    width: "100%",
+    height: "100%",
+    resizeMode: "contain",
+  },
 });
 
-export default DrawingGame;
+export default ColorBookGame;

@@ -24,7 +24,6 @@ const ThemeSettingsScreen = () => {
     { id: "default", name: "Default Theme" },
     { id: "ocean", name: "Ocean Theme" },
     { id: "forest", name: "Forest Theme" },
-    // Add more predefined themes as needed
   ];
 
   return (

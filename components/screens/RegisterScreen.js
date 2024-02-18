@@ -9,7 +9,7 @@ import { initializeApp } from "firebase/app";
 import YourLogo from "../..//assets/Logo.png";
 import BackgroundImage from "../../assets/BackgroundImage.png";
 
-const LoginScreen = ({ navigation }) => {
+const RegisterScreen = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -126,4 +126,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default RegisterScreen;

@@ -17,13 +17,13 @@ import NotificationSettingsScreen from "./NotificationSettingsScreen";
 import LanguageSettingsScreen from "./LanguageSettingsScreen";
 import ThemeSettingsScreen from "./ThemeSettingsScreen";
 import SecuritySettingsScreen from "./SecuritySettingsScreen";
-import DeleteAccountModal from "./DeleteAccountModal"; // Import the new component
+import DeleteAccountModal from "./DeleteAccountModal"; 
 import styles from "../styles";
 import LogoPlaceholder from "../../../assets/Logo.png";
 
 const Stack = createStackNavigator();
 
-const ProfileSettingsScreen = () => {
+const ProfileSettingsScreen = ({ handleLogout }) => {
   const navigation = useNavigation();
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
 
@@ -44,9 +44,8 @@ const ProfileSettingsScreen = () => {
     setDeleteModalVisible(false);
   };
 
-  const handleLogout = () => {
-    // Perform logout actions here, such as clearing user data or navigating to the login screen
-    console.log("Logged out");
+  const confirmLogout = () => {
+    handleLogout();
   };
 
   const iconColor = "#38B5FD";
@@ -123,7 +122,7 @@ const ProfileSettingsScreen = () => {
           </Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
+        <TouchableOpacity style={styles.settingItem} onPress={confirmLogout}>
           <MaterialCommunityIcons name="logout" size={24} color="#FF6347" />
           <Text style={[styles.settingText, { color: "#FF6347" }]}>Logout</Text>
         </TouchableOpacity>

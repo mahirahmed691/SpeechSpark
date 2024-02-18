@@ -76,20 +76,19 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   const handleLogin = () => {
-    setIsAuthenticated(false);
+    setIsAuthenticated(false); // Set isAuthenticated to true upon successful login
   };
 
   return (
     <NavigationContainer>
-      {!isAuthenticated ? (
+      {isAuthenticated ? (
         <MainStack />
       ) : (
-        <AuthStack>
-          <LoginScreen onLogin={handleLogin} />
-        </AuthStack>
+        <AuthStack handleLogin={handleLogin} /> 
       )}
     </NavigationContainer>
   );
 };
 
 export default App;
+
